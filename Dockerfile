@@ -14,7 +14,7 @@ COPY ./profiles/prod /build/profiles/prod
 RUN mvn -Pprod clean package spring-boot:repackage
 
 
-FROM eclipse-temurin:17.0.7_7-jre
+FROM eclipse-temurin:17.0.8_7-jre
 
 # expose server port
 EXPOSE 8080
@@ -26,10 +26,10 @@ RUN curl -o /tmp/read-secrets.sh "https://raw.githubusercontent.com/HSLdevcom/jo
 COPY ./script/build-jdbc-urls.sh /tmp/
 
 # copy compiled jar from builder stage
-COPY --from=builder /build/target/*.jar /usr/src/jore4-hastus/jore4-timetables.jar
+COPY --from=builder /build/target/*.jar /usr/src/jore4-timetables/jore4-timetables.jar
 
 # read Docker secrets into environment variables and run application
-CMD /bin/bash -c "source /tmp/read-secrets.sh && source /tmp/build-jdbc-urls.sh && java -jar /usr/src/jore4-hastus/jore4-timetables.jar"
+CMD /bin/bash -c "source /tmp/read-secrets.sh && source /tmp/build-jdbc-urls.sh && java -jar /usr/src/jore4-timetables/jore4-timetables.jar"
 
 HEALTHCHECK --interval=1m --timeout=5s \
   CMD curl --fail http://localhost:8080/actuator/health
