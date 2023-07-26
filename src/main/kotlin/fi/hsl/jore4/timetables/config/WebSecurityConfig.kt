@@ -22,8 +22,9 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers(
                 HttpMethod.GET,
                 "/actuator/health",
+                "/error",
                 "/hello",
-                "/hello/testi"
+                "/hello/test"
             ).permitAll()
             .anyRequest().denyAll()
     }

@@ -23,12 +23,12 @@ class HelloWorld(
             .body("hello")
     }
 
-    @GetMapping("testi")
+    @GetMapping("test")
     fun vehicleScheduleFrames(): ResponseEntity<String> {
         LOGGER.info("Request for frames")
-        val framet = scheduleFrameService.getServiceFrames()
+        val frames = scheduleFrameService.getServiceFrames()
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(framet)
+            .body(frames)
     }
 }
