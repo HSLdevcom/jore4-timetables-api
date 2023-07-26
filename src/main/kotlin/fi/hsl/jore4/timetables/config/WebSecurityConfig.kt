@@ -23,7 +23,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
                 HttpMethod.GET,
                 "/actuator/health",
                 "/hello",
-                "/hello/testi"
+                "/hello/test"
             ).permitAll()
             .anyRequest().denyAll()
     }
