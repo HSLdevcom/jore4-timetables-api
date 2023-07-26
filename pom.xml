@@ -3,6 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.14</version>
+        <relativePath/>
+    </parent>
 
     <groupId>fi.hsl.jore4</groupId>
     <artifactId>timetables-api</artifactId>
@@ -21,17 +27,13 @@
         <!-- Maven build plugins and their dependencies -->
         <build-helper-plugin.version>3.3.0</build-helper-plugin.version>
         <build-properties-plugin.version>1.1.0</build-properties-plugin.version>
-        <kotlin-plugin.version>1.7.21</kotlin-plugin.version>
         <surefire-plugin.version>2.22.2</surefire-plugin.version>
         <ktlint-plugin.version>1.16.0</ktlint-plugin.version>
 
         <!-- Library versions -->
         <kotlin-logging-jvm.version>3.0.2</kotlin-logging-jvm.version>
         <quicktheories.version>0.26</quicktheories.version>
-        <spring-boot.version>2.7.14</spring-boot.version>
         <jackson-datatype.version>2.15.1</jackson-datatype.version>
-        <jooq.version>3.16.20</jooq.version>
-        <postgresql.version>42.6.0</postgresql.version>
         <mockk.version>1.12.4</mockk.version>
 
         <!-- Other properties -->
@@ -84,6 +86,7 @@
                 <build.profile.id>dev</build.profile.id>
                 <build.property.file>profiles/${build.profile.id}/config.properties</build.property.file>
                 <build.property.user-override.file>profiles/${build.profile.id}/config.${user.name}.properties</build.property.user-override.file>
+                <skip.jooq.generation>false</skip.jooq.generation>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -258,7 +261,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.outputDirectory}/generated-sources/jooq</source>
+                                <source>${project.build.directory}/generated-sources/jooq</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -268,7 +271,8 @@
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
-                <version>${kotlin-plugin.version}</version>
+                <!-- version inherited from the Spring Boot parent POM -->
+                <version>${kotlin.version}</version>
                 <configuration>
                     <compilerPlugins>
                         <plugin>spring</plugin>
@@ -298,12 +302,14 @@
                     <dependency>
                         <groupId>org.jetbrains.kotlin</groupId>
                         <artifactId>kotlin-maven-noarg</artifactId>
-                        <version>${kotlin-plugin.version}</version>
+                        <!-- version inherited from the Spring Boot parent POM -->
+                        <version>${kotlin.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>org.jetbrains.kotlin</groupId>
                         <artifactId>kotlin-maven-allopen</artifactId>
-                        <version>${kotlin-plugin.version}</version>
+                        <!-- version inherited from the Spring Boot parent POM -->
+                        <version>${kotlin.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -354,7 +360,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
                 <configuration>
                     <fork>true</fork>
                     <mainClass>${start.class}</mainClass>
@@ -440,11 +445,10 @@
                                 </database>
                                 <generate>
                                     <records>false</records>
-                                    <jooqVersionReference>3.16</jooqVersionReference>
                                 </generate>
                                 <target>
                                     <packageName>fi.hsl.jore.jore4.jooq</packageName>
-                                    <directory>${project.build.outputDirectory}/generated-sources/jooq</directory>
+                                    <directory>${project.build.directory}/generated-sources/jooq</directory>
                                 </target>
                             </generator>
                         </configuration>
@@ -455,25 +459,13 @@
                     <dependency>
                         <groupId>org.postgresql</groupId>
                         <artifactId>postgresql</artifactId>
-                        <!-- from spring-boot-dependencies-<VERSION>.RELEASE.pom -->
+                        <!-- version inherited from the Spring Boot parent POM -->
                         <version>${postgresql.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
         </plugins>
     </build>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -483,6 +475,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jooq</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -504,22 +500,34 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
+            <!-- version inherited from the Spring Boot parent POM -->
+            <version>${kotlin.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-reflect</artifactId>
+            <!-- version inherited from the Spring Boot parent POM -->
+            <version>${kotlin.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-kotlin</artifactId>
-            <version>${jackson-datatype.version}</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <!-- version inherited from the Spring Boot parent POM -->
+            <version>${postgresql.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>io.github.microutils</groupId>
             <artifactId>kotlin-logging-jvm</artifactId>
             <version>${kotlin-logging-jvm.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+            <version>${jackson-datatype.version}</version>
         </dependency>
 
         <dependency>
@@ -552,27 +560,6 @@
             <artifactId>quicktheories</artifactId>
             <version>${quicktheories.version}</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <!--jOOQ-->
-        <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>jooq</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>jooq-meta</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>jooq-codegen</artifactId>
         </dependency>
     </dependencies>
 
