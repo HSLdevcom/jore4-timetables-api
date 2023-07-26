@@ -14,7 +14,7 @@ instruct_and_exit() {
   echo "Available commands:"
   echo "start               Start the dependencies and the dockerized application"
   echo "start:deps          Start the dependencies only"
-  echo "generate:jooq       Start the dependencies and generate JOOQ classes"
+  echo "generate:jooq       Start the dependencies and generate jOOQ classes"
   echo "stop                Stop the dependencies and the dockerized application"
   exit 1
 }
