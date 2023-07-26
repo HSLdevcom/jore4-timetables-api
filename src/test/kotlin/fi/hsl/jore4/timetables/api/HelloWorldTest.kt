@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 @DisplayName("Test Hello World API")
 class HelloWorldTest {
@@ -26,7 +27,8 @@ class HelloWorldTest {
 
         val returned = api.helloWorld()
 
-        assertEquals(expected, returned.body!!, "Body content was not what was expected")
+        assertNotNull(returned.body)
+        assertEquals(expected, returned.body, "Body content was not what was expected")
     }
 
     @Test
@@ -37,6 +39,7 @@ class HelloWorldTest {
 
         val returned = api.vehicleScheduleFrames()
 
-        assertEquals(expected, returned.body!!, "Body did not contain expected frames")
+        assertNotNull(returned.body)
+        assertEquals(expected, returned.body, "Body did not contain expected frames")
     }
 }
