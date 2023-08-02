@@ -1,0 +1,21 @@
+---
+version: "3.8"
+services:
+  # build and run the local image instead
+  # note: it's currently expose on port 3009
+  jore4-timetables-api:
+    build:
+      context: ".."
+    ports:
+      - "127.0.0.1:3009:8080"
+
+  jore4-hasura:
+    # locking hasura image so that we can develop against a static graphql API
+    # Link to available jore4-hasura images in Docker Hub:
+    # https://hub.docker.com/r/hsldevcom/jore4-hasura/tags?page=1&ordering=last_updated
+    image: "hsldevcom/jore4-hasura:hsl-main--20230526-2d59e00eda9ab7ab3eee8f9b2b6a922075c7787a"
+    # Waiting for database to be ready to avoid startup delay due to hasura crashing at startup if db is offline
+    # Note: this should only be done in development setups as Kubernetes does not allow waiting for services to be ready
+    depends_on:
+      jore4-testdb:
+        condition: service_healthy
