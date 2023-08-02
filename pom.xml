@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>fi.hsl.jore4</groupId>
+    <artifactId>timetables-api</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0.0</version>
+    <name>Jore4 Timetables API</name>
+    <description>Jore4 REST API for Timetables module</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <java.version>17</java.version>
+        <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
+        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+
+        <!-- Maven build plugins and their dependencies -->
+        <build-helper-plugin.version>3.3.0</build-helper-plugin.version>
+        <build-properties-plugin.version>1.1.0</build-properties-plugin.version>
+        <kotlin-plugin.version>1.7.21</kotlin-plugin.version>
+        <surefire-plugin.version>2.22.2</surefire-plugin.version>
+        <ktlint-plugin.version>1.16.0</ktlint-plugin.version>
+
+        <!-- Library versions -->
+        <kotlin-logging-jvm.version>3.0.2</kotlin-logging-jvm.version>
+        <quicktheories.version>0.26</quicktheories.version>
+        <spring-boot.version>2.7.14</spring-boot.version>
+        <jackson-datatype.version>2.15.1</jackson-datatype.version>
+        <jooq.version>3.16.20</jooq.version>
+        <postgresql.version>42.6.0</postgresql.version>
+        <mockk.version>1.12.4</mockk.version>
+
+        <!-- Other properties -->
+        <start.class>fi.hsl.jore4.timetables.TimetablesApiApplicationKt</start.class>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <build.profile.id>prod</build.profile.id>
+                <build.property.file>profiles/${build.profile.id}/config.properties</build.property.file>
+                <skip.jooq.generation>false</skip.jooq.generation>
+            </properties>
+            <build>
+                <filters>
+                    <filter>${build.property.file}</filter>
+                </filters>
+                <plugins>
+                    <!-- Read properties files for build plugins. -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>${build-properties-plugin.version}</version>
+
+                        <configuration>
+                            <files>
+                                <file>${build.property.file}</file>
+                            </files>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>read-config-properties</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>dev</id>
+            <properties>
+                <build.profile.id>dev</build.profile.id>
+                <build.property.file>profiles/${build.profile.id}/config.properties</build.property.file>
+                <build.property.user-override.file>profiles/${build.profile.id}/config.${user.name}.properties</build.property.user-override.file>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <filters>
+                    <filter>${build.property.file}</filter>
+                    <filter>${build.property.user-override.file}</filter>
+                </filters>
+                <plugins>
+                    <!-- Read properties files for build plugins. -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>${build-properties-plugin.version}</version>
+
+                        <configuration>
+                            <files>
+                                <file>${build.property.file}</file>
+                                <file>${build.property.user-override.file}</file>
+                            </files>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>read-config-properties</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-devtools</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <build>
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+
+        <resources>
+            <!-- Resolve @some.key@ placeholders. -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+            <!-- Only copy other (non-filtered) resources. -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/*.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <testResources>
+            <!-- Resolve @some.key@ placeholders. -->
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.properties</include>
+                </includes>
+            </testResource>
+            <!-- Only copy other (non-filtered) resources. -->
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/*.properties</exclude>
+                </excludes>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <message>You are running an older version of Maven. Maven >= 3.3.9 is required</message>
+                                    <version>[3.3.9,)</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <message>You are running an incompatible version of Java. JDK ${java.version} is required</message>
+                                    <version>${java.version}</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>${build-helper-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/jooq</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin-plugin.version}</version>
+                <configuration>
+                    <compilerPlugins>
+                        <plugin>spring</plugin>
+                    </compilerPlugins>
+                    <args>
+                        <!-- Enable strict mode for JSR-305 annotations. -->
+                        <arg>-Xjsr305=strict</arg>
+                    </args>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-noarg</artifactId>
+                        <version>${kotlin-plugin.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-allopen</artifactId>
+                        <version>${kotlin-plugin.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <!-- Set Java compiling to occur after Kotlin compilation. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+                <executions>
+                    <!-- Replacing default-compile as it is treated specially by Maven. -->
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <!-- Replacing default-testCompile as it is treated specially by Maven. -->
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>java-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>java-test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <configuration>
+                    <fork>true</fork>
+                    <mainClass>${start.class}</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.gantsign.maven</groupId>
+                <artifactId>ktlint-maven-plugin</artifactId>
+                <version>${ktlint-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>check</id>
+                        <configuration>
+                            <sourceRoots>${project.build.sourceDirectory}</sourceRoots>
+                        </configuration>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>${jooq.version}</version>
+
+                <executions>
+                    <execution>
+                        <id>generate-jore4-database-classes</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skip.jooq.generation}</skip>
+                            <jdbc>
+                                <driver>${jore4.db.driver}</driver>
+                                <url>${jore4.db.url}</url>
+                                <user>${jore4.db.username}</user>
+                                <password>${jore4.db.password}</password>
+                            </jdbc>
+                            <generator>
+                                <name>org.jooq.codegen.KotlinGenerator</name>
+                                <database>
+                                    <name>${jooq.generator.db.dialect}</name>
+                                    <includeTables>true</includeTables>
+                                    <includeInvisibleColumns>false</includeInvisibleColumns>
+                                    <includeEmbeddables>false</includeEmbeddables>
+                                    <includeRoutines>true</includeRoutines>
+                                    <includePackages>false</includePackages>
+                                    <includePackageRoutines>false</includePackageRoutines>
+                                    <includePackageUDTs>false</includePackageUDTs>
+                                    <includePackageConstants>false</includePackageConstants>
+                                    <includeUDTs>false</includeUDTs>
+                                    <includeDomains>false</includeDomains>
+                                    <includeSequences>false</includeSequences>
+                                    <includePrimaryKeys>false</includePrimaryKeys>
+                                    <includeUniqueKeys>false</includeUniqueKeys>
+                                    <includeForeignKeys>false</includeForeignKeys>
+                                    <includeCheckConstraints>false</includeCheckConstraints>
+                                    <includeSystemCheckConstraints>false</includeSystemCheckConstraints>
+                                    <includeIndexes>false</includeIndexes>
+                                    <includeSystemIndexes>false</includeSystemIndexes>
+                                </database>
+                                <generate>
+                                    <records>false</records>
+                                    <jooqVersionReference>3.16</jooqVersionReference>
+                                </generate>
+                                <target>
+                                    <packageName>fi.hsl.jore.jore4.jooq</packageName>
+                                    <directory>${project.build.directory}/generated-sources/jooq</directory>
+                                </target>
+                            </generator>
+                        </configuration>
+                    </execution>
+                </executions>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <!-- from spring-boot-dependencies-<VERSION>.RELEASE.pom -->
+                        <version>${postgresql.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-reflect</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+            <version>${jackson-datatype.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.microutils</groupId>
+            <artifactId>kotlin-logging-jvm</artifactId>
+            <version>${kotlin-logging-jvm.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson-datatype.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.mockk</groupId>
+            <artifactId>mockk</artifactId>
+            <version>${mockk.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.quicktheories</groupId>
+            <artifactId>quicktheories</artifactId>
+            <version>${quicktheories.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!--jOOQ-->
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
