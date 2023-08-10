@@ -211,7 +211,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-sources/jooq</source>
+                                <source>${project.build.outputDirectory}/generated-sources/jooq</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -329,7 +329,7 @@
                     <execution>
                         <id>check</id>
                         <configuration>
-                            <sourceRoots>${project.build.sourceDirectory}</sourceRoots>
+                            <sourceRoots>${project.build.sourceDirectory}/fi</sourceRoots>
                         </configuration>
                         <goals>
                             <goal>check</goal>
@@ -362,6 +362,16 @@
                                 <name>org.jooq.codegen.KotlinGenerator</name>
                                 <database>
                                     <name>${jooq.generator.db.dialect}</name>
+                                    <excludes>
+                                        AUTH_SESSION.*
+                                        | HDB_CATALOG.*
+                                        | internal_utils.*
+                                        | SKEYS
+                                        | SVALS
+                                        | EACH
+                                        | PUBLIC.*
+                                        | pg_catalog.*
+                                    </excludes>
                                     <includeTables>true</includeTables>
                                     <includeInvisibleColumns>false</includeInvisibleColumns>
                                     <includeEmbeddables>false</includeEmbeddables>
@@ -387,7 +397,7 @@
                                 </generate>
                                 <target>
                                     <packageName>fi.hsl.jore.jore4.jooq</packageName>
-                                    <directory>${project.build.directory}/generated-sources/jooq</directory>
+                                    <directory>${project.build.outputDirectory}/generated-sources/jooq</directory>
                                 </target>
                             </generator>
                         </configuration>
