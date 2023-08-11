@@ -68,7 +68,6 @@ open class TsStat(
     val NENTRY: TableField<Record, Int?> = createField(DSL.name("nentry"), SQLDataType.INTEGER, this, "")
 
     private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, arrayOf(
-        DSL.value(null, SQLDataType.CLOB),
         DSL.value(null, SQLDataType.CLOB)
     ))
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -106,10 +105,8 @@ open class TsStat(
      */
     fun call(
           query: String?
-        , weights: String?
     ): TsStat = TsStat(DSL.name("ts_stat"), null, arrayOf(
-        DSL.value(query, SQLDataType.CLOB),
-        DSL.value(weights, SQLDataType.CLOB)
+        DSL.value(query, SQLDataType.CLOB)
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 
     /**
@@ -117,9 +114,7 @@ open class TsStat(
      */
     fun call(
           query: Field<String?>
-        , weights: Field<String?>
     ): TsStat = TsStat(DSL.name("ts_stat"), null, arrayOf(
-        query,
-        weights
+        query
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 }

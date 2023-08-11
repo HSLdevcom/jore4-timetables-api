@@ -6,10 +6,15 @@ package fi.hsl.jore.jore4.jooq.vehicle_journey.routines.references
 
 import fi.hsl.jore.jore4.jooq.vehicle_journey.routines.VehicleJourneyEndTime
 import fi.hsl.jore.jore4.jooq.vehicle_journey.routines.VehicleJourneyStartTime
+import fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate
+
+import java.time.LocalDate
+import java.util.UUID
 
 import org.jooq.Configuration
 import org.jooq.Field
 import org.jooq.Record
+import org.jooq.Result
 
 
 
@@ -88,3 +93,37 @@ fun vehicleJourneyStartTime(
 
     return f.asField()
 }
+
+/**
+ * Call <code>vehicle_journey.get_vehicle_schedules_on_date</code>.
+ */
+fun getVehicleSchedulesOnDate(
+      configuration: Configuration
+    , journeyPatternUuid: UUID?
+    , observationDate: LocalDate?
+): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE.call(
+      journeyPatternUuid
+    , observationDate
+)).fetch()
+
+/**
+ * Get <code>vehicle_journey.get_vehicle_schedules_on_date</code> as a table.
+ */
+fun getVehicleSchedulesOnDate(
+      journeyPatternUuid: UUID?
+    , observationDate: LocalDate?
+): GetVehicleSchedulesOnDate = fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE.call(
+    journeyPatternUuid,
+    observationDate
+)
+
+/**
+ * Get <code>vehicle_journey.get_vehicle_schedules_on_date</code> as a table.
+ */
+fun getVehicleSchedulesOnDate(
+      journeyPatternUuid: Field<UUID?>
+    , observationDate: Field<LocalDate?>
+): GetVehicleSchedulesOnDate = fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE.call(
+    journeyPatternUuid,
+    observationDate
+)

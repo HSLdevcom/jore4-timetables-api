@@ -6,6 +6,7 @@ package fi.hsl.jore.jore4.jooq.return_value
 
 import fi.hsl.jore.jore4.jooq.DefaultCatalog
 import fi.hsl.jore.jore4.jooq.return_value.tables.TimetableVersion
+import fi.hsl.jore.jore4.jooq.return_value.tables.VehicleSchedule
 
 import kotlin.collections.List
 
@@ -56,9 +57,19 @@ open class ReturnValue : SchemaImpl("return_value", DefaultCatalog.DEFAULT_CATAL
      */
     val TIMETABLE_VERSION: TimetableVersion get() = TimetableVersion.TIMETABLE_VERSION
 
+    /**
+     * This return value table is used in function
+     * vehicle_journey.get_vehicle_schedules_on_date. It consists of
+     * vehicle_journey_id, vehicle_schedule_frame_id or
+     * substitute_operating_day_by_line_type_id and also enriched with data,
+     * which are used in the UI side.
+     */
+    val VEHICLE_SCHEDULE: VehicleSchedule get() = VehicleSchedule.VEHICLE_SCHEDULE
+
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 
     override fun getTables(): List<Table<*>> = listOf(
-        TimetableVersion.TIMETABLE_VERSION
+        TimetableVersion.TIMETABLE_VERSION,
+        VehicleSchedule.VEHICLE_SCHEDULE
     )
 }

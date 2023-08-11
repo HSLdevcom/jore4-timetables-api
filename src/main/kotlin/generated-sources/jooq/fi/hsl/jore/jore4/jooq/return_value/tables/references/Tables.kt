@@ -5,6 +5,7 @@ package fi.hsl.jore.jore4.jooq.return_value.tables.references
 
 
 import fi.hsl.jore.jore4.jooq.return_value.tables.TimetableVersion
+import fi.hsl.jore.jore4.jooq.return_value.tables.VehicleSchedule
 
 
 
@@ -36,3 +37,12 @@ import fi.hsl.jore.jore4.jooq.return_value.tables.TimetableVersion
 
  */
 val TIMETABLE_VERSION: TimetableVersion = TimetableVersion.TIMETABLE_VERSION
+
+/**
+ * This return value table is used in function
+ * vehicle_journey.get_vehicle_schedules_on_date. It consists of
+ * vehicle_journey_id, vehicle_schedule_frame_id or
+ * substitute_operating_day_by_line_type_id and also enriched with data, which
+ * are used in the UI side.
+ */
+val VEHICLE_SCHEDULE: VehicleSchedule = VehicleSchedule.VEHICLE_SCHEDULE

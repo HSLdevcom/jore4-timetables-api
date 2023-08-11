@@ -80,6 +80,7 @@ open class TsDebug(
     val LEXEMES: TableField<Record, Array<String?>?> = createField(DSL.name("lexemes"), SQLDataType.CLOB.getArrayDataType(), this, "")
 
     private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, arrayOf(
+        DSL.value(null, org.jooq.impl.DefaultDataType.getDefaultDataType("\"pg_catalog\".\"regconfig\"")),
         DSL.value(null, SQLDataType.CLOB)
     ))
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -116,8 +117,10 @@ open class TsDebug(
      * Call this table-valued function
      */
     fun call(
-          document: String?
+          config: Any?
+        , document: String?
     ): TsDebug = TsDebug(DSL.name("ts_debug"), null, arrayOf(
+        DSL.value(config, org.jooq.impl.DefaultDataType.getDefaultDataType("\"pg_catalog\".\"regconfig\"")),
         DSL.value(document, SQLDataType.CLOB)
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 
@@ -125,8 +128,10 @@ open class TsDebug(
      * Call this table-valued function
      */
     fun call(
-          document: Field<String?>
+          config: Field<Any?>
+        , document: Field<String?>
     ): TsDebug = TsDebug(DSL.name("ts_debug"), null, arrayOf(
+        config,
         document
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 }

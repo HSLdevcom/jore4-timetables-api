@@ -9,6 +9,7 @@ import fi.hsl.jore.jore4.jooq.service_calendar.tables.DayType
 import fi.hsl.jore.jore4.jooq.service_calendar.tables.DayTypeActiveOnDayOfWeek
 import fi.hsl.jore.jore4.jooq.service_calendar.tables.GetActiveDayTypesForDate
 import fi.hsl.jore.jore4.jooq.service_calendar.tables.SubstituteOperatingDayByLineType
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.SubstituteOperatingPeriod
 
 import java.time.LocalDate
 
@@ -90,12 +91,19 @@ open class ServiceCalendar : SchemaImpl("service_calendar", DefaultCatalog.DEFAU
      */
     val SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE: SubstituteOperatingDayByLineType get() = SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE
 
+    /**
+     * Models substitute operating period that consists of substitute operating
+     * days by line types.
+     */
+    val SUBSTITUTE_OPERATING_PERIOD: SubstituteOperatingPeriod get() = SubstituteOperatingPeriod.SUBSTITUTE_OPERATING_PERIOD
+
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 
     override fun getTables(): List<Table<*>> = listOf(
         DayType.DAY_TYPE,
         DayTypeActiveOnDayOfWeek.DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK,
         GetActiveDayTypesForDate.GET_ACTIVE_DAY_TYPES_FOR_DATE,
-        SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE
+        SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE,
+        SubstituteOperatingPeriod.SUBSTITUTE_OPERATING_PERIOD
     )
 }

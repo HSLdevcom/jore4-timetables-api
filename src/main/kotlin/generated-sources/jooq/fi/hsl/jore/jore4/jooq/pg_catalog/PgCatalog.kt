@@ -285,11 +285,9 @@ open class PgCatalog : SchemaImpl("pg_catalog", DefaultCatalog.DEFAULT_CATALOG) 
           configuration: Configuration
         , __1: Array<Any?>?
         , __2: Int?
-        , __3: Boolean?
     ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.pg_catalog.tables.GenerateSubscripts.GENERATE_SUBSCRIPTS.call(
           __1
         , __2
-        , __3
     )).fetch()
 
     /**
@@ -298,11 +296,9 @@ open class PgCatalog : SchemaImpl("pg_catalog", DefaultCatalog.DEFAULT_CATALOG) 
     fun GENERATE_SUBSCRIPTS(
           __1: Array<Any?>?
         , __2: Int?
-        , __3: Boolean?
     ): GenerateSubscripts = fi.hsl.jore.jore4.jooq.pg_catalog.tables.GenerateSubscripts.GENERATE_SUBSCRIPTS.call(
         __1,
-        __2,
-        __3
+        __2
     )
 
     /**
@@ -311,11 +307,9 @@ open class PgCatalog : SchemaImpl("pg_catalog", DefaultCatalog.DEFAULT_CATALOG) 
     fun GENERATE_SUBSCRIPTS(
           __1: Field<Array<Any?>?>
         , __2: Field<Int?>
-        , __3: Field<Boolean?>
     ): GenerateSubscripts = fi.hsl.jore.jore4.jooq.pg_catalog.tables.GenerateSubscripts.GENERATE_SUBSCRIPTS.call(
         __1,
-        __2,
-        __3
+        __2
     )
 
     /**
@@ -866,20 +860,6 @@ open class PgCatalog : SchemaImpl("pg_catalog", DefaultCatalog.DEFAULT_CATALOG) 
      * The table <code>pg_catalog.pg_available_extensions</code>.
      */
     val PG_AVAILABLE_EXTENSIONS: PgAvailableExtensions get() = PgAvailableExtensions.PG_AVAILABLE_EXTENSIONS
-
-    /**
-     * Call <code>pg_catalog.pg_available_extensions</code>.
-     */
-    fun PG_AVAILABLE_EXTENSIONS(
-          configuration: Configuration
-    ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.pg_catalog.tables.PgAvailableExtensions.PG_AVAILABLE_EXTENSIONS.call(
-    )).fetch()
-
-    /**
-     * Get <code>pg_catalog.pg_available_extensions</code> as a table.
-     */
-    fun PG_AVAILABLE_EXTENSIONS(): PgAvailableExtensions = fi.hsl.jore.jore4.jooq.pg_catalog.tables.PgAvailableExtensions.PG_AVAILABLE_EXTENSIONS.call(
-    )
 
     /**
      * The table <code>pg_catalog.pg_cast</code>.
@@ -2160,9 +2140,11 @@ open class PgCatalog : SchemaImpl("pg_catalog", DefaultCatalog.DEFAULT_CATALOG) 
           configuration: Configuration
         , __1: String?
         , __2: String?
+        , __3: String?
     ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.pg_catalog.tables.RegexpMatches.REGEXP_MATCHES.call(
           __1
         , __2
+        , __3
     )).fetch()
 
     /**
@@ -2171,9 +2153,11 @@ open class PgCatalog : SchemaImpl("pg_catalog", DefaultCatalog.DEFAULT_CATALOG) 
     fun REGEXP_MATCHES(
           __1: String?
         , __2: String?
+        , __3: String?
     ): RegexpMatches = fi.hsl.jore.jore4.jooq.pg_catalog.tables.RegexpMatches.REGEXP_MATCHES.call(
         __1,
-        __2
+        __2,
+        __3
     )
 
     /**
@@ -2182,9 +2166,11 @@ open class PgCatalog : SchemaImpl("pg_catalog", DefaultCatalog.DEFAULT_CATALOG) 
     fun REGEXP_MATCHES(
           __1: Field<String?>
         , __2: Field<String?>
+        , __3: Field<String?>
     ): RegexpMatches = fi.hsl.jore.jore4.jooq.pg_catalog.tables.RegexpMatches.REGEXP_MATCHES.call(
         __1,
-        __2
+        __2,
+        __3
     )
 
     /**
@@ -2230,32 +2216,29 @@ open class PgCatalog : SchemaImpl("pg_catalog", DefaultCatalog.DEFAULT_CATALOG) 
      * The table <code>pg_catalog.ts_debug</code>.
      */
     val TS_DEBUG: TsDebug get() = TsDebug.TS_DEBUG
-
-    /**
-     * Call <code>pg_catalog.ts_debug</code>.
-     */
+    @Deprecated(message = "Unknown data type. Parameter type or return type is unknown. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
     fun TS_DEBUG(
           configuration: Configuration
+        , config: Any?
         , document: String?
     ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsDebug.TS_DEBUG.call(
-          document
+          config
+        , document
     )).fetch()
-
-    /**
-     * Get <code>pg_catalog.ts_debug</code> as a table.
-     */
+    @Deprecated(message = "Unknown data type. Parameter type or return type is unknown. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
     fun TS_DEBUG(
-          document: String?
+          config: Any?
+        , document: String?
     ): TsDebug = fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsDebug.TS_DEBUG.call(
+        config,
         document
     )
-
-    /**
-     * Get <code>pg_catalog.ts_debug</code> as a table.
-     */
+    @Deprecated(message = "Unknown data type. Parameter type or return type is unknown. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
     fun TS_DEBUG(
-          document: Field<String?>
+          config: Field<Any?>
+        , document: Field<String?>
     ): TsDebug = fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsDebug.TS_DEBUG.call(
+        config,
         document
     )
 
@@ -2309,10 +2292,8 @@ open class PgCatalog : SchemaImpl("pg_catalog", DefaultCatalog.DEFAULT_CATALOG) 
     fun TS_STAT(
           configuration: Configuration
         , query: String?
-        , weights: String?
     ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsStat.TS_STAT.call(
           query
-        , weights
     )).fetch()
 
     /**
@@ -2320,10 +2301,8 @@ open class PgCatalog : SchemaImpl("pg_catalog", DefaultCatalog.DEFAULT_CATALOG) 
      */
     fun TS_STAT(
           query: String?
-        , weights: String?
     ): TsStat = fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsStat.TS_STAT.call(
-        query,
-        weights
+        query
     )
 
     /**
@@ -2331,10 +2310,8 @@ open class PgCatalog : SchemaImpl("pg_catalog", DefaultCatalog.DEFAULT_CATALOG) 
      */
     fun TS_STAT(
           query: Field<String?>
-        , weights: Field<String?>
     ): TsStat = fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsStat.TS_STAT.call(
-        query,
-        weights
+        query
     )
 
     /**
@@ -2347,27 +2324,27 @@ open class PgCatalog : SchemaImpl("pg_catalog", DefaultCatalog.DEFAULT_CATALOG) 
      */
     fun TS_TOKEN_TYPE(
           configuration: Configuration
-        , parserOid: Long?
+        , parserName: String?
     ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsTokenType.TS_TOKEN_TYPE.call(
-          parserOid
+          parserName
     )).fetch()
 
     /**
      * Get <code>pg_catalog.ts_token_type</code> as a table.
      */
     fun TS_TOKEN_TYPE(
-          parserOid: Long?
+          parserName: String?
     ): TsTokenType = fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsTokenType.TS_TOKEN_TYPE.call(
-        parserOid
+        parserName
     )
 
     /**
      * Get <code>pg_catalog.ts_token_type</code> as a table.
      */
     fun TS_TOKEN_TYPE(
-          parserOid: Field<Long?>
+          parserName: Field<String?>
     ): TsTokenType = fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsTokenType.TS_TOKEN_TYPE.call(
-        parserOid
+        parserName
     )
 
     /**
@@ -2398,24 +2375,33 @@ open class PgCatalog : SchemaImpl("pg_catalog", DefaultCatalog.DEFAULT_CATALOG) 
      * The table <code>pg_catalog.unnest</code>.
      */
     val UNNEST: Unnest get() = Unnest.UNNEST
-    @Deprecated(message = "Unknown data type. Parameter type or return type is unknown. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
+
+    /**
+     * Call <code>pg_catalog.unnest</code>.
+     */
     fun UNNEST(
           configuration: Configuration
-        , tsvector: Any?
+        , __1: Array<Any?>?
     ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.pg_catalog.tables.Unnest.UNNEST.call(
-          tsvector
+          __1
     )).fetch()
-    @Deprecated(message = "Unknown data type. Parameter type or return type is unknown. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
+
+    /**
+     * Get <code>pg_catalog.unnest</code> as a table.
+     */
     fun UNNEST(
-          tsvector: Any?
+          __1: Array<Any?>?
     ): Unnest = fi.hsl.jore.jore4.jooq.pg_catalog.tables.Unnest.UNNEST.call(
-        tsvector
+        __1
     )
-    @Deprecated(message = "Unknown data type. Parameter type or return type is unknown. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
+
+    /**
+     * Get <code>pg_catalog.unnest</code> as a table.
+     */
     fun UNNEST(
-          tsvector: Field<Any?>
+          __1: Field<Array<Any?>?>
     ): Unnest = fi.hsl.jore.jore4.jooq.pg_catalog.tables.Unnest.UNNEST.call(
-        tsvector
+        __1
     )
 
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG

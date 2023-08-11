@@ -60,8 +60,7 @@ open class GenerateSubscripts(
 
     private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, arrayOf(
         DSL.value(null, SQLDataType.OTHER.getArrayDataType()),
-        DSL.value(null, SQLDataType.INTEGER),
-        DSL.value(null, SQLDataType.BOOLEAN)
+        DSL.value(null, SQLDataType.INTEGER)
     ))
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
@@ -101,11 +100,9 @@ open class GenerateSubscripts(
     fun call(
           __1: Array<Any?>?
         , __2: Int?
-        , __3: Boolean?
     ): GenerateSubscripts = GenerateSubscripts(DSL.name("generate_subscripts"), null, arrayOf(
         DSL.value(__1, SQLDataType.OTHER.getArrayDataType()),
-        DSL.value(__2, SQLDataType.INTEGER),
-        DSL.value(__3, SQLDataType.BOOLEAN)
+        DSL.value(__2, SQLDataType.INTEGER)
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 
     /**
@@ -114,10 +111,8 @@ open class GenerateSubscripts(
     fun call(
           __1: Field<Array<Any?>?>
         , __2: Field<Int?>
-        , __3: Field<Boolean?>
     ): GenerateSubscripts = GenerateSubscripts(DSL.name("generate_subscripts"), null, arrayOf(
         __1,
-        __2,
-        __3
+        __2
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 }

@@ -8,6 +8,7 @@ import fi.hsl.jore.jore4.jooq.service_calendar.tables.DayType
 import fi.hsl.jore.jore4.jooq.service_calendar.tables.DayTypeActiveOnDayOfWeek
 import fi.hsl.jore.jore4.jooq.service_calendar.tables.GetActiveDayTypesForDate
 import fi.hsl.jore.jore4.jooq.service_calendar.tables.SubstituteOperatingDayByLineType
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.SubstituteOperatingPeriod
 
 import java.time.LocalDate
 
@@ -69,3 +70,9 @@ fun GET_ACTIVE_DAY_TYPES_FOR_DATE(
  * are always bound to a type of line.
  */
 val SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE: SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE
+
+/**
+ * Models substitute operating period that consists of substitute operating days
+ * by line types.
+ */
+val SUBSTITUTE_OPERATING_PERIOD: SubstituteOperatingPeriod = SubstituteOperatingPeriod.SUBSTITUTE_OPERATING_PERIOD

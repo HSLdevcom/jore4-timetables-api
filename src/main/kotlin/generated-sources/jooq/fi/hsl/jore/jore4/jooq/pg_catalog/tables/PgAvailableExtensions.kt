@@ -15,6 +15,7 @@ import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.impl.DSL
+import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -37,7 +38,7 @@ open class PgAvailableExtensions(
     aliased,
     parameters,
     DSL.comment(""),
-    TableOptions.function()
+    TableOptions.view()
 ) {
     companion object {
 
@@ -65,12 +66,17 @@ open class PgAvailableExtensions(
     val DEFAULT_VERSION: TableField<Record, String?> = createField(DSL.name("default_version"), SQLDataType.CLOB, this, "")
 
     /**
+     * The column
+     * <code>pg_catalog.pg_available_extensions.installed_version</code>.
+     */
+    val INSTALLED_VERSION: TableField<Record, String?> = createField(DSL.name("installed_version"), SQLDataType.CLOB, this, "")
+
+    /**
      * The column <code>pg_catalog.pg_available_extensions.comment</code>.
      */
     val COMMENT: TableField<Record, String?> = createField(DSL.name("comment"), SQLDataType.CLOB, this, "")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, arrayOf(
-    ))
+    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
@@ -89,22 +95,19 @@ open class PgAvailableExtensions(
      * Create a <code>pg_catalog.pg_available_extensions</code> table reference
      */
     constructor(): this(DSL.name("pg_available_extensions"), null)
+
+    constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, PG_AVAILABLE_EXTENSIONS, null)
     override fun getSchema(): Schema? = if (aliased()) null else PgCatalog.PG_CATALOG
-    override fun `as`(alias: String): PgAvailableExtensions = PgAvailableExtensions(DSL.name(alias), this, parameters)
-    override fun `as`(alias: Name): PgAvailableExtensions = PgAvailableExtensions(alias, this, parameters)
+    override fun `as`(alias: String): PgAvailableExtensions = PgAvailableExtensions(DSL.name(alias), this)
+    override fun `as`(alias: Name): PgAvailableExtensions = PgAvailableExtensions(alias, this)
 
     /**
      * Rename this table
      */
-    override fun rename(name: String): PgAvailableExtensions = PgAvailableExtensions(DSL.name(name), null, parameters)
+    override fun rename(name: String): PgAvailableExtensions = PgAvailableExtensions(DSL.name(name), null)
 
     /**
      * Rename this table
      */
-    override fun rename(name: Name): PgAvailableExtensions = PgAvailableExtensions(name, null, parameters)
-
-    /**
-     * Call this table-valued function
-     */
-    fun call(): PgAvailableExtensions = PgAvailableExtensions(DSL.name("pg_available_extensions"), null, arrayOf()).let { if (aliased()) it.`as`(unqualifiedName) else it }
+    override fun rename(name: Name): PgAvailableExtensions = PgAvailableExtensions(name, null)
 }

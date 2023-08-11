@@ -11,9 +11,13 @@ import fi.hsl.jore.jore4.jooq.internal_utils.routines.ConstTimetablesPrioritySta
 import fi.hsl.jore.jore4.jooq.internal_utils.routines.ConstTimetablesPrioritySubstituteByLineType
 import fi.hsl.jore.jore4.jooq.internal_utils.routines.CreateValidationQueueTempTables
 import fi.hsl.jore.jore4.jooq.internal_utils.routines.QueuedValidationsAlreadyProcessed
+import fi.hsl.jore.jore4.jooq.internal_utils.routines.VehicleJourneyEndTimeInterval
+import fi.hsl.jore.jore4.jooq.internal_utils.routines.VehicleJourneyStartTimeInterval
 
 import org.jooq.Configuration
 import org.jooq.Field
+import org.jooq.Record
+import org.jooq.types.YearToSecond
 
 
 
@@ -154,6 +158,84 @@ fun queuedValidationsAlreadyProcessed(
  */
 fun queuedValidationsAlreadyProcessed(): Field<Boolean?> {
     val f = QueuedValidationsAlreadyProcessed()
+
+    return f.asField()
+}
+
+/**
+ * Call <code>internal_utils.vehicle_journey_end_time_interval</code>
+ */
+fun vehicleJourneyEndTimeInterval(
+      configuration: Configuration
+    , vj: Record?
+): YearToSecond? {
+    val f = VehicleJourneyEndTimeInterval()
+    f.setVj(vj)
+
+    f.execute(configuration)
+    return f.returnValue
+}
+
+/**
+ * Get <code>internal_utils.vehicle_journey_end_time_interval</code> as a field.
+ */
+fun vehicleJourneyEndTimeInterval(
+      vj: Record?
+): Field<YearToSecond?> {
+    val f = VehicleJourneyEndTimeInterval()
+    f.setVj(vj)
+
+    return f.asField()
+}
+
+/**
+ * Get <code>internal_utils.vehicle_journey_end_time_interval</code> as a field.
+ */
+fun vehicleJourneyEndTimeInterval(
+      vj: Field<Record?>
+): Field<YearToSecond?> {
+    val f = VehicleJourneyEndTimeInterval()
+    f.setVj(vj)
+
+    return f.asField()
+}
+
+/**
+ * Call <code>internal_utils.vehicle_journey_start_time_interval</code>
+ */
+fun vehicleJourneyStartTimeInterval(
+      configuration: Configuration
+    , vj: Record?
+): YearToSecond? {
+    val f = VehicleJourneyStartTimeInterval()
+    f.setVj(vj)
+
+    f.execute(configuration)
+    return f.returnValue
+}
+
+/**
+ * Get <code>internal_utils.vehicle_journey_start_time_interval</code> as a
+ * field.
+ */
+fun vehicleJourneyStartTimeInterval(
+      vj: Record?
+): Field<YearToSecond?> {
+    val f = VehicleJourneyStartTimeInterval()
+    f.setVj(vj)
+
+    return f.asField()
+}
+
+/**
+ * Get <code>internal_utils.vehicle_journey_start_time_interval</code> as a
+ * field.
+ */
+fun vehicleJourneyStartTimeInterval(
+      vj: Field<Record?>
+): Field<YearToSecond?> {
+    val f = VehicleJourneyStartTimeInterval()
+    f.setVj(vj)
 
     return f.asField()
 }

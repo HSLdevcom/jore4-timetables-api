@@ -59,6 +59,7 @@ open class RegexpMatches(
 
     private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, arrayOf(
         DSL.value(null, SQLDataType.CLOB),
+        DSL.value(null, SQLDataType.CLOB),
         DSL.value(null, SQLDataType.CLOB)
     ))
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -97,9 +98,11 @@ open class RegexpMatches(
     fun call(
           __1: String?
         , __2: String?
+        , __3: String?
     ): RegexpMatches = RegexpMatches(DSL.name("regexp_matches"), null, arrayOf(
         DSL.value(__1, SQLDataType.CLOB),
-        DSL.value(__2, SQLDataType.CLOB)
+        DSL.value(__2, SQLDataType.CLOB),
+        DSL.value(__3, SQLDataType.CLOB)
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 
     /**
@@ -108,8 +111,10 @@ open class RegexpMatches(
     fun call(
           __1: Field<String?>
         , __2: Field<String?>
+        , __3: Field<String?>
     ): RegexpMatches = RegexpMatches(DSL.name("regexp_matches"), null, arrayOf(
         __1,
-        __2
+        __2,
+        __3
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 }

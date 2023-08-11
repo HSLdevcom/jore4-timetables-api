@@ -68,7 +68,7 @@ open class TsTokenType(
     val DESCRIPTION: TableField<Record, String?> = createField(DSL.name("description"), SQLDataType.CLOB, this, "")
 
     private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, arrayOf(
-        DSL.value(null, SQLDataType.BIGINT)
+        DSL.value(null, SQLDataType.CLOB)
     ))
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
@@ -104,17 +104,17 @@ open class TsTokenType(
      * Call this table-valued function
      */
     fun call(
-          parserOid: Long?
+          parserName: String?
     ): TsTokenType = TsTokenType(DSL.name("ts_token_type"), null, arrayOf(
-        DSL.value(parserOid, SQLDataType.BIGINT)
+        DSL.value(parserName, SQLDataType.CLOB)
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 
     /**
      * Call this table-valued function
      */
     fun call(
-          parserOid: Field<Long?>
+          parserName: Field<String?>
     ): TsTokenType = TsTokenType(DSL.name("ts_token_type"), null, arrayOf(
-        parserOid
+        parserName
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 }

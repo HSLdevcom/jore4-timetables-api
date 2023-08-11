@@ -51,24 +51,11 @@ open class Unnest(
      * The class holding records for this type
      */
     override fun getRecordType(): Class<Record> = Record::class.java
-
-    /**
-     * The column <code>pg_catalog.unnest.lexeme</code>.
-     */
-    val LEXEME: TableField<Record, String?> = createField(DSL.name("lexeme"), SQLDataType.CLOB, this, "")
-
-    /**
-     * The column <code>pg_catalog.unnest.positions</code>.
-     */
-    val POSITIONS: TableField<Record, Array<Short?>?> = createField(DSL.name("positions"), SQLDataType.SMALLINT.getArrayDataType(), this, "")
-
-    /**
-     * The column <code>pg_catalog.unnest.weights</code>.
-     */
-    val WEIGHTS: TableField<Record, Array<String?>?> = createField(DSL.name("weights"), SQLDataType.CLOB.getArrayDataType(), this, "")
+    @Deprecated(message = "Unknown data type. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
+    val UNNEST_: TableField<Record, Any?> = createField(DSL.name("unnest"), org.jooq.impl.DefaultDataType.getDefaultDataType("\"anyelement\""), this, "")
 
     private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, arrayOf(
-        DSL.value(null, org.jooq.impl.DefaultDataType.getDefaultDataType("\"pg_catalog\".\"tsvector\""))
+        DSL.value(null, SQLDataType.OTHER.getArrayDataType())
     ))
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
@@ -104,17 +91,17 @@ open class Unnest(
      * Call this table-valued function
      */
     fun call(
-          tsvector: Any?
+          __1: Array<Any?>?
     ): Unnest = Unnest(DSL.name("unnest"), null, arrayOf(
-        DSL.value(tsvector, org.jooq.impl.DefaultDataType.getDefaultDataType("\"pg_catalog\".\"tsvector\""))
+        DSL.value(__1, SQLDataType.OTHER.getArrayDataType())
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 
     /**
      * Call this table-valued function
      */
     fun call(
-          tsvector: Field<Any?>
+          __1: Field<Array<Any?>?>
     ): Unnest = Unnest(DSL.name("unnest"), null, arrayOf(
-        tsvector
+        __1
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 }

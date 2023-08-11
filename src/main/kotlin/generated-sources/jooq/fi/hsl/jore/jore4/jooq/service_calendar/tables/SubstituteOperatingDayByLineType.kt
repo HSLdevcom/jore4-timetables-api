@@ -137,6 +137,19 @@ open class SubstituteOperatingDayByLineType(
      */
     val END_DATETIME: TableField<Record, OffsetDateTime?> = createField(DSL.name("end_datetime"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "Calculated timestamp for the instant (exclusive) until which the substituting public transit is in effect.")
 
+    /**
+     * The column
+     * <code>service_calendar.substitute_operating_day_by_line_type.substitute_operating_period_id</code>.
+     * The id of the substitute operating period
+     */
+    val SUBSTITUTE_OPERATING_PERIOD_ID: TableField<Record, UUID?> = createField(DSL.name("substitute_operating_period_id"), SQLDataType.UUID.nullable(false), this, "The id of the substitute operating period")
+
+    /**
+     * The column
+     * <code>service_calendar.substitute_operating_day_by_line_type.created_at</code>.
+     */
+    val CREATED_AT: TableField<Record, OffsetDateTime?> = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "")
+
     private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 

@@ -2844,7 +2844,6 @@ import fi.hsl.jore.jore4.jooq.pg_catalog.tables.JsonbObjectKeys
 import fi.hsl.jore.jore4.jooq.pg_catalog.tables.JsonbPathQuery
 import fi.hsl.jore.jore4.jooq.pg_catalog.tables.JsonbPopulateRecordset
 import fi.hsl.jore.jore4.jooq.pg_catalog.tables.JsonbToRecordset
-import fi.hsl.jore.jore4.jooq.pg_catalog.tables.PgAvailableExtensions
 import fi.hsl.jore.jore4.jooq.pg_catalog.tables.PgCursor
 import fi.hsl.jore.jore4.jooq.pg_catalog.tables.PgEventTriggerDdlCommands
 import fi.hsl.jore.jore4.jooq.pg_catalog.tables.PgEventTriggerDroppedObjects
@@ -105294,11 +105293,9 @@ fun generateSubscripts(
       configuration: Configuration
     , __1: Array<Any?>?
     , __2: Int?
-    , __3: Boolean?
 ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.pg_catalog.tables.GenerateSubscripts.GENERATE_SUBSCRIPTS.call(
       __1
     , __2
-    , __3
 )).fetch()
 
 /**
@@ -105307,11 +105304,9 @@ fun generateSubscripts(
 fun generateSubscripts(
       __1: Array<Any?>?
     , __2: Int?
-    , __3: Boolean?
 ): GenerateSubscripts = fi.hsl.jore.jore4.jooq.pg_catalog.tables.GenerateSubscripts.GENERATE_SUBSCRIPTS.call(
     __1,
-    __2,
-    __3
+    __2
 )
 
 /**
@@ -105320,11 +105315,9 @@ fun generateSubscripts(
 fun generateSubscripts(
       __1: Field<Array<Any?>?>
     , __2: Field<Int?>
-    , __3: Field<Boolean?>
 ): GenerateSubscripts = fi.hsl.jore.jore4.jooq.pg_catalog.tables.GenerateSubscripts.GENERATE_SUBSCRIPTS.call(
     __1,
-    __2,
-    __3
+    __2
 )
 
 /**
@@ -105754,20 +105747,6 @@ fun jsonbToRecordset(
       __1: Field<JSONB?>
 ): JsonbToRecordset = fi.hsl.jore.jore4.jooq.pg_catalog.tables.JsonbToRecordset.JSONB_TO_RECORDSET.call(
     __1
-)
-
-/**
- * Call <code>pg_catalog.pg_available_extensions</code>.
- */
-fun pgAvailableExtensions(
-      configuration: Configuration
-): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.pg_catalog.tables.PgAvailableExtensions.PG_AVAILABLE_EXTENSIONS.call(
-)).fetch()
-
-/**
- * Get <code>pg_catalog.pg_available_extensions</code> as a table.
- */
-fun pgAvailableExtensions(): PgAvailableExtensions = fi.hsl.jore.jore4.jooq.pg_catalog.tables.PgAvailableExtensions.PG_AVAILABLE_EXTENSIONS.call(
 )
 
 /**
@@ -106374,9 +106353,11 @@ fun regexpMatches(
       configuration: Configuration
     , __1: String?
     , __2: String?
+    , __3: String?
 ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.pg_catalog.tables.RegexpMatches.REGEXP_MATCHES.call(
       __1
     , __2
+    , __3
 )).fetch()
 
 /**
@@ -106385,9 +106366,11 @@ fun regexpMatches(
 fun regexpMatches(
       __1: String?
     , __2: String?
+    , __3: String?
 ): RegexpMatches = fi.hsl.jore.jore4.jooq.pg_catalog.tables.RegexpMatches.REGEXP_MATCHES.call(
     __1,
-    __2
+    __2,
+    __3
 )
 
 /**
@@ -106396,9 +106379,11 @@ fun regexpMatches(
 fun regexpMatches(
       __1: Field<String?>
     , __2: Field<String?>
+    , __3: Field<String?>
 ): RegexpMatches = fi.hsl.jore.jore4.jooq.pg_catalog.tables.RegexpMatches.REGEXP_MATCHES.call(
     __1,
-    __2
+    __2,
+    __3
 )
 
 /**
@@ -106434,32 +106419,29 @@ fun regexpSplitToTable(
     __1,
     __2
 )
-
-/**
- * Call <code>pg_catalog.ts_debug</code>.
- */
+@Deprecated(message = "Unknown data type. Parameter type or return type is unknown. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
 fun tsDebug(
       configuration: Configuration
+    , config: Any?
     , document: String?
 ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsDebug.TS_DEBUG.call(
-      document
+      config
+    , document
 )).fetch()
-
-/**
- * Get <code>pg_catalog.ts_debug</code> as a table.
- */
+@Deprecated(message = "Unknown data type. Parameter type or return type is unknown. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
 fun tsDebug(
-      document: String?
+      config: Any?
+    , document: String?
 ): TsDebug = fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsDebug.TS_DEBUG.call(
+    config,
     document
 )
-
-/**
- * Get <code>pg_catalog.ts_debug</code> as a table.
- */
+@Deprecated(message = "Unknown data type. Parameter type or return type is unknown. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
 fun tsDebug(
-      document: Field<String?>
+      config: Field<Any?>
+    , document: Field<String?>
 ): TsDebug = fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsDebug.TS_DEBUG.call(
+    config,
     document
 )
 
@@ -106503,10 +106485,8 @@ fun tsParse(
 fun tsStat(
       configuration: Configuration
     , query: String?
-    , weights: String?
 ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsStat.TS_STAT.call(
       query
-    , weights
 )).fetch()
 
 /**
@@ -106514,10 +106494,8 @@ fun tsStat(
  */
 fun tsStat(
       query: String?
-    , weights: String?
 ): TsStat = fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsStat.TS_STAT.call(
-    query,
-    weights
+    query
 )
 
 /**
@@ -106525,10 +106503,8 @@ fun tsStat(
  */
 fun tsStat(
       query: Field<String?>
-    , weights: Field<String?>
 ): TsStat = fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsStat.TS_STAT.call(
-    query,
-    weights
+    query
 )
 
 /**
@@ -106536,27 +106512,27 @@ fun tsStat(
  */
 fun tsTokenType(
       configuration: Configuration
-    , parserOid: Long?
+    , parserName: String?
 ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsTokenType.TS_TOKEN_TYPE.call(
-      parserOid
+      parserName
 )).fetch()
 
 /**
  * Get <code>pg_catalog.ts_token_type</code> as a table.
  */
 fun tsTokenType(
-      parserOid: Long?
+      parserName: String?
 ): TsTokenType = fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsTokenType.TS_TOKEN_TYPE.call(
-    parserOid
+    parserName
 )
 
 /**
  * Get <code>pg_catalog.ts_token_type</code> as a table.
  */
 fun tsTokenType(
-      parserOid: Field<Long?>
+      parserName: Field<String?>
 ): TsTokenType = fi.hsl.jore.jore4.jooq.pg_catalog.tables.TsTokenType.TS_TOKEN_TYPE.call(
-    parserOid
+    parserName
 )
 @Deprecated(message = "Unknown data type. Parameter type or return type is unknown. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
 fun txidSnapshotXip(
@@ -106577,22 +106553,31 @@ fun txidSnapshotXip(
 ): TxidSnapshotXip = fi.hsl.jore.jore4.jooq.pg_catalog.tables.TxidSnapshotXip.TXID_SNAPSHOT_XIP.call(
     __1
 )
-@Deprecated(message = "Unknown data type. Parameter type or return type is unknown. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
+
+/**
+ * Call <code>pg_catalog.unnest</code>.
+ */
 fun unnest(
       configuration: Configuration
-    , tsvector: Any?
+    , __1: Array<Any?>?
 ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.pg_catalog.tables.Unnest.UNNEST.call(
-      tsvector
+      __1
 )).fetch()
-@Deprecated(message = "Unknown data type. Parameter type or return type is unknown. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
+
+/**
+ * Get <code>pg_catalog.unnest</code> as a table.
+ */
 fun unnest(
-      tsvector: Any?
+      __1: Array<Any?>?
 ): Unnest = fi.hsl.jore.jore4.jooq.pg_catalog.tables.Unnest.UNNEST.call(
-    tsvector
+    __1
 )
-@Deprecated(message = "Unknown data type. Parameter type or return type is unknown. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
+
+/**
+ * Get <code>pg_catalog.unnest</code> as a table.
+ */
 fun unnest(
-      tsvector: Field<Any?>
+      __1: Field<Array<Any?>?>
 ): Unnest = fi.hsl.jore.jore4.jooq.pg_catalog.tables.Unnest.UNNEST.call(
-    tsvector
+    __1
 )
