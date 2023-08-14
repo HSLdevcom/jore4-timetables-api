@@ -129,6 +129,53 @@
                 </dependency>
             </dependencies>
         </profile>
+
+        <profile>
+            <id>ci</id>
+            <properties>
+                <build.profile.id>ci</build.profile.id>
+                <build.property.file>profiles/${build.profile.id}/config.properties</build.property.file>
+                <skip.jooq.generation>true</skip.jooq.generation>
+            </properties>
+            <build>
+                <filters>
+                    <filter>${build.property.file}</filter>
+                </filters>
+                <plugins>
+                    <!-- Read properties files for build plugins. -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>${build-properties-plugin.version}</version>
+
+                        <configuration>
+                            <files>
+                                <file>${build.property.file}</file>
+                            </files>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>read-config-properties</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-devtools</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 
     <build>
