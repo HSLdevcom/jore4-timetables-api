@@ -31,9 +31,9 @@ import org.jooq.impl.TableImpl
 
 
 /**
- * A work plan for a single vehicle for a whole day, planned for a specific 
- * DAY TYPE. A VEHICLE SERVICE includes one or several BLOCKs. If there is 
- * no service on a given day, it does not include any BLOCKs. Transmodel: 
+ * A work plan for a single vehicle for a whole day, planned for a specific DAY
+ * TYPE. A VEHICLE SERVICE includes one or several BLOCKs. If there is no
+ * service on a given day, it does not include any BLOCKs. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=3:5:965 
  */
 @Suppress("UNCHECKED_CAST")
@@ -56,9 +56,10 @@ open class VehicleService(
     companion object {
 
         /**
-         * The reference instance of <code>vehicle_service.vehicle_service</code>
+         * The reference instance of
+         * <code>vehicle_service.vehicle_service</code>
          */
-        val VEHICLE_SERVICE_ = VehicleService()
+        val VEHICLE_SERVICE_: VehicleService = VehicleService()
     }
 
     /**
@@ -67,22 +68,27 @@ open class VehicleService(
     override fun getRecordType(): Class<Record> = Record::class.java
 
     /**
-     * The column <code>vehicle_service.vehicle_service.vehicle_service_id</code>.
+     * The column
+     * <code>vehicle_service.vehicle_service.vehicle_service_id</code>.
      */
-    val VEHICLE_SERVICE_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_service_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field("gen_random_uuid()", SQLDataType.UUID)), this, "")
+    val VEHICLE_SERVICE_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_service_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
 
     /**
-     * The column <code>vehicle_service.vehicle_service.day_type_id</code>. The DAY TYPE for the VEHICLE SERVICE.
+     * The column <code>vehicle_service.vehicle_service.day_type_id</code>. The
+     * DAY TYPE for the VEHICLE SERVICE.
      */
     val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "The DAY TYPE for the VEHICLE SERVICE.")
 
     /**
-     * The column <code>vehicle_service.vehicle_service.vehicle_schedule_frame_id</code>. Human-readable name for the VEHICLE SCHEDULE FRAME
+     * The column
+     * <code>vehicle_service.vehicle_service.vehicle_schedule_frame_id</code>.
+     * Human-readable name for the VEHICLE SCHEDULE FRAME
      */
     val VEHICLE_SCHEDULE_FRAME_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_schedule_frame_id"), SQLDataType.UUID.nullable(false), this, "Human-readable name for the VEHICLE SCHEDULE FRAME")
 
     /**
-     * The column <code>vehicle_service.vehicle_service.name_i18n</code>. Name for vehicle service.
+     * The column <code>vehicle_service.vehicle_service.name_i18n</code>. Name
+     * for vehicle service.
      */
     val NAME_I18N: TableField<Record, JSONB?> = createField(DSL.name("name_i18n"), SQLDataType.JSONB, this, "Name for vehicle service.")
 
@@ -90,12 +96,14 @@ open class VehicleService(
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>vehicle_service.vehicle_service</code> table reference
+     * Create an aliased <code>vehicle_service.vehicle_service</code> table
+     * reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>vehicle_service.vehicle_service</code> table reference
+     * Create an aliased <code>vehicle_service.vehicle_service</code> table
+     * reference
      */
     constructor(alias: Name): this(alias, null)
 
@@ -105,27 +113,43 @@ open class VehicleService(
     constructor(): this(DSL.name("vehicle_service"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_SERVICE_, null)
-    override fun getSchema(): Schema = fi.hsl.jore.jore4.jooq.vehicle_service.VehicleService.VEHICLE_SERVICE
+    override fun getSchema(): Schema? = if (aliased()) null else fi.hsl.jore.jore4.jooq.vehicle_service.VehicleService.VEHICLE_SERVICE
     override fun getPrimaryKey(): UniqueKey<Record> = VEHICLE_SERVICE_PKEY
-    override fun getKeys(): List<UniqueKey<Record>> = listOf(VEHICLE_SERVICE_PKEY)
     override fun getReferences(): List<ForeignKey<Record, *>> = listOf(VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY, VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY)
 
     private lateinit var _dayType: DayType
     private lateinit var _vehicleScheduleFrame: VehicleScheduleFrame
+
+    /**
+     * Get the implicit join path to the <code>service_calendar.day_type</code>
+     * table.
+     */
     fun dayType(): DayType {
         if (!this::_dayType.isInitialized)
             _dayType = DayType(this, VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY)
 
         return _dayType;
     }
+
+    val dayType: DayType
+        get(): DayType = dayType()
+
+    /**
+     * Get the implicit join path to the
+     * <code>vehicle_schedule.vehicle_schedule_frame</code> table.
+     */
     fun vehicleScheduleFrame(): VehicleScheduleFrame {
         if (!this::_vehicleScheduleFrame.isInitialized)
             _vehicleScheduleFrame = VehicleScheduleFrame(this, VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY)
 
         return _vehicleScheduleFrame;
     }
+
+    val vehicleScheduleFrame: VehicleScheduleFrame
+        get(): VehicleScheduleFrame = vehicleScheduleFrame()
     override fun `as`(alias: String): VehicleService = VehicleService(DSL.name(alias), this)
     override fun `as`(alias: Name): VehicleService = VehicleService(alias, this)
+    override fun `as`(alias: Table<*>): VehicleService = VehicleService(alias.getQualifiedName(), this)
 
     /**
      * Rename this table
@@ -136,4 +160,9 @@ open class VehicleService(
      * Rename this table
      */
     override fun rename(name: Name): VehicleService = VehicleService(name, null)
+
+    /**
+     * Rename this table
+     */
+    override fun rename(name: Table<*>): VehicleService = VehicleService(name.getQualifiedName(), null)
 }

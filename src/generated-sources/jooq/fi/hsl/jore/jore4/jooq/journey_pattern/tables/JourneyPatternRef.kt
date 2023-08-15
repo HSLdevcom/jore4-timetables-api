@@ -30,8 +30,8 @@ import org.jooq.impl.TableImpl
 
 
 /**
- * Reference to a given snapshot of a JOURNEY PATTERN for a given operating 
- * day. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
+ * Reference to a given snapshot of a JOURNEY PATTERN for a given operating day.
+ * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
  */
 @Suppress("UNCHECKED_CAST")
 open class JourneyPatternRef(
@@ -53,9 +53,10 @@ open class JourneyPatternRef(
     companion object {
 
         /**
-         * The reference instance of <code>journey_pattern.journey_pattern_ref</code>
+         * The reference instance of
+         * <code>journey_pattern.journey_pattern_ref</code>
          */
-        val JOURNEY_PATTERN_REF = JourneyPatternRef()
+        val JOURNEY_PATTERN_REF: JourneyPatternRef = JourneyPatternRef()
     }
 
     /**
@@ -64,27 +65,39 @@ open class JourneyPatternRef(
     override fun getRecordType(): Class<Record> = Record::class.java
 
     /**
-     * The column <code>journey_pattern.journey_pattern_ref.journey_pattern_ref_id</code>.
+     * The column
+     * <code>journey_pattern.journey_pattern_ref.journey_pattern_ref_id</code>.
      */
-    val JOURNEY_PATTERN_REF_ID: TableField<Record, UUID?> = createField(DSL.name("journey_pattern_ref_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field("gen_random_uuid()", SQLDataType.UUID)), this, "")
+    val JOURNEY_PATTERN_REF_ID: TableField<Record, UUID?> = createField(DSL.name("journey_pattern_ref_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
 
     /**
-     * The column <code>journey_pattern.journey_pattern_ref.journey_pattern_id</code>. The ID of the referenced JOURNEY PATTERN
+     * The column
+     * <code>journey_pattern.journey_pattern_ref.journey_pattern_id</code>. The
+     * ID of the referenced JOURNEY PATTERN
      */
     val JOURNEY_PATTERN_ID: TableField<Record, UUID?> = createField(DSL.name("journey_pattern_id"), SQLDataType.UUID.nullable(false), this, "The ID of the referenced JOURNEY PATTERN")
 
     /**
-     * The column <code>journey_pattern.journey_pattern_ref.observation_timestamp</code>. The user-given point of time used to pick one journey pattern (with route and scheduled stop points) among possibly many variants. The selected, unambiguous journey pattern variant is used as a basis for schedule planning.
+     * The column
+     * <code>journey_pattern.journey_pattern_ref.observation_timestamp</code>.
+     * The user-given point of time used to pick one journey pattern (with route
+     * and scheduled stop points) among possibly many variants. The selected,
+     * unambiguous journey pattern variant is used as a basis for schedule
+     * planning.
      */
     val OBSERVATION_TIMESTAMP: TableField<Record, OffsetDateTime?> = createField(DSL.name("observation_timestamp"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "The user-given point of time used to pick one journey pattern (with route and scheduled stop points) among possibly many variants. The selected, unambiguous journey pattern variant is used as a basis for schedule planning.")
 
     /**
-     * The column <code>journey_pattern.journey_pattern_ref.snapshot_timestamp</code>. The timestamp when the snapshot was taken
+     * The column
+     * <code>journey_pattern.journey_pattern_ref.snapshot_timestamp</code>. The
+     * timestamp when the snapshot was taken
      */
     val SNAPSHOT_TIMESTAMP: TableField<Record, OffsetDateTime?> = createField(DSL.name("snapshot_timestamp"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "The timestamp when the snapshot was taken")
 
     /**
-     * The column <code>journey_pattern.journey_pattern_ref.type_of_line</code>. The type of line (GTFS route type): https://developers.google.com/transit/gtfs/reference/extended-route-types
+     * The column <code>journey_pattern.journey_pattern_ref.type_of_line</code>.
+     * The type of line (GTFS route type):
+     * https://developers.google.com/transit/gtfs/reference/extended-route-types
      */
     val TYPE_OF_LINE: TableField<Record, String?> = createField(DSL.name("type_of_line"), SQLDataType.CLOB.nullable(false), this, "The type of line (GTFS route type): https://developers.google.com/transit/gtfs/reference/extended-route-types")
 
@@ -92,12 +105,14 @@ open class JourneyPatternRef(
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>journey_pattern.journey_pattern_ref</code> table reference
+     * Create an aliased <code>journey_pattern.journey_pattern_ref</code> table
+     * reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>journey_pattern.journey_pattern_ref</code> table reference
+     * Create an aliased <code>journey_pattern.journey_pattern_ref</code> table
+     * reference
      */
     constructor(alias: Name): this(alias, null)
 
@@ -107,20 +122,27 @@ open class JourneyPatternRef(
     constructor(): this(DSL.name("journey_pattern_ref"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, JOURNEY_PATTERN_REF, null)
-    override fun getSchema(): Schema = JourneyPattern.JOURNEY_PATTERN
+    override fun getSchema(): Schema? = if (aliased()) null else JourneyPattern.JOURNEY_PATTERN
     override fun getPrimaryKey(): UniqueKey<Record> = JOURNEY_PATTERN_REF_PKEY
-    override fun getKeys(): List<UniqueKey<Record>> = listOf(JOURNEY_PATTERN_REF_PKEY)
     override fun getReferences(): List<ForeignKey<Record, *>> = listOf(JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY)
 
     private lateinit var _typeOfLine: TypeOfLine
+
+    /**
+     * Get the implicit join path to the <code>route.type_of_line</code> table.
+     */
     fun typeOfLine(): TypeOfLine {
         if (!this::_typeOfLine.isInitialized)
             _typeOfLine = TypeOfLine(this, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY)
 
         return _typeOfLine;
     }
+
+    val typeOfLine: TypeOfLine
+        get(): TypeOfLine = typeOfLine()
     override fun `as`(alias: String): JourneyPatternRef = JourneyPatternRef(DSL.name(alias), this)
     override fun `as`(alias: Name): JourneyPatternRef = JourneyPatternRef(alias, this)
+    override fun `as`(alias: Table<*>): JourneyPatternRef = JourneyPatternRef(alias.getQualifiedName(), this)
 
     /**
      * Rename this table
@@ -131,4 +153,9 @@ open class JourneyPatternRef(
      * Rename this table
      */
     override fun rename(name: Name): JourneyPatternRef = JourneyPatternRef(name, null)
+
+    /**
+     * Rename this table
+     */
+    override fun rename(name: Table<*>): JourneyPatternRef = JourneyPatternRef(name.getQualifiedName(), null)
 }

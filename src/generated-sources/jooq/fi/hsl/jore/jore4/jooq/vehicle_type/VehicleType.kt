@@ -18,18 +18,23 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class VehicleType : SchemaImpl("vehicle_type", DefaultCatalog.DEFAULT_CATALOG) {
-    companion object {
+    public companion object {
 
         /**
          * The reference instance of <code>vehicle_type</code>
          */
-        val VEHICLE_TYPE = VehicleType()
+        val VEHICLE_TYPE: VehicleType = VehicleType()
     }
 
     /**
-     * The VEHICLE entity is used to describe the physical public transport vehicles available for short-term planning of operations and daily assignment (in contrast to logical vehicles considered for resource planning of operations and daily assignment (in contrast to logical vehicles cplanning). Each VEHICLE shall be classified as of a particular VEHICLE TYPE.
+     * The VEHICLE entity is used to describe the physical public transport
+     * vehicles available for short-term planning of operations and daily
+     * assignment (in contrast to logical vehicles considered for resource
+     * planning of operations and daily assignment (in contrast to logical
+     * vehicles cplanning). Each VEHICLE shall be classified as of a particular
+     * VEHICLE TYPE.
      */
-    val VEHICLE_TYPE_ get() = fi.hsl.jore.jore4.jooq.vehicle_type.tables.VehicleType.VEHICLE_TYPE_
+    val VEHICLE_TYPE_ : fi.hsl.jore.jore4.jooq.vehicle_type.tables.VehicleType get() = fi.hsl.jore.jore4.jooq.vehicle_type.tables.VehicleType.VEHICLE_TYPE_
 
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 

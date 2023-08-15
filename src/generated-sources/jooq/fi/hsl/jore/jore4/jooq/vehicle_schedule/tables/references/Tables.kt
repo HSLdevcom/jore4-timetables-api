@@ -19,7 +19,7 @@ import org.jooq.Result
 /**
  * The table <code>vehicle_schedule.get_overlapping_schedules</code>.
  */
-val GET_OVERLAPPING_SCHEDULES = GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES
+val GET_OVERLAPPING_SCHEDULES: GetOverlappingSchedules = GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES
 
 /**
  * Call <code>vehicle_schedule.get_overlapping_schedules</code>.
@@ -40,8 +40,8 @@ fun GET_OVERLAPPING_SCHEDULES(
       filterVehicleScheduleFrameIds: Array<UUID?>?
     , filterJourneyPatternRefIds: Array<UUID?>?
 ): GetOverlappingSchedules = fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES.call(
-      filterVehicleScheduleFrameIds
-    , filterJourneyPatternRefIds
+    filterVehicleScheduleFrameIds,
+    filterJourneyPatternRefIds
 )
 
 /**
@@ -51,11 +51,13 @@ fun GET_OVERLAPPING_SCHEDULES(
       filterVehicleScheduleFrameIds: Field<Array<UUID?>?>
     , filterJourneyPatternRefIds: Field<Array<UUID?>?>
 ): GetOverlappingSchedules = fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES.call(
-      filterVehicleScheduleFrameIds
-    , filterJourneyPatternRefIds
+    filterVehicleScheduleFrameIds,
+    filterJourneyPatternRefIds
 )
 
 /**
- * A coherent set of BLOCKS, COMPOUND BLOCKs, COURSEs of JOURNEY and VEHICLE SCHEDULEs to which the same set of VALIDITY CONDITIONs have been assigned. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:7:2:993 
+ * A coherent set of BLOCKS, COMPOUND BLOCKs, COURSEs of JOURNEY and VEHICLE
+ * SCHEDULEs to which the same set of VALIDITY CONDITIONs have been assigned.
+ * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:7:2:993 
  */
-val VEHICLE_SCHEDULE_FRAME = VehicleScheduleFrame.VEHICLE_SCHEDULE_FRAME
+val VEHICLE_SCHEDULE_FRAME: VehicleScheduleFrame = VehicleScheduleFrame.VEHICLE_SCHEDULE_FRAME

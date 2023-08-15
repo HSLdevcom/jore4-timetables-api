@@ -45,9 +45,10 @@ open class GetTimetableVersionsByJourneyPatternIds(
     companion object {
 
         /**
-         * The reference instance of <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>
+         * The reference instance of
+         * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>
          */
-        val GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS = GetTimetableVersionsByJourneyPatternIds()
+        val GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS: GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds()
     }
 
     /**
@@ -56,60 +57,79 @@ open class GetTimetableVersionsByJourneyPatternIds(
     override fun getRecordType(): Class<Record> = Record::class.java
 
     /**
-     * The column <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids.vehicle_schedule_frame_id</code>.
+     * The column
+     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids.vehicle_schedule_frame_id</code>.
      */
     val VEHICLE_SCHEDULE_FRAME_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_schedule_frame_id"), SQLDataType.UUID, this, "")
 
     /**
-     * The column <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids.substitute_operating_day_by_line_type_id</code>.
+     * The column
+     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids.substitute_operating_day_by_line_type_id</code>.
      */
     val SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("substitute_operating_day_by_line_type_id"), SQLDataType.UUID, this, "")
 
     /**
-     * The column <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids.validity_start</code>.
+     * The column
+     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids.validity_start</code>.
      */
     val VALIDITY_START: TableField<Record, LocalDate?> = createField(DSL.name("validity_start"), SQLDataType.LOCALDATE.nullable(false), this, "")
 
     /**
-     * The column <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids.validity_end</code>.
+     * The column
+     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids.validity_end</code>.
      */
     val VALIDITY_END: TableField<Record, LocalDate?> = createField(DSL.name("validity_end"), SQLDataType.LOCALDATE.nullable(false), this, "")
 
     /**
-     * The column <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids.priority</code>.
+     * The column
+     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids.priority</code>.
      */
     val PRIORITY: TableField<Record, Int?> = createField(DSL.name("priority"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids.in_effect</code>.
+     * The column
+     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids.in_effect</code>.
      */
     val IN_EFFECT: TableField<Record, Boolean?> = createField(DSL.name("in_effect"), SQLDataType.BOOLEAN.nullable(false), this, "")
 
     /**
-     * The column <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids.day_type_id</code>.
+     * The column
+     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids.day_type_id</code>.
      */
     val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, arrayOf())
+    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, arrayOf(
+        DSL.value(null, SQLDataType.UUID.array()),
+        DSL.value(null, SQLDataType.LOCALDATE),
+        DSL.value(null, SQLDataType.LOCALDATE),
+        DSL.value(null, SQLDataType.LOCALDATE)
+    ))
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code> table reference
+     * Create an aliased
+     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>
+     * table reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code> table reference
+     * Create an aliased
+     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>
+     * table reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code> table reference
+     * Create a
+     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>
+     * table reference
      */
     constructor(): this(DSL.name("get_timetable_versions_by_journey_pattern_ids"), null)
-    override fun getSchema(): Schema = VehicleService.VEHICLE_SERVICE
+    override fun getSchema(): Schema? = if (aliased()) null else VehicleService.VEHICLE_SERVICE
     override fun `as`(alias: String): GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds(DSL.name(alias), this, parameters)
     override fun `as`(alias: Name): GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds(alias, this, parameters)
+    override fun `as`(alias: Table<*>): GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds(alias.getQualifiedName(), this, parameters)
 
     /**
      * Rename this table
@@ -122,6 +142,11 @@ open class GetTimetableVersionsByJourneyPatternIds(
     override fun rename(name: Name): GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds(name, null, parameters)
 
     /**
+     * Rename this table
+     */
+    override fun rename(name: Table<*>): GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds(name.getQualifiedName(), null, parameters)
+
+    /**
      * Call this table-valued function
      */
     fun call(
@@ -130,10 +155,10 @@ open class GetTimetableVersionsByJourneyPatternIds(
         , endDate: LocalDate?
         , observationDate: LocalDate?
     ): GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds(DSL.name("get_timetable_versions_by_journey_pattern_ids"), null, arrayOf(
-          DSL.value(journeyPatternIds, SQLDataType.UUID.getArrayDataType())
-        , DSL.value(startDate, SQLDataType.LOCALDATE)
-        , DSL.value(endDate, SQLDataType.LOCALDATE)
-        , DSL.value(observationDate, SQLDataType.LOCALDATE)
+        DSL.value(journeyPatternIds, SQLDataType.UUID.array()),
+        DSL.value(startDate, SQLDataType.LOCALDATE),
+        DSL.value(endDate, SQLDataType.LOCALDATE),
+        DSL.value(observationDate, SQLDataType.LOCALDATE)
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 
     /**
@@ -145,9 +170,9 @@ open class GetTimetableVersionsByJourneyPatternIds(
         , endDate: Field<LocalDate?>
         , observationDate: Field<LocalDate?>
     ): GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds(DSL.name("get_timetable_versions_by_journey_pattern_ids"), null, arrayOf(
-          journeyPatternIds
-        , startDate
-        , endDate
-        , observationDate
+        journeyPatternIds,
+        startDate,
+        endDate,
+        observationDate
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 }

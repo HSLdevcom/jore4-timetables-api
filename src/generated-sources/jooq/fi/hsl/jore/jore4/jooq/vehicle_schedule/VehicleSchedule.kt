@@ -26,18 +26,18 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class VehicleSchedule : SchemaImpl("vehicle_schedule", DefaultCatalog.DEFAULT_CATALOG) {
-    companion object {
+    public companion object {
 
         /**
          * The reference instance of <code>vehicle_schedule</code>
          */
-        val VEHICLE_SCHEDULE = VehicleSchedule()
+        val VEHICLE_SCHEDULE: VehicleSchedule = VehicleSchedule()
     }
 
     /**
      * The table <code>vehicle_schedule.get_overlapping_schedules</code>.
      */
-    val GET_OVERLAPPING_SCHEDULES get() = GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES
+    val GET_OVERLAPPING_SCHEDULES: GetOverlappingSchedules get() = GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES
 
     /**
      * Call <code>vehicle_schedule.get_overlapping_schedules</code>.
@@ -58,8 +58,8 @@ open class VehicleSchedule : SchemaImpl("vehicle_schedule", DefaultCatalog.DEFAU
           filterVehicleScheduleFrameIds: Array<UUID?>?
         , filterJourneyPatternRefIds: Array<UUID?>?
     ): GetOverlappingSchedules = fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES.call(
-          filterVehicleScheduleFrameIds
-        , filterJourneyPatternRefIds
+        filterVehicleScheduleFrameIds,
+        filterJourneyPatternRefIds
     )
 
     /**
@@ -69,14 +69,17 @@ open class VehicleSchedule : SchemaImpl("vehicle_schedule", DefaultCatalog.DEFAU
           filterVehicleScheduleFrameIds: Field<Array<UUID?>?>
         , filterJourneyPatternRefIds: Field<Array<UUID?>?>
     ): GetOverlappingSchedules = fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES.call(
-          filterVehicleScheduleFrameIds
-        , filterJourneyPatternRefIds
+        filterVehicleScheduleFrameIds,
+        filterJourneyPatternRefIds
     )
 
     /**
-     * A coherent set of BLOCKS, COMPOUND BLOCKs, COURSEs of JOURNEY and VEHICLE SCHEDULEs to which the same set of VALIDITY CONDITIONs have been assigned. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:7:2:993 
+     * A coherent set of BLOCKS, COMPOUND BLOCKs, COURSEs of JOURNEY and VEHICLE
+     * SCHEDULEs to which the same set of VALIDITY CONDITIONs have been
+     * assigned. Transmodel:
+     * https://www.transmodel-cen.eu/model/index.htm?goto=3:7:2:993 
      */
-    val VEHICLE_SCHEDULE_FRAME get() = VehicleScheduleFrame.VEHICLE_SCHEDULE_FRAME
+    val VEHICLE_SCHEDULE_FRAME: VehicleScheduleFrame get() = VehicleScheduleFrame.VEHICLE_SCHEDULE_FRAME
 
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 

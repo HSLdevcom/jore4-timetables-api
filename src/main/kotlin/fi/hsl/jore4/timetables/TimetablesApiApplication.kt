@@ -12,7 +12,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
-import org.springframework.transaction.annotation.EnableTransactionManagement
 
 fun main(args: Array<String>) {
     runApplication<TimetablesApiApplication>(*args)
@@ -23,7 +22,6 @@ fun main(args: Array<String>) {
  */
 @SpringBootApplication
 @EnableConfigurationProperties(DatabaseConfiguration::class, JOOQConfiguration::class)
-@EnableTransactionManagement
 class TimetablesApiApplication {
 
     @Bean

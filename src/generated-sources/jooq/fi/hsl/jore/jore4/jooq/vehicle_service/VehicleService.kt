@@ -30,26 +30,32 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT_CATALOG) {
-    companion object {
+    public companion object {
 
         /**
          * The reference instance of <code>vehicle_service</code>
          */
-        val VEHICLE_SERVICE = VehicleService()
+        val VEHICLE_SERVICE: VehicleService = VehicleService()
     }
 
     /**
-     * The work of a vehicle from the time it leaves a PARKING POINT after parking until its next return to park at a PARKING POINT. Any subsequent departure from a PARKING POINT after parking marks the start of a new BLOCK. The period of a BLOCK has to be covered by DUTies. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:5:958 
+     * The work of a vehicle from the time it leaves a PARKING POINT after
+     * parking until its next return to park at a PARKING POINT. Any subsequent
+     * departure from a PARKING POINT after parking marks the start of a new
+     * BLOCK. The period of a BLOCK has to be covered by DUTies. Transmodel:
+     * https://www.transmodel-cen.eu/model/index.htm?goto=3:5:958 
      */
-    val BLOCK get() = Block.BLOCK
+    val BLOCK: Block get() = Block.BLOCK
 
     /**
-     * The table <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>.
+     * The table
+     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>.
      */
-    val GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS get() = GetTimetableVersionsByJourneyPatternIds.GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS
+    val GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS: GetTimetableVersionsByJourneyPatternIds get() = GetTimetableVersionsByJourneyPatternIds.GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS
 
     /**
-     * Call <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>.
+     * Call
+     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>.
      */
     fun GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS(
           configuration: Configuration
@@ -65,7 +71,9 @@ open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT
     )).fetch()
 
     /**
-     * Get <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code> as a table.
+     * Get
+     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>
+     * as a table.
      */
     fun GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS(
           journeyPatternIds: Array<UUID?>?
@@ -73,14 +81,16 @@ open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT
         , endDate: LocalDate?
         , observationDate: LocalDate?
     ): GetTimetableVersionsByJourneyPatternIds = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetableVersionsByJourneyPatternIds.GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS.call(
-          journeyPatternIds
-        , startDate
-        , endDate
-        , observationDate
+        journeyPatternIds,
+        startDate,
+        endDate,
+        observationDate
     )
 
     /**
-     * Get <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code> as a table.
+     * Get
+     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>
+     * as a table.
      */
     fun GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS(
           journeyPatternIds: Field<Array<UUID?>?>
@@ -88,19 +98,21 @@ open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT
         , endDate: Field<LocalDate?>
         , observationDate: Field<LocalDate?>
     ): GetTimetableVersionsByJourneyPatternIds = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetableVersionsByJourneyPatternIds.GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS.call(
-          journeyPatternIds
-        , startDate
-        , endDate
-        , observationDate
+        journeyPatternIds,
+        startDate,
+        endDate,
+        observationDate
     )
 
     /**
-     * The table <code>vehicle_service.get_timetables_and_substitute_operating_days</code>.
+     * The table
+     * <code>vehicle_service.get_timetables_and_substitute_operating_days</code>.
      */
-    val GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS get() = GetTimetablesAndSubstituteOperatingDays.GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS
+    val GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS: GetTimetablesAndSubstituteOperatingDays get() = GetTimetablesAndSubstituteOperatingDays.GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS
 
     /**
-     * Call <code>vehicle_service.get_timetables_and_substitute_operating_days</code>.
+     * Call
+     * <code>vehicle_service.get_timetables_and_substitute_operating_days</code>.
      */
     fun GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS(
           configuration: Configuration
@@ -114,35 +126,39 @@ open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT
     )).fetch()
 
     /**
-     * Get <code>vehicle_service.get_timetables_and_substitute_operating_days</code> as a table.
+     * Get
+     * <code>vehicle_service.get_timetables_and_substitute_operating_days</code>
+     * as a table.
      */
     fun GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS(
           journeyPatternIds: Array<UUID?>?
         , startDate: LocalDate?
         , endDate: LocalDate?
     ): GetTimetablesAndSubstituteOperatingDays = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetablesAndSubstituteOperatingDays.GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS.call(
-          journeyPatternIds
-        , startDate
-        , endDate
+        journeyPatternIds,
+        startDate,
+        endDate
     )
 
     /**
-     * Get <code>vehicle_service.get_timetables_and_substitute_operating_days</code> as a table.
+     * Get
+     * <code>vehicle_service.get_timetables_and_substitute_operating_days</code>
+     * as a table.
      */
     fun GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS(
           journeyPatternIds: Field<Array<UUID?>?>
         , startDate: Field<LocalDate?>
         , endDate: Field<LocalDate?>
     ): GetTimetablesAndSubstituteOperatingDays = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetablesAndSubstituteOperatingDays.GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS.call(
-          journeyPatternIds
-        , startDate
-        , endDate
+        journeyPatternIds,
+        startDate,
+        endDate
     )
 
     /**
      * The table <code>vehicle_service.get_vehicle_services_for_date</code>.
      */
-    val GET_VEHICLE_SERVICES_FOR_DATE get() = GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE
+    val GET_VEHICLE_SERVICES_FOR_DATE: GetVehicleServicesForDate get() = GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE
 
     /**
      * Call <code>vehicle_service.get_vehicle_services_for_date</code>.
@@ -155,34 +171,41 @@ open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT
     )).fetch()
 
     /**
-     * Get <code>vehicle_service.get_vehicle_services_for_date</code> as a table.
+     * Get <code>vehicle_service.get_vehicle_services_for_date</code> as a
+     * table.
      */
     fun GET_VEHICLE_SERVICES_FOR_DATE(
           observationDate: LocalDate?
     ): GetVehicleServicesForDate = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE.call(
-          observationDate
+        observationDate
     )
 
     /**
-     * Get <code>vehicle_service.get_vehicle_services_for_date</code> as a table.
+     * Get <code>vehicle_service.get_vehicle_services_for_date</code> as a
+     * table.
      */
     fun GET_VEHICLE_SERVICES_FOR_DATE(
           observationDate: Field<LocalDate?>
     ): GetVehicleServicesForDate = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE.call(
-          observationDate
+        observationDate
     )
 
     /**
-     * A denormalized table containing relationships between vehicle_services and journey_patterns (via journey_pattern_ref.journey_pattern_id).
- Without this table this relationship could be found via vehicle_service -&gt; block -&gt; vehicle_journey -&gt; journey_pattern_ref.
- Kept up to date with triggers, should not be updated manually.
+     * A denormalized table containing relationships between vehicle_services
+     * and journey_patterns (via journey_pattern_ref.journey_pattern_id).
+     *  Without this table this relationship could be found via vehicle_service
+     * -&gt; block -&gt; vehicle_journey -&gt; journey_pattern_ref.
+     *  Kept up to date with triggers, should not be updated manually.
      */
-    val JOURNEY_PATTERNS_IN_VEHICLE_SERVICE get() = JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE
+    val JOURNEY_PATTERNS_IN_VEHICLE_SERVICE: JourneyPatternsInVehicleService get() = JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE
 
     /**
-     * A work plan for a single vehicle for a whole day, planned for a specific DAY TYPE. A VEHICLE SERVICE includes one or several BLOCKs. If there is no service on a given day, it does not include any BLOCKs. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:5:965 
+     * A work plan for a single vehicle for a whole day, planned for a specific
+     * DAY TYPE. A VEHICLE SERVICE includes one or several BLOCKs. If there is
+     * no service on a given day, it does not include any BLOCKs. Transmodel:
+     * https://www.transmodel-cen.eu/model/index.htm?goto=3:5:965 
      */
-    val VEHICLE_SERVICE_ get() = fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService.VEHICLE_SERVICE_
+    val VEHICLE_SERVICE_ : fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService get() = fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService.VEHICLE_SERVICE_
 
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 

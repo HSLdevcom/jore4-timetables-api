@@ -10,25 +10,39 @@ import fi.hsl.jore.jore4.jooq.return_value.tables.VehicleSchedule
 
 
 /**
- * This return value is used for functions that determine what timetable versions are in effect. In effect will be true for all the timetable version rows that
-are valid on given observation day and are the highest priority of that day type. As an example if we have:
-Saturday Standard priority valid for 1.1.2023 - 30.6.2023
-Saturday Temporary priority valid for 1.5.2023 - 31.5.2023
-Saturday Special priority valid for 20.5.2023 - 20.5.2023
-
-If we check the timetable versions for the date 1.2.2023, for Saturday we only get the Standard priority, beacuse it is the only one valid on that time. So that 
-row would have in_effect = true. 
-If we check the timetable versions for the date 1.5.2023, for Saturday we would get the Standard and the Temporary priority for this date, as they are both valid.
-But only the higher priority is in effect on this date. So the Saturday Temporary priority would have in_effect = true, and the Saturday Standard priority would 
-have in_effect = false.
-If we check the timetable versions for the date 20.5.2023, for Saturday we have all three valid, but only one can be in_effect, and that would be the Special 
-priority in this case.
+ * This return value is used for functions that determine what timetable
+ * versions are in effect. In effect will be true for all the timetable version
+ * rows that
+ * are valid on given observation day and are the highest priority of that day
+ * type. As an example if we have:
+ * Saturday Standard priority valid for 1.1.2023 - 30.6.2023
+ * Saturday Temporary priority valid for 1.5.2023 - 31.5.2023
+ * Saturday Special priority valid for 20.5.2023 - 20.5.2023
+ * 
+ * If we check the timetable versions for the date 1.2.2023, for Saturday we
+ * only get the Standard priority, beacuse it is the only one valid on that
+ * time. So that 
+ * row would have in_effect = true. 
+ * If we check the timetable versions for the date 1.5.2023, for Saturday we
+ * would get the Standard and the Temporary priority for this date, as they are
+ * both valid.
+ * But only the higher priority is in effect on this date. So the Saturday
+ * Temporary priority would have in_effect = true, and the Saturday Standard
+ * priority would 
+ * have in_effect = false.
+ * If we check the timetable versions for the date 20.5.2023, for Saturday we
+ * have all three valid, but only one can be in_effect, and that would be the
+ * Special 
+ * priority in this case.
 
  */
-val TIMETABLE_VERSION = TimetableVersion.TIMETABLE_VERSION
+val TIMETABLE_VERSION: TimetableVersion = TimetableVersion.TIMETABLE_VERSION
 
 /**
- * This return value table is used in function vehicle_journey.get_vehicle_schedules_on_date. It consists of vehicle_journey_id, vehicle_schedule_frame_id or
-substitute_operating_day_by_line_type_id and also enriched with data, which are used in the UI side.
+ * This return value table is used in function
+ * vehicle_journey.get_vehicle_schedules_on_date. It consists of
+ * vehicle_journey_id, vehicle_schedule_frame_id or
+ * substitute_operating_day_by_line_type_id and also enriched with data, which
+ * are used in the UI side.
  */
-val VEHICLE_SCHEDULE = VehicleSchedule.VEHICLE_SCHEDULE
+val VEHICLE_SCHEDULE: VehicleSchedule = VehicleSchedule.VEHICLE_SCHEDULE

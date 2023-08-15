@@ -21,7 +21,8 @@ open class ConstOperatingDayStartTime : AbstractRoutine<YearToSecond>("const_ope
     companion object {
 
         /**
-         * The parameter <code>service_calendar.const_operating_day_start_time.RETURN_VALUE</code>.
+         * The parameter
+         * <code>service_calendar.const_operating_day_start_time.RETURN_VALUE</code>.
          */
         val RETURN_VALUE: Parameter<YearToSecond?> = Internal.createParameter("RETURN_VALUE", SQLDataType.INTERVAL, false, false)
     }

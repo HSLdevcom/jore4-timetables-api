@@ -50,9 +50,10 @@ open class DayTypeActiveOnDayOfWeek(
     companion object {
 
         /**
-         * The reference instance of <code>service_calendar.day_type_active_on_day_of_week</code>
+         * The reference instance of
+         * <code>service_calendar.day_type_active_on_day_of_week</code>
          */
-        val DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK = DayTypeActiveOnDayOfWeek()
+        val DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK: DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek()
     }
 
     /**
@@ -61,12 +62,16 @@ open class DayTypeActiveOnDayOfWeek(
     override fun getRecordType(): Class<Record> = Record::class.java
 
     /**
-     * The column <code>service_calendar.day_type_active_on_day_of_week.day_type_id</code>. The DAY TYPE for which we define the activeness
+     * The column
+     * <code>service_calendar.day_type_active_on_day_of_week.day_type_id</code>.
+     * The DAY TYPE for which we define the activeness
      */
     val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "The DAY TYPE for which we define the activeness")
 
     /**
-     * The column <code>service_calendar.day_type_active_on_day_of_week.day_of_week</code>. ISO week day definition (1 = Monday, 7 = Sunday)
+     * The column
+     * <code>service_calendar.day_type_active_on_day_of_week.day_of_week</code>.
+     * ISO week day definition (1 = Monday, 7 = Sunday)
      */
     val DAY_OF_WEEK: TableField<Record, Int?> = createField(DSL.name("day_of_week"), SQLDataType.INTEGER.nullable(false), this, "ISO week day definition (1 = Monday, 7 = Sunday)")
 
@@ -74,35 +79,48 @@ open class DayTypeActiveOnDayOfWeek(
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>service_calendar.day_type_active_on_day_of_week</code> table reference
+     * Create an aliased
+     * <code>service_calendar.day_type_active_on_day_of_week</code> table
+     * reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>service_calendar.day_type_active_on_day_of_week</code> table reference
+     * Create an aliased
+     * <code>service_calendar.day_type_active_on_day_of_week</code> table
+     * reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>service_calendar.day_type_active_on_day_of_week</code> table reference
+     * Create a <code>service_calendar.day_type_active_on_day_of_week</code>
+     * table reference
      */
     constructor(): this(DSL.name("day_type_active_on_day_of_week"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK, null)
-    override fun getSchema(): Schema = ServiceCalendar.SERVICE_CALENDAR
+    override fun getSchema(): Schema? = if (aliased()) null else ServiceCalendar.SERVICE_CALENDAR
     override fun getPrimaryKey(): UniqueKey<Record> = DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_PKEY
-    override fun getKeys(): List<UniqueKey<Record>> = listOf(DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_PKEY)
     override fun getReferences(): List<ForeignKey<Record, *>> = listOf(DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK__DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_DAY_TYPE_ID_FKEY)
 
     private lateinit var _dayType: DayType
+
+    /**
+     * Get the implicit join path to the <code>service_calendar.day_type</code>
+     * table.
+     */
     fun dayType(): DayType {
         if (!this::_dayType.isInitialized)
             _dayType = DayType(this, DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK__DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_DAY_TYPE_ID_FKEY)
 
         return _dayType;
     }
+
+    val dayType: DayType
+        get(): DayType = dayType()
     override fun `as`(alias: String): DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek(DSL.name(alias), this)
     override fun `as`(alias: Name): DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek(alias, this)
+    override fun `as`(alias: Table<*>): DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek(alias.getQualifiedName(), this)
 
     /**
      * Rename this table
@@ -113,4 +131,9 @@ open class DayTypeActiveOnDayOfWeek(
      * Rename this table
      */
     override fun rename(name: Name): DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek(name, null)
+
+    /**
+     * Rename this table
+     */
+    override fun rename(name: Table<*>): DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek(name.getQualifiedName(), null)
 }

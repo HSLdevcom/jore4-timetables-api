@@ -19,7 +19,7 @@ import org.jooq.Result
 /**
  * The table <code>passing_times.get_passing_time_order_validity_data</code>.
  */
-val GET_PASSING_TIME_ORDER_VALIDITY_DATA = GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA
+val GET_PASSING_TIME_ORDER_VALIDITY_DATA: GetPassingTimeOrderValidityData = GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA
 
 /**
  * Call <code>passing_times.get_passing_time_order_validity_data</code>.
@@ -34,28 +34,33 @@ fun GET_PASSING_TIME_ORDER_VALIDITY_DATA(
 )).fetch()
 
 /**
- * Get <code>passing_times.get_passing_time_order_validity_data</code> as a table.
+ * Get <code>passing_times.get_passing_time_order_validity_data</code> as a
+ * table.
  */
 fun GET_PASSING_TIME_ORDER_VALIDITY_DATA(
       filterVehicleJourneyIds: Array<UUID?>?
     , filterJourneyPatternRefIds: Array<UUID?>?
 ): GetPassingTimeOrderValidityData = fi.hsl.jore.jore4.jooq.passing_times.tables.GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA.call(
-      filterVehicleJourneyIds
-    , filterJourneyPatternRefIds
+    filterVehicleJourneyIds,
+    filterJourneyPatternRefIds
 )
 
 /**
- * Get <code>passing_times.get_passing_time_order_validity_data</code> as a table.
+ * Get <code>passing_times.get_passing_time_order_validity_data</code> as a
+ * table.
  */
 fun GET_PASSING_TIME_ORDER_VALIDITY_DATA(
       filterVehicleJourneyIds: Field<Array<UUID?>?>
     , filterJourneyPatternRefIds: Field<Array<UUID?>?>
 ): GetPassingTimeOrderValidityData = fi.hsl.jore.jore4.jooq.passing_times.tables.GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA.call(
-      filterVehicleJourneyIds
-    , filterJourneyPatternRefIds
+    filterVehicleJourneyIds,
+    filterJourneyPatternRefIds
 )
 
 /**
- * Long-term planned time data concerning public transport vehicles passing a particular POINT IN JOURNEY PATTERN on a specified VEHICLE JOURNEY for a certain DAY TYPE. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:4:946 
+ * Long-term planned time data concerning public transport vehicles passing a
+ * particular POINT IN JOURNEY PATTERN on a specified VEHICLE JOURNEY for a
+ * certain DAY TYPE. Transmodel:
+ * https://www.transmodel-cen.eu/model/index.htm?goto=3:4:946 
  */
-val TIMETABLED_PASSING_TIME = TimetabledPassingTime.TIMETABLED_PASSING_TIME
+val TIMETABLED_PASSING_TIME: TimetabledPassingTime = TimetabledPassingTime.TIMETABLED_PASSING_TIME

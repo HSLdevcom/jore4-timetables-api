@@ -27,18 +27,18 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class VehicleJourney : SchemaImpl("vehicle_journey", DefaultCatalog.DEFAULT_CATALOG) {
-    companion object {
+    public companion object {
 
         /**
          * The reference instance of <code>vehicle_journey</code>
          */
-        val VEHICLE_JOURNEY = VehicleJourney()
+        val VEHICLE_JOURNEY: VehicleJourney = VehicleJourney()
     }
 
     /**
      * The table <code>vehicle_journey.get_vehicle_schedules_on_date</code>.
      */
-    val GET_VEHICLE_SCHEDULES_ON_DATE get() = GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE
+    val GET_VEHICLE_SCHEDULES_ON_DATE: GetVehicleSchedulesOnDate get() = GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE
 
     /**
      * Call <code>vehicle_journey.get_vehicle_schedules_on_date</code>.
@@ -53,36 +53,40 @@ open class VehicleJourney : SchemaImpl("vehicle_journey", DefaultCatalog.DEFAULT
     )).fetch()
 
     /**
-     * Get <code>vehicle_journey.get_vehicle_schedules_on_date</code> as a table.
+     * Get <code>vehicle_journey.get_vehicle_schedules_on_date</code> as a
+     * table.
      */
     fun GET_VEHICLE_SCHEDULES_ON_DATE(
           journeyPatternUuid: UUID?
         , observationDate: LocalDate?
     ): GetVehicleSchedulesOnDate = fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE.call(
-          journeyPatternUuid
-        , observationDate
+        journeyPatternUuid,
+        observationDate
     )
 
     /**
-     * Get <code>vehicle_journey.get_vehicle_schedules_on_date</code> as a table.
+     * Get <code>vehicle_journey.get_vehicle_schedules_on_date</code> as a
+     * table.
      */
     fun GET_VEHICLE_SCHEDULES_ON_DATE(
           journeyPatternUuid: Field<UUID?>
         , observationDate: Field<LocalDate?>
     ): GetVehicleSchedulesOnDate = fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE.call(
-          journeyPatternUuid
-        , observationDate
+        journeyPatternUuid,
+        observationDate
     )
 
     /**
      * Enum table for defining allowed journey types.
      */
-    val JOURNEY_TYPE get() = JourneyType.JOURNEY_TYPE
+    val JOURNEY_TYPE: JourneyType get() = JourneyType.JOURNEY_TYPE
 
     /**
-     * The planned movement of a public transport vehicle on a DAY TYPE from the start point to the end point of a JOURNEY PATTERN on a specified ROUTE. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:1:1:831 
+     * The planned movement of a public transport vehicle on a DAY TYPE from the
+     * start point to the end point of a JOURNEY PATTERN on a specified ROUTE.
+     * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:1:1:831 
      */
-    val VEHICLE_JOURNEY_ get() = fi.hsl.jore.jore4.jooq.vehicle_journey.tables.VehicleJourney.VEHICLE_JOURNEY_
+    val VEHICLE_JOURNEY_ : fi.hsl.jore.jore4.jooq.vehicle_journey.tables.VehicleJourney get() = fi.hsl.jore.jore4.jooq.vehicle_journey.tables.VehicleJourney.VEHICLE_JOURNEY_
 
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 

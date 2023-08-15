@@ -31,10 +31,11 @@ import org.jooq.types.YearToSecond
 
 
 /**
- * The work of a vehicle from the time it leaves a PARKING POINT after parking 
- * until its next return to park at a PARKING POINT. Any subsequent departure 
- * from a PARKING POINT after parking marks the start of a new BLOCK. The 
- * period of a BLOCK has to be covered by DUTies. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:5:958 
+ * The work of a vehicle from the time it leaves a PARKING POINT after parking
+ * until its next return to park at a PARKING POINT. Any subsequent departure
+ * from a PARKING POINT after parking marks the start of a new BLOCK. The period
+ * of a BLOCK has to be covered by DUTies. Transmodel:
+ * https://www.transmodel-cen.eu/model/index.htm?goto=3:5:958 
  */
 @Suppress("UNCHECKED_CAST")
 open class Block(
@@ -58,7 +59,7 @@ open class Block(
         /**
          * The reference instance of <code>vehicle_service.block</code>
          */
-        val BLOCK = Block()
+        val BLOCK: Block = Block()
     }
 
     /**
@@ -69,25 +70,29 @@ open class Block(
     /**
      * The column <code>vehicle_service.block.block_id</code>.
      */
-    val BLOCK_ID: TableField<Record, UUID?> = createField(DSL.name("block_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field("gen_random_uuid()", SQLDataType.UUID)), this, "")
+    val BLOCK_ID: TableField<Record, UUID?> = createField(DSL.name("block_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
 
     /**
-     * The column <code>vehicle_service.block.vehicle_service_id</code>. The VEHICLE SERVICE to which this BLOCK belongs.
+     * The column <code>vehicle_service.block.vehicle_service_id</code>. The
+     * VEHICLE SERVICE to which this BLOCK belongs.
      */
     val VEHICLE_SERVICE_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_service_id"), SQLDataType.UUID.nullable(false), this, "The VEHICLE SERVICE to which this BLOCK belongs.")
 
     /**
-     * The column <code>vehicle_service.block.preparing_time</code>. Preparation time before start of vehicle service block.
+     * The column <code>vehicle_service.block.preparing_time</code>. Preparation
+     * time before start of vehicle service block.
      */
     val PREPARING_TIME: TableField<Record, YearToSecond?> = createField(DSL.name("preparing_time"), SQLDataType.INTERVAL, this, "Preparation time before start of vehicle service block.")
 
     /**
-     * The column <code>vehicle_service.block.finishing_time</code>. Finishing time after end of vehicle service block.
+     * The column <code>vehicle_service.block.finishing_time</code>. Finishing
+     * time after end of vehicle service block.
      */
     val FINISHING_TIME: TableField<Record, YearToSecond?> = createField(DSL.name("finishing_time"), SQLDataType.INTERVAL, this, "Finishing time after end of vehicle service block.")
 
     /**
-     * The column <code>vehicle_service.block.vehicle_type_id</code>. Reference to vehicle_type.vehicle_type.
+     * The column <code>vehicle_service.block.vehicle_type_id</code>. Reference
+     * to vehicle_type.vehicle_type.
      */
     val VEHICLE_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_type_id"), SQLDataType.UUID, this, "Reference to vehicle_type.vehicle_type.")
 
@@ -110,27 +115,43 @@ open class Block(
     constructor(): this(DSL.name("block"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, BLOCK, null)
-    override fun getSchema(): Schema = VehicleService.VEHICLE_SERVICE
+    override fun getSchema(): Schema? = if (aliased()) null else VehicleService.VEHICLE_SERVICE
     override fun getPrimaryKey(): UniqueKey<Record> = BLOCK_PKEY
-    override fun getKeys(): List<UniqueKey<Record>> = listOf(BLOCK_PKEY)
     override fun getReferences(): List<ForeignKey<Record, *>> = listOf(BLOCK__BLOCK_VEHICLE_SERVICE_ID_FKEY, BLOCK__VEHICLE_TYPE_FKEY)
 
     private lateinit var _vehicleService: fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService
     private lateinit var _vehicleType: VehicleType
+
+    /**
+     * Get the implicit join path to the
+     * <code>vehicle_service.vehicle_service</code> table.
+     */
     fun vehicleService(): fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService {
         if (!this::_vehicleService.isInitialized)
             _vehicleService = fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService(this, BLOCK__BLOCK_VEHICLE_SERVICE_ID_FKEY)
 
         return _vehicleService;
     }
+
+    val vehicleService: fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService
+        get(): fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService = vehicleService()
+
+    /**
+     * Get the implicit join path to the <code>vehicle_type.vehicle_type</code>
+     * table.
+     */
     fun vehicleType(): VehicleType {
         if (!this::_vehicleType.isInitialized)
             _vehicleType = VehicleType(this, BLOCK__VEHICLE_TYPE_FKEY)
 
         return _vehicleType;
     }
+
+    val vehicleType: VehicleType
+        get(): VehicleType = vehicleType()
     override fun `as`(alias: String): Block = Block(DSL.name(alias), this)
     override fun `as`(alias: Name): Block = Block(alias, this)
+    override fun `as`(alias: Table<*>): Block = Block(alias.getQualifiedName(), this)
 
     /**
      * Rename this table
@@ -141,4 +162,9 @@ open class Block(
      * Rename this table
      */
     override fun rename(name: Name): Block = Block(name, null)
+
+    /**
+     * Rename this table
+     */
+    override fun rename(name: Table<*>): Block = Block(name.getQualifiedName(), null)
 }
