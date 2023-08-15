@@ -31,7 +31,8 @@ fun refreshJourneyPatternsInVehicleService(
 }
 
 /**
- * Call <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>.
+ * Call
+ * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>.
  */
 fun getTimetableVersionsByJourneyPatternIds(
       configuration: Configuration
@@ -47,7 +48,9 @@ fun getTimetableVersionsByJourneyPatternIds(
 )).fetch()
 
 /**
- * Get <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code> as a table.
+ * Get
+ * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code> as
+ * a table.
  */
 fun getTimetableVersionsByJourneyPatternIds(
       journeyPatternIds: Array<UUID?>?
@@ -55,14 +58,16 @@ fun getTimetableVersionsByJourneyPatternIds(
     , endDate: LocalDate?
     , observationDate: LocalDate?
 ): GetTimetableVersionsByJourneyPatternIds = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetableVersionsByJourneyPatternIds.GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS.call(
-      journeyPatternIds
-    , startDate
-    , endDate
-    , observationDate
+    journeyPatternIds,
+    startDate,
+    endDate,
+    observationDate
 )
 
 /**
- * Get <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code> as a table.
+ * Get
+ * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code> as
+ * a table.
  */
 fun getTimetableVersionsByJourneyPatternIds(
       journeyPatternIds: Field<Array<UUID?>?>
@@ -70,14 +75,15 @@ fun getTimetableVersionsByJourneyPatternIds(
     , endDate: Field<LocalDate?>
     , observationDate: Field<LocalDate?>
 ): GetTimetableVersionsByJourneyPatternIds = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetableVersionsByJourneyPatternIds.GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS.call(
-      journeyPatternIds
-    , startDate
-    , endDate
-    , observationDate
+    journeyPatternIds,
+    startDate,
+    endDate,
+    observationDate
 )
 
 /**
- * Call <code>vehicle_service.get_timetables_and_substitute_operating_days</code>.
+ * Call
+ * <code>vehicle_service.get_timetables_and_substitute_operating_days</code>.
  */
 fun getTimetablesAndSubstituteOperatingDays(
       configuration: Configuration
@@ -91,29 +97,31 @@ fun getTimetablesAndSubstituteOperatingDays(
 )).fetch()
 
 /**
- * Get <code>vehicle_service.get_timetables_and_substitute_operating_days</code> as a table.
+ * Get <code>vehicle_service.get_timetables_and_substitute_operating_days</code>
+ * as a table.
  */
 fun getTimetablesAndSubstituteOperatingDays(
       journeyPatternIds: Array<UUID?>?
     , startDate: LocalDate?
     , endDate: LocalDate?
 ): GetTimetablesAndSubstituteOperatingDays = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetablesAndSubstituteOperatingDays.GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS.call(
-      journeyPatternIds
-    , startDate
-    , endDate
+    journeyPatternIds,
+    startDate,
+    endDate
 )
 
 /**
- * Get <code>vehicle_service.get_timetables_and_substitute_operating_days</code> as a table.
+ * Get <code>vehicle_service.get_timetables_and_substitute_operating_days</code>
+ * as a table.
  */
 fun getTimetablesAndSubstituteOperatingDays(
       journeyPatternIds: Field<Array<UUID?>?>
     , startDate: Field<LocalDate?>
     , endDate: Field<LocalDate?>
 ): GetTimetablesAndSubstituteOperatingDays = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetablesAndSubstituteOperatingDays.GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS.call(
-      journeyPatternIds
-    , startDate
-    , endDate
+    journeyPatternIds,
+    startDate,
+    endDate
 )
 
 /**
@@ -132,7 +140,7 @@ fun getVehicleServicesForDate(
 fun getVehicleServicesForDate(
       observationDate: LocalDate?
 ): GetVehicleServicesForDate = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE.call(
-      observationDate
+    observationDate
 )
 
 /**
@@ -141,5 +149,5 @@ fun getVehicleServicesForDate(
 fun getVehicleServicesForDate(
       observationDate: Field<LocalDate?>
 ): GetVehicleServicesForDate = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE.call(
-      observationDate
+    observationDate
 )

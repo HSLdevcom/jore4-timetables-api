@@ -9,6 +9,7 @@ import fi.hsl.jore.jore4.jooq.service_pattern.tables.ScheduledStopPointInJourney
 
 
 /**
- * Reference the a SCHEDULED STOP POINT within a JOURNEY PATTERN. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
+ * Reference the a SCHEDULED STOP POINT within a JOURNEY PATTERN. Transmodel:
+ * https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
  */
-val SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF = ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF
+val SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF: ScheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF

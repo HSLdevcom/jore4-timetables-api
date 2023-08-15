@@ -76,7 +76,7 @@ fun getActiveDayTypesForDate(
 fun getActiveDayTypesForDate(
       observationDate: LocalDate?
 ): GetActiveDayTypesForDate = fi.hsl.jore.jore4.jooq.service_calendar.tables.GetActiveDayTypesForDate.GET_ACTIVE_DAY_TYPES_FOR_DATE.call(
-      observationDate
+    observationDate
 )
 
 /**
@@ -85,5 +85,5 @@ fun getActiveDayTypesForDate(
 fun getActiveDayTypesForDate(
       observationDate: Field<LocalDate?>
 ): GetActiveDayTypesForDate = fi.hsl.jore.jore4.jooq.service_calendar.tables.GetActiveDayTypesForDate.GET_ACTIVE_DAY_TYPES_FOR_DATE.call(
-      observationDate
+    observationDate
 )

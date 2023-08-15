@@ -20,19 +20,21 @@ import org.jooq.Result
 
 
 /**
- * A type of day characterised by one or more properties which affect public transport operation. For example: weekday in school holidays. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=1:6:3:299 
+ * A type of day characterised by one or more properties which affect public
+ * transport operation. For example: weekday in school holidays. Transmodel:
+ * https://www.transmodel-cen.eu/model/index.htm?goto=1:6:3:299 
  */
-val DAY_TYPE = DayType.DAY_TYPE
+val DAY_TYPE: DayType = DayType.DAY_TYPE
 
 /**
  * Tells on which days of week a particular DAY TYPE is active
  */
-val DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK = DayTypeActiveOnDayOfWeek.DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK
+val DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK: DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek.DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK
 
 /**
  * The table <code>service_calendar.get_active_day_types_for_date</code>.
  */
-val GET_ACTIVE_DAY_TYPES_FOR_DATE = GetActiveDayTypesForDate.GET_ACTIVE_DAY_TYPES_FOR_DATE
+val GET_ACTIVE_DAY_TYPES_FOR_DATE: GetActiveDayTypesForDate = GetActiveDayTypesForDate.GET_ACTIVE_DAY_TYPES_FOR_DATE
 
 /**
  * Call <code>service_calendar.get_active_day_types_for_date</code>.
@@ -50,7 +52,7 @@ fun GET_ACTIVE_DAY_TYPES_FOR_DATE(
 fun GET_ACTIVE_DAY_TYPES_FOR_DATE(
       observationDate: LocalDate?
 ): GetActiveDayTypesForDate = fi.hsl.jore.jore4.jooq.service_calendar.tables.GetActiveDayTypesForDate.GET_ACTIVE_DAY_TYPES_FOR_DATE.call(
-      observationDate
+    observationDate
 )
 
 /**
@@ -59,15 +61,18 @@ fun GET_ACTIVE_DAY_TYPES_FOR_DATE(
 fun GET_ACTIVE_DAY_TYPES_FOR_DATE(
       observationDate: Field<LocalDate?>
 ): GetActiveDayTypesForDate = fi.hsl.jore.jore4.jooq.service_calendar.tables.GetActiveDayTypesForDate.GET_ACTIVE_DAY_TYPES_FOR_DATE.call(
-      observationDate
+    observationDate
 )
 
 /**
- * Models substitute public transit as (1) a reference day or (2) indicating that public transit does not occur on certain date. Substitute operating days are always bound to a type of line.
+ * Models substitute public transit as (1) a reference day or (2) indicating
+ * that public transit does not occur on certain date. Substitute operating days
+ * are always bound to a type of line.
  */
-val SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE = SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE
+val SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE: SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE
 
 /**
- * Models substitute operating period that consists of substitute operating days by line types.
+ * Models substitute operating period that consists of substitute operating days
+ * by line types.
  */
-val SUBSTITUTE_OPERATING_PERIOD = SubstituteOperatingPeriod.SUBSTITUTE_OPERATING_PERIOD
+val SUBSTITUTE_OPERATING_PERIOD: SubstituteOperatingPeriod = SubstituteOperatingPeriod.SUBSTITUTE_OPERATING_PERIOD

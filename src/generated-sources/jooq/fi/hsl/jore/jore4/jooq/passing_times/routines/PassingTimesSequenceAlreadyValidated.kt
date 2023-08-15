@@ -20,7 +20,8 @@ open class PassingTimesSequenceAlreadyValidated : AbstractRoutine<Boolean>("pass
     companion object {
 
         /**
-         * The parameter <code>passing_times.passing_times_sequence_already_validated.RETURN_VALUE</code>.
+         * The parameter
+         * <code>passing_times.passing_times_sequence_already_validated.RETURN_VALUE</code>.
          */
         val RETURN_VALUE: Parameter<Boolean?> = Internal.createParameter("RETURN_VALUE", SQLDataType.BOOLEAN, false, false)
     }

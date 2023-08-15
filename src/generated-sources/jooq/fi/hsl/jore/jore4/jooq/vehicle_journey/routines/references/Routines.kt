@@ -113,8 +113,8 @@ fun getVehicleSchedulesOnDate(
       journeyPatternUuid: UUID?
     , observationDate: LocalDate?
 ): GetVehicleSchedulesOnDate = fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE.call(
-      journeyPatternUuid
-    , observationDate
+    journeyPatternUuid,
+    observationDate
 )
 
 /**
@@ -124,6 +124,6 @@ fun getVehicleSchedulesOnDate(
       journeyPatternUuid: Field<UUID?>
     , observationDate: Field<LocalDate?>
 ): GetVehicleSchedulesOnDate = fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE.call(
-      journeyPatternUuid
-    , observationDate
+    journeyPatternUuid,
+    observationDate
 )
