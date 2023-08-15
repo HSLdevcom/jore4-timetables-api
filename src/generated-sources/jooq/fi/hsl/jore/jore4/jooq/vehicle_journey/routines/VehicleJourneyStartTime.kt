@@ -22,12 +22,14 @@ open class VehicleJourneyStartTime : AbstractRoutine<String>("vehicle_journey_st
     companion object {
 
         /**
-         * The parameter <code>vehicle_journey.vehicle_journey_start_time.RETURN_VALUE</code>.
+         * The parameter
+         * <code>vehicle_journey.vehicle_journey_start_time.RETURN_VALUE</code>.
          */
         val RETURN_VALUE: Parameter<String?> = Internal.createParameter("RETURN_VALUE", SQLDataType.CLOB, false, false)
 
         /**
-         * The parameter <code>vehicle_journey.vehicle_journey_start_time.vj</code>.
+         * The parameter
+         * <code>vehicle_journey.vehicle_journey_start_time.vj</code>.
          */
         val VJ: Parameter<Record?> = Internal.createParameter("vj", fi.hsl.jore.jore4.jooq.vehicle_journey.tables.VehicleJourney.VEHICLE_JOURNEY_.getDataType(), false, false)
     }
@@ -40,10 +42,11 @@ open class VehicleJourneyStartTime : AbstractRoutine<String>("vehicle_journey_st
     /**
      * Set the <code>vj</code> parameter IN value to the routine
      */
-    fun setVj(value: Record?) = setValue(VJ, value)
+    fun setVj(value: Record?): Unit = setValue(VJ, value)
 
     /**
-     * Set the <code>vj</code> parameter to the function to be used with a {@link org.jooq.Select} statement
+     * Set the <code>vj</code> parameter to the function to be used with a
+     * {@link org.jooq.Select} statement
      */
     fun setVj(field: Field<Record?>): Unit {
         setField(VJ, field)

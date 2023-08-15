@@ -46,9 +46,10 @@ open class GetVehicleSchedulesOnDate(
     companion object {
 
         /**
-         * The reference instance of <code>vehicle_journey.get_vehicle_schedules_on_date</code>
+         * The reference instance of
+         * <code>vehicle_journey.get_vehicle_schedules_on_date</code>
          */
-        val GET_VEHICLE_SCHEDULES_ON_DATE = GetVehicleSchedulesOnDate()
+        val GET_VEHICLE_SCHEDULES_ON_DATE: GetVehicleSchedulesOnDate = GetVehicleSchedulesOnDate()
     }
 
     /**
@@ -57,65 +58,82 @@ open class GetVehicleSchedulesOnDate(
     override fun getRecordType(): Class<Record> = Record::class.java
 
     /**
-     * The column <code>vehicle_journey.get_vehicle_schedules_on_date.vehicle_journey_id</code>.
+     * The column
+     * <code>vehicle_journey.get_vehicle_schedules_on_date.vehicle_journey_id</code>.
      */
     val VEHICLE_JOURNEY_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_journey_id"), SQLDataType.UUID, this, "")
 
     /**
-     * The column <code>vehicle_journey.get_vehicle_schedules_on_date.validity_start</code>.
+     * The column
+     * <code>vehicle_journey.get_vehicle_schedules_on_date.validity_start</code>.
      */
     val VALIDITY_START: TableField<Record, LocalDate?> = createField(DSL.name("validity_start"), SQLDataType.LOCALDATE.nullable(false), this, "")
 
     /**
-     * The column <code>vehicle_journey.get_vehicle_schedules_on_date.validity_end</code>.
+     * The column
+     * <code>vehicle_journey.get_vehicle_schedules_on_date.validity_end</code>.
      */
     val VALIDITY_END: TableField<Record, LocalDate?> = createField(DSL.name("validity_end"), SQLDataType.LOCALDATE.nullable(false), this, "")
 
     /**
-     * The column <code>vehicle_journey.get_vehicle_schedules_on_date.priority</code>.
+     * The column
+     * <code>vehicle_journey.get_vehicle_schedules_on_date.priority</code>.
      */
     val PRIORITY: TableField<Record, Int?> = createField(DSL.name("priority"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>vehicle_journey.get_vehicle_schedules_on_date.day_type_id</code>.
+     * The column
+     * <code>vehicle_journey.get_vehicle_schedules_on_date.day_type_id</code>.
      */
     val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "")
 
     /**
-     * The column <code>vehicle_journey.get_vehicle_schedules_on_date.vehicle_schedule_frame_id</code>.
+     * The column
+     * <code>vehicle_journey.get_vehicle_schedules_on_date.vehicle_schedule_frame_id</code>.
      */
     val VEHICLE_SCHEDULE_FRAME_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_schedule_frame_id"), SQLDataType.UUID, this, "")
 
     /**
-     * The column <code>vehicle_journey.get_vehicle_schedules_on_date.substitute_operating_day_by_line_type_id</code>.
+     * The column
+     * <code>vehicle_journey.get_vehicle_schedules_on_date.substitute_operating_day_by_line_type_id</code>.
      */
     val SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("substitute_operating_day_by_line_type_id"), SQLDataType.UUID, this, "")
 
     /**
-     * The column <code>vehicle_journey.get_vehicle_schedules_on_date.created_at</code>.
+     * The column
+     * <code>vehicle_journey.get_vehicle_schedules_on_date.created_at</code>.
      */
     val CREATED_AT: TableField<Record, OffsetDateTime?> = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, arrayOf())
+    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, arrayOf(
+        DSL.value(null, SQLDataType.UUID),
+        DSL.value(null, SQLDataType.LOCALDATE)
+    ))
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>vehicle_journey.get_vehicle_schedules_on_date</code> table reference
+     * Create an aliased
+     * <code>vehicle_journey.get_vehicle_schedules_on_date</code> table
+     * reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>vehicle_journey.get_vehicle_schedules_on_date</code> table reference
+     * Create an aliased
+     * <code>vehicle_journey.get_vehicle_schedules_on_date</code> table
+     * reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>vehicle_journey.get_vehicle_schedules_on_date</code> table reference
+     * Create a <code>vehicle_journey.get_vehicle_schedules_on_date</code> table
+     * reference
      */
     constructor(): this(DSL.name("get_vehicle_schedules_on_date"), null)
-    override fun getSchema(): Schema = VehicleJourney.VEHICLE_JOURNEY
+    override fun getSchema(): Schema? = if (aliased()) null else VehicleJourney.VEHICLE_JOURNEY
     override fun `as`(alias: String): GetVehicleSchedulesOnDate = GetVehicleSchedulesOnDate(DSL.name(alias), this, parameters)
     override fun `as`(alias: Name): GetVehicleSchedulesOnDate = GetVehicleSchedulesOnDate(alias, this, parameters)
+    override fun `as`(alias: Table<*>): GetVehicleSchedulesOnDate = GetVehicleSchedulesOnDate(alias.getQualifiedName(), this, parameters)
 
     /**
      * Rename this table
@@ -128,14 +146,19 @@ open class GetVehicleSchedulesOnDate(
     override fun rename(name: Name): GetVehicleSchedulesOnDate = GetVehicleSchedulesOnDate(name, null, parameters)
 
     /**
+     * Rename this table
+     */
+    override fun rename(name: Table<*>): GetVehicleSchedulesOnDate = GetVehicleSchedulesOnDate(name.getQualifiedName(), null, parameters)
+
+    /**
      * Call this table-valued function
      */
     fun call(
           journeyPatternUuid: UUID?
         , observationDate: LocalDate?
     ): GetVehicleSchedulesOnDate = GetVehicleSchedulesOnDate(DSL.name("get_vehicle_schedules_on_date"), null, arrayOf(
-          DSL.value(journeyPatternUuid, SQLDataType.UUID)
-        , DSL.value(observationDate, SQLDataType.LOCALDATE)
+        DSL.value(journeyPatternUuid, SQLDataType.UUID),
+        DSL.value(observationDate, SQLDataType.LOCALDATE)
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 
     /**
@@ -145,7 +168,7 @@ open class GetVehicleSchedulesOnDate(
           journeyPatternUuid: Field<UUID?>
         , observationDate: Field<LocalDate?>
     ): GetVehicleSchedulesOnDate = GetVehicleSchedulesOnDate(DSL.name("get_vehicle_schedules_on_date"), null, arrayOf(
-          journeyPatternUuid
-        , observationDate
+        journeyPatternUuid,
+        observationDate
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 }

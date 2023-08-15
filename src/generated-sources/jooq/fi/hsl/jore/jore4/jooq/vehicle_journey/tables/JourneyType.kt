@@ -7,8 +7,6 @@ package fi.hsl.jore.jore4.jooq.vehicle_journey.tables
 import fi.hsl.jore.jore4.jooq.vehicle_journey.VehicleJourney
 import fi.hsl.jore.jore4.jooq.vehicle_journey.keys.JOURNEY_TYPE_PKEY
 
-import kotlin.collections.List
-
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
@@ -49,7 +47,7 @@ open class JourneyType(
         /**
          * The reference instance of <code>vehicle_journey.journey_type</code>
          */
-        val JOURNEY_TYPE = JourneyType()
+        val JOURNEY_TYPE: JourneyType = JourneyType()
     }
 
     /**
@@ -66,12 +64,14 @@ open class JourneyType(
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>vehicle_journey.journey_type</code> table reference
+     * Create an aliased <code>vehicle_journey.journey_type</code> table
+     * reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>vehicle_journey.journey_type</code> table reference
+     * Create an aliased <code>vehicle_journey.journey_type</code> table
+     * reference
      */
     constructor(alias: Name): this(alias, null)
 
@@ -81,11 +81,11 @@ open class JourneyType(
     constructor(): this(DSL.name("journey_type"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, JOURNEY_TYPE, null)
-    override fun getSchema(): Schema = VehicleJourney.VEHICLE_JOURNEY
+    override fun getSchema(): Schema? = if (aliased()) null else VehicleJourney.VEHICLE_JOURNEY
     override fun getPrimaryKey(): UniqueKey<Record> = JOURNEY_TYPE_PKEY
-    override fun getKeys(): List<UniqueKey<Record>> = listOf(JOURNEY_TYPE_PKEY)
     override fun `as`(alias: String): JourneyType = JourneyType(DSL.name(alias), this)
     override fun `as`(alias: Name): JourneyType = JourneyType(alias, this)
+    override fun `as`(alias: Table<*>): JourneyType = JourneyType(alias.getQualifiedName(), this)
 
     /**
      * Rename this table
@@ -96,4 +96,9 @@ open class JourneyType(
      * Rename this table
      */
     override fun rename(name: Name): JourneyType = JourneyType(name, null)
+
+    /**
+     * Rename this table
+     */
+    override fun rename(name: Table<*>): JourneyType = JourneyType(name.getQualifiedName(), null)
 }

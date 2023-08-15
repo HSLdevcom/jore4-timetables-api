@@ -46,9 +46,10 @@ open class GetActiveDayTypesForDate(
     companion object {
 
         /**
-         * The reference instance of <code>service_calendar.get_active_day_types_for_date</code>
+         * The reference instance of
+         * <code>service_calendar.get_active_day_types_for_date</code>
          */
-        val GET_ACTIVE_DAY_TYPES_FOR_DATE = GetActiveDayTypesForDate()
+        val GET_ACTIVE_DAY_TYPES_FOR_DATE: GetActiveDayTypesForDate = GetActiveDayTypesForDate()
     }
 
     /**
@@ -57,40 +58,51 @@ open class GetActiveDayTypesForDate(
     override fun getRecordType(): Class<Record> = Record::class.java
 
     /**
-     * The column <code>service_calendar.get_active_day_types_for_date.day_type_id</code>.
+     * The column
+     * <code>service_calendar.get_active_day_types_for_date.day_type_id</code>.
      */
-    val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field("gen_random_uuid()", SQLDataType.UUID)), this, "")
+    val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
 
     /**
-     * The column <code>service_calendar.get_active_day_types_for_date.label</code>.
+     * The column
+     * <code>service_calendar.get_active_day_types_for_date.label</code>.
      */
     val LABEL: TableField<Record, String?> = createField(DSL.name("label"), SQLDataType.CLOB.nullable(false), this, "")
 
     /**
-     * The column <code>service_calendar.get_active_day_types_for_date.name_i18n</code>.
+     * The column
+     * <code>service_calendar.get_active_day_types_for_date.name_i18n</code>.
      */
     val NAME_I18N: TableField<Record, JSONB?> = createField(DSL.name("name_i18n"), SQLDataType.JSONB.nullable(false), this, "")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, arrayOf())
+    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, arrayOf(
+        DSL.value(null, SQLDataType.LOCALDATE)
+    ))
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>service_calendar.get_active_day_types_for_date</code> table reference
+     * Create an aliased
+     * <code>service_calendar.get_active_day_types_for_date</code> table
+     * reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>service_calendar.get_active_day_types_for_date</code> table reference
+     * Create an aliased
+     * <code>service_calendar.get_active_day_types_for_date</code> table
+     * reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>service_calendar.get_active_day_types_for_date</code> table reference
+     * Create a <code>service_calendar.get_active_day_types_for_date</code>
+     * table reference
      */
     constructor(): this(DSL.name("get_active_day_types_for_date"), null)
-    override fun getSchema(): Schema = ServiceCalendar.SERVICE_CALENDAR
+    override fun getSchema(): Schema? = if (aliased()) null else ServiceCalendar.SERVICE_CALENDAR
     override fun `as`(alias: String): GetActiveDayTypesForDate = GetActiveDayTypesForDate(DSL.name(alias), this, parameters)
     override fun `as`(alias: Name): GetActiveDayTypesForDate = GetActiveDayTypesForDate(alias, this, parameters)
+    override fun `as`(alias: Table<*>): GetActiveDayTypesForDate = GetActiveDayTypesForDate(alias.getQualifiedName(), this, parameters)
 
     /**
      * Rename this table
@@ -103,12 +115,17 @@ open class GetActiveDayTypesForDate(
     override fun rename(name: Name): GetActiveDayTypesForDate = GetActiveDayTypesForDate(name, null, parameters)
 
     /**
+     * Rename this table
+     */
+    override fun rename(name: Table<*>): GetActiveDayTypesForDate = GetActiveDayTypesForDate(name.getQualifiedName(), null, parameters)
+
+    /**
      * Call this table-valued function
      */
     fun call(
           observationDate: LocalDate?
     ): GetActiveDayTypesForDate = GetActiveDayTypesForDate(DSL.name("get_active_day_types_for_date"), null, arrayOf(
-          DSL.value(observationDate, SQLDataType.LOCALDATE)
+        DSL.value(observationDate, SQLDataType.LOCALDATE)
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 
     /**
@@ -117,6 +134,6 @@ open class GetActiveDayTypesForDate(
     fun call(
           observationDate: Field<LocalDate?>
     ): GetActiveDayTypesForDate = GetActiveDayTypesForDate(DSL.name("get_active_day_types_for_date"), null, arrayOf(
-          observationDate
+        observationDate
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
 }

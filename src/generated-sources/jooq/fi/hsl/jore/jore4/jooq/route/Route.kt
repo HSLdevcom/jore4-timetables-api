@@ -19,18 +19,19 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class Route : SchemaImpl("route", DefaultCatalog.DEFAULT_CATALOG) {
-    companion object {
+    public companion object {
 
         /**
          * The reference instance of <code>route</code>
          */
-        val ROUTE = Route()
+        val ROUTE: Route = Route()
     }
 
     /**
-     * Type of line. https://www.transmodel-cen.eu/model/index.htm?goto=2:1:3:424
+     * Type of line.
+     * https://www.transmodel-cen.eu/model/index.htm?goto=2:1:3:424
      */
-    val TYPE_OF_LINE get() = TypeOfLine.TYPE_OF_LINE
+    val TYPE_OF_LINE: TypeOfLine get() = TypeOfLine.TYPE_OF_LINE
 
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 

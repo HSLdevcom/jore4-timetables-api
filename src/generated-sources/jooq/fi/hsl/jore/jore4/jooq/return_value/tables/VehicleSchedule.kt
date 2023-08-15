@@ -25,9 +25,10 @@ import org.jooq.impl.TableImpl
 
 
 /**
- * This return value table is used in function vehicle_journey.get_vehicle_schedules_on_date. 
- * It consists of vehicle_journey_id, vehicle_schedule_frame_id or
- * substitute_operating_day_by_line_type_id and also enriched with data, which 
+ * This return value table is used in function
+ * vehicle_journey.get_vehicle_schedules_on_date. It consists of
+ * vehicle_journey_id, vehicle_schedule_frame_id or
+ * substitute_operating_day_by_line_type_id and also enriched with data, which
  * are used in the UI side.
  */
 @Suppress("UNCHECKED_CAST")
@@ -52,7 +53,7 @@ open class VehicleSchedule(
         /**
          * The reference instance of <code>return_value.vehicle_schedule</code>
          */
-        val VEHICLE_SCHEDULE = VehicleSchedule()
+        val VEHICLE_SCHEDULE: VehicleSchedule = VehicleSchedule()
     }
 
     /**
@@ -86,12 +87,14 @@ open class VehicleSchedule(
     val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "")
 
     /**
-     * The column <code>return_value.vehicle_schedule.vehicle_schedule_frame_id</code>.
+     * The column
+     * <code>return_value.vehicle_schedule.vehicle_schedule_frame_id</code>.
      */
     val VEHICLE_SCHEDULE_FRAME_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_schedule_frame_id"), SQLDataType.UUID, this, "")
 
     /**
-     * The column <code>return_value.vehicle_schedule.substitute_operating_day_by_line_type_id</code>.
+     * The column
+     * <code>return_value.vehicle_schedule.substitute_operating_day_by_line_type_id</code>.
      */
     val SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("substitute_operating_day_by_line_type_id"), SQLDataType.UUID, this, "")
 
@@ -104,12 +107,14 @@ open class VehicleSchedule(
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>return_value.vehicle_schedule</code> table reference
+     * Create an aliased <code>return_value.vehicle_schedule</code> table
+     * reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>return_value.vehicle_schedule</code> table reference
+     * Create an aliased <code>return_value.vehicle_schedule</code> table
+     * reference
      */
     constructor(alias: Name): this(alias, null)
 
@@ -119,9 +124,10 @@ open class VehicleSchedule(
     constructor(): this(DSL.name("vehicle_schedule"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_SCHEDULE, null)
-    override fun getSchema(): Schema = ReturnValue.RETURN_VALUE
+    override fun getSchema(): Schema? = if (aliased()) null else ReturnValue.RETURN_VALUE
     override fun `as`(alias: String): VehicleSchedule = VehicleSchedule(DSL.name(alias), this)
     override fun `as`(alias: Name): VehicleSchedule = VehicleSchedule(alias, this)
+    override fun `as`(alias: Table<*>): VehicleSchedule = VehicleSchedule(alias.getQualifiedName(), this)
 
     /**
      * Rename this table
@@ -132,4 +138,9 @@ open class VehicleSchedule(
      * Rename this table
      */
     override fun rename(name: Name): VehicleSchedule = VehicleSchedule(name, null)
+
+    /**
+     * Rename this table
+     */
+    override fun rename(name: Table<*>): VehicleSchedule = VehicleSchedule(name.getQualifiedName(), null)
 }

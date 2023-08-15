@@ -19,18 +19,19 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class ServicePattern : SchemaImpl("service_pattern", DefaultCatalog.DEFAULT_CATALOG) {
-    companion object {
+    public companion object {
 
         /**
          * The reference instance of <code>service_pattern</code>
          */
-        val SERVICE_PATTERN = ServicePattern()
+        val SERVICE_PATTERN: ServicePattern = ServicePattern()
     }
 
     /**
-     * Reference the a SCHEDULED STOP POINT within a JOURNEY PATTERN. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
+     * Reference the a SCHEDULED STOP POINT within a JOURNEY PATTERN.
+     * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
      */
-    val SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF get() = ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF
+    val SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF: ScheduledStopPointInJourneyPatternRef get() = ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF
 
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 

@@ -7,8 +7,6 @@ package fi.hsl.jore.jore4.jooq.route.tables
 import fi.hsl.jore.jore4.jooq.route.Route
 import fi.hsl.jore.jore4.jooq.route.keys.TYPE_OF_LINE_PKEY
 
-import kotlin.collections.List
-
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
@@ -49,7 +47,7 @@ open class TypeOfLine(
         /**
          * The reference instance of <code>route.type_of_line</code>
          */
-        val TYPE_OF_LINE = TypeOfLine()
+        val TYPE_OF_LINE: TypeOfLine = TypeOfLine()
     }
 
     /**
@@ -58,7 +56,8 @@ open class TypeOfLine(
     override fun getRecordType(): Class<Record> = Record::class.java
 
     /**
-     * The column <code>route.type_of_line.type_of_line</code>. GTFS route type: https://developers.google.com/transit/gtfs/reference/extended-route-types
+     * The column <code>route.type_of_line.type_of_line</code>. GTFS route type:
+     * https://developers.google.com/transit/gtfs/reference/extended-route-types
      */
     val TYPE_OF_LINE_: TableField<Record, String?> = createField(DSL.name("type_of_line"), SQLDataType.CLOB.nullable(false), this, "GTFS route type: https://developers.google.com/transit/gtfs/reference/extended-route-types")
 
@@ -81,11 +80,11 @@ open class TypeOfLine(
     constructor(): this(DSL.name("type_of_line"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, TYPE_OF_LINE, null)
-    override fun getSchema(): Schema = Route.ROUTE
+    override fun getSchema(): Schema? = if (aliased()) null else Route.ROUTE
     override fun getPrimaryKey(): UniqueKey<Record> = TYPE_OF_LINE_PKEY
-    override fun getKeys(): List<UniqueKey<Record>> = listOf(TYPE_OF_LINE_PKEY)
     override fun `as`(alias: String): TypeOfLine = TypeOfLine(DSL.name(alias), this)
     override fun `as`(alias: Name): TypeOfLine = TypeOfLine(alias, this)
+    override fun `as`(alias: Table<*>): TypeOfLine = TypeOfLine(alias.getQualifiedName(), this)
 
     /**
      * Rename this table
@@ -96,4 +95,9 @@ open class TypeOfLine(
      * Rename this table
      */
     override fun rename(name: Name): TypeOfLine = TypeOfLine(name, null)
+
+    /**
+     * Rename this table
+     */
+    override fun rename(name: Table<*>): TypeOfLine = TypeOfLine(name.getQualifiedName(), null)
 }

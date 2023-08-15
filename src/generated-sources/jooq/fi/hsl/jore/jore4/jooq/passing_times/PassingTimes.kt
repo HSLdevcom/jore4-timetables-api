@@ -26,18 +26,19 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class PassingTimes : SchemaImpl("passing_times", DefaultCatalog.DEFAULT_CATALOG) {
-    companion object {
+    public companion object {
 
         /**
          * The reference instance of <code>passing_times</code>
          */
-        val PASSING_TIMES = PassingTimes()
+        val PASSING_TIMES: PassingTimes = PassingTimes()
     }
 
     /**
-     * The table <code>passing_times.get_passing_time_order_validity_data</code>.
+     * The table
+     * <code>passing_times.get_passing_time_order_validity_data</code>.
      */
-    val GET_PASSING_TIME_ORDER_VALIDITY_DATA get() = GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA
+    val GET_PASSING_TIME_ORDER_VALIDITY_DATA: GetPassingTimeOrderValidityData get() = GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA
 
     /**
      * Call <code>passing_times.get_passing_time_order_validity_data</code>.
@@ -52,31 +53,36 @@ open class PassingTimes : SchemaImpl("passing_times", DefaultCatalog.DEFAULT_CAT
     )).fetch()
 
     /**
-     * Get <code>passing_times.get_passing_time_order_validity_data</code> as a table.
+     * Get <code>passing_times.get_passing_time_order_validity_data</code> as a
+     * table.
      */
     fun GET_PASSING_TIME_ORDER_VALIDITY_DATA(
           filterVehicleJourneyIds: Array<UUID?>?
         , filterJourneyPatternRefIds: Array<UUID?>?
     ): GetPassingTimeOrderValidityData = fi.hsl.jore.jore4.jooq.passing_times.tables.GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA.call(
-          filterVehicleJourneyIds
-        , filterJourneyPatternRefIds
+        filterVehicleJourneyIds,
+        filterJourneyPatternRefIds
     )
 
     /**
-     * Get <code>passing_times.get_passing_time_order_validity_data</code> as a table.
+     * Get <code>passing_times.get_passing_time_order_validity_data</code> as a
+     * table.
      */
     fun GET_PASSING_TIME_ORDER_VALIDITY_DATA(
           filterVehicleJourneyIds: Field<Array<UUID?>?>
         , filterJourneyPatternRefIds: Field<Array<UUID?>?>
     ): GetPassingTimeOrderValidityData = fi.hsl.jore.jore4.jooq.passing_times.tables.GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA.call(
-          filterVehicleJourneyIds
-        , filterJourneyPatternRefIds
+        filterVehicleJourneyIds,
+        filterJourneyPatternRefIds
     )
 
     /**
-     * Long-term planned time data concerning public transport vehicles passing a particular POINT IN JOURNEY PATTERN on a specified VEHICLE JOURNEY for a certain DAY TYPE. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:4:946 
+     * Long-term planned time data concerning public transport vehicles passing
+     * a particular POINT IN JOURNEY PATTERN on a specified VEHICLE JOURNEY for
+     * a certain DAY TYPE. Transmodel:
+     * https://www.transmodel-cen.eu/model/index.htm?goto=3:4:946 
      */
-    val TIMETABLED_PASSING_TIME get() = TimetabledPassingTime.TIMETABLED_PASSING_TIME
+    val TIMETABLED_PASSING_TIME: TimetabledPassingTime get() = TimetabledPassingTime.TIMETABLED_PASSING_TIME
 
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 

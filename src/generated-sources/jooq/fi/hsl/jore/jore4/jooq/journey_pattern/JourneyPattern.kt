@@ -19,18 +19,20 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class JourneyPattern : SchemaImpl("journey_pattern", DefaultCatalog.DEFAULT_CATALOG) {
-    companion object {
+    public companion object {
 
         /**
          * The reference instance of <code>journey_pattern</code>
          */
-        val JOURNEY_PATTERN = JourneyPattern()
+        val JOURNEY_PATTERN: JourneyPattern = JourneyPattern()
     }
 
     /**
-     * Reference to a given snapshot of a JOURNEY PATTERN for a given operating day. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
+     * Reference to a given snapshot of a JOURNEY PATTERN for a given operating
+     * day. Transmodel:
+     * https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
      */
-    val JOURNEY_PATTERN_REF get() = JourneyPatternRef.JOURNEY_PATTERN_REF
+    val JOURNEY_PATTERN_REF: JourneyPatternRef get() = JourneyPatternRef.JOURNEY_PATTERN_REF
 
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 

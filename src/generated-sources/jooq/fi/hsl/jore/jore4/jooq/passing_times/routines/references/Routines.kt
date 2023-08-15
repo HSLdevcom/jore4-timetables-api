@@ -18,7 +18,8 @@ import org.jooq.Result
 
 
 /**
- * Call <code>passing_times.create_validate_passing_times_sequence_queue_temp_tables</code>
+ * Call
+ * <code>passing_times.create_validate_passing_times_sequence_queue_temp_tables</code>
  */
 fun createValidatePassingTimesSequenceQueueTempTables(
       configuration: Configuration
@@ -41,7 +42,8 @@ fun passingTimesSequenceAlreadyValidated(
 }
 
 /**
- * Get <code>passing_times.passing_times_sequence_already_validated</code> as a field.
+ * Get <code>passing_times.passing_times_sequence_already_validated</code> as a
+ * field.
  */
 fun passingTimesSequenceAlreadyValidated(): Field<Boolean?> {
     val f = PassingTimesSequenceAlreadyValidated()
@@ -62,23 +64,25 @@ fun getPassingTimeOrderValidityData(
 )).fetch()
 
 /**
- * Get <code>passing_times.get_passing_time_order_validity_data</code> as a table.
+ * Get <code>passing_times.get_passing_time_order_validity_data</code> as a
+ * table.
  */
 fun getPassingTimeOrderValidityData(
       filterVehicleJourneyIds: Array<UUID?>?
     , filterJourneyPatternRefIds: Array<UUID?>?
 ): GetPassingTimeOrderValidityData = fi.hsl.jore.jore4.jooq.passing_times.tables.GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA.call(
-      filterVehicleJourneyIds
-    , filterJourneyPatternRefIds
+    filterVehicleJourneyIds,
+    filterJourneyPatternRefIds
 )
 
 /**
- * Get <code>passing_times.get_passing_time_order_validity_data</code> as a table.
+ * Get <code>passing_times.get_passing_time_order_validity_data</code> as a
+ * table.
  */
 fun getPassingTimeOrderValidityData(
       filterVehicleJourneyIds: Field<Array<UUID?>?>
     , filterJourneyPatternRefIds: Field<Array<UUID?>?>
 ): GetPassingTimeOrderValidityData = fi.hsl.jore.jore4.jooq.passing_times.tables.GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA.call(
-      filterVehicleJourneyIds
-    , filterJourneyPatternRefIds
+    filterVehicleJourneyIds,
+    filterJourneyPatternRefIds
 )

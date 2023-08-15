@@ -9,8 +9,6 @@ import fi.hsl.jore.jore4.jooq.service_calendar.keys.DAY_TYPE_PKEY
 
 import java.util.UUID
 
-import kotlin.collections.List
-
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.JSONB
@@ -28,8 +26,8 @@ import org.jooq.impl.TableImpl
 
 
 /**
- * A type of day characterised by one or more properties which affect public 
- * transport operation. For example: weekday in school holidays. Transmodel: 
+ * A type of day characterised by one or more properties which affect public
+ * transport operation. For example: weekday in school holidays. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=1:6:3:299 
  */
 @Suppress("UNCHECKED_CAST")
@@ -54,7 +52,7 @@ open class DayType(
         /**
          * The reference instance of <code>service_calendar.day_type</code>
          */
-        val DAY_TYPE = DayType()
+        val DAY_TYPE: DayType = DayType()
     }
 
     /**
@@ -65,15 +63,19 @@ open class DayType(
     /**
      * The column <code>service_calendar.day_type.day_type_id</code>.
      */
-    val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field("gen_random_uuid()", SQLDataType.UUID)), this, "")
+    val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
 
     /**
-     * The column <code>service_calendar.day_type.label</code>. The label for the DAY TYPE. Used for identifying the DAY TYPE when importing data from Hastus. Includes both basic (e.g. "Monday-Thursday") and special ("Easter Sunday") day types
+     * The column <code>service_calendar.day_type.label</code>. The label for
+     * the DAY TYPE. Used for identifying the DAY TYPE when importing data from
+     * Hastus. Includes both basic (e.g. "Monday-Thursday") and special ("Easter
+     * Sunday") day types
      */
     val LABEL: TableField<Record, String?> = createField(DSL.name("label"), SQLDataType.CLOB.nullable(false), this, "The label for the DAY TYPE. Used for identifying the DAY TYPE when importing data from Hastus. Includes both basic (e.g. \"Monday-Thursday\") and special (\"Easter Sunday\") day types")
 
     /**
-     * The column <code>service_calendar.day_type.name_i18n</code>. Human-readable name for the DAY TYPE
+     * The column <code>service_calendar.day_type.name_i18n</code>.
+     * Human-readable name for the DAY TYPE
      */
     val NAME_I18N: TableField<Record, JSONB?> = createField(DSL.name("name_i18n"), SQLDataType.JSONB.nullable(false), this, "Human-readable name for the DAY TYPE")
 
@@ -96,11 +98,11 @@ open class DayType(
     constructor(): this(DSL.name("day_type"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, DAY_TYPE, null)
-    override fun getSchema(): Schema = ServiceCalendar.SERVICE_CALENDAR
+    override fun getSchema(): Schema? = if (aliased()) null else ServiceCalendar.SERVICE_CALENDAR
     override fun getPrimaryKey(): UniqueKey<Record> = DAY_TYPE_PKEY
-    override fun getKeys(): List<UniqueKey<Record>> = listOf(DAY_TYPE_PKEY)
     override fun `as`(alias: String): DayType = DayType(DSL.name(alias), this)
     override fun `as`(alias: Name): DayType = DayType(alias, this)
+    override fun `as`(alias: Table<*>): DayType = DayType(alias.getQualifiedName(), this)
 
     /**
      * Rename this table
@@ -111,4 +113,9 @@ open class DayType(
      * Rename this table
      */
     override fun rename(name: Name): DayType = DayType(name, null)
+
+    /**
+     * Rename this table
+     */
+    override fun rename(name: Table<*>): DayType = DayType(name.getQualifiedName(), null)
 }

@@ -28,8 +28,8 @@ import org.jooq.impl.TableImpl
 
 
 /**
- * Models substitute operating period that consists of substitute operating 
- * days by line types.
+ * Models substitute operating period that consists of substitute operating days
+ * by line types.
  */
 @Suppress("UNCHECKED_CAST")
 open class SubstituteOperatingPeriod(
@@ -51,9 +51,10 @@ open class SubstituteOperatingPeriod(
     companion object {
 
         /**
-         * The reference instance of <code>service_calendar.substitute_operating_period</code>
+         * The reference instance of
+         * <code>service_calendar.substitute_operating_period</code>
          */
-        val SUBSTITUTE_OPERATING_PERIOD = SubstituteOperatingPeriod()
+        val SUBSTITUTE_OPERATING_PERIOD: SubstituteOperatingPeriod = SubstituteOperatingPeriod()
     }
 
     /**
@@ -62,44 +63,54 @@ open class SubstituteOperatingPeriod(
     override fun getRecordType(): Class<Record> = Record::class.java
 
     /**
-     * The column <code>service_calendar.substitute_operating_period.substitute_operating_period_id</code>.
+     * The column
+     * <code>service_calendar.substitute_operating_period.substitute_operating_period_id</code>.
      */
-    val SUBSTITUTE_OPERATING_PERIOD_ID: TableField<Record, UUID?> = createField(DSL.name("substitute_operating_period_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field("gen_random_uuid()", SQLDataType.UUID)), this, "")
+    val SUBSTITUTE_OPERATING_PERIOD_ID: TableField<Record, UUID?> = createField(DSL.name("substitute_operating_period_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
 
     /**
-     * The column <code>service_calendar.substitute_operating_period.period_name</code>. Substitute operating period's name
+     * The column
+     * <code>service_calendar.substitute_operating_period.period_name</code>.
+     * Substitute operating period's name
      */
     val PERIOD_NAME: TableField<Record, String?> = createField(DSL.name("period_name"), SQLDataType.CLOB.nullable(false), this, "Substitute operating period's name")
 
     /**
-     * The column <code>service_calendar.substitute_operating_period.is_preset</code>. Flag indicating whether operating period is preset or not. Preset operating periods have restrictions on the UI
+     * The column
+     * <code>service_calendar.substitute_operating_period.is_preset</code>. Flag
+     * indicating whether operating period is preset or not. Preset operating
+     * periods have restrictions on the UI
      */
-    val IS_PRESET: TableField<Record, Boolean?> = createField(DSL.name("is_preset"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "Flag indicating whether operating period is preset or not. Preset operating periods have restrictions on the UI")
+    val IS_PRESET: TableField<Record, Boolean?> = createField(DSL.name("is_preset"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field(DSL.raw("false"), SQLDataType.BOOLEAN)), this, "Flag indicating whether operating period is preset or not. Preset operating periods have restrictions on the UI")
 
     private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>service_calendar.substitute_operating_period</code> table reference
+     * Create an aliased
+     * <code>service_calendar.substitute_operating_period</code> table reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>service_calendar.substitute_operating_period</code> table reference
+     * Create an aliased
+     * <code>service_calendar.substitute_operating_period</code> table reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>service_calendar.substitute_operating_period</code> table reference
+     * Create a <code>service_calendar.substitute_operating_period</code> table
+     * reference
      */
     constructor(): this(DSL.name("substitute_operating_period"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, SUBSTITUTE_OPERATING_PERIOD, null)
-    override fun getSchema(): Schema = ServiceCalendar.SERVICE_CALENDAR
+    override fun getSchema(): Schema? = if (aliased()) null else ServiceCalendar.SERVICE_CALENDAR
     override fun getPrimaryKey(): UniqueKey<Record> = SUBSTITUTE_OPERATING_PERIOD_PKEY
-    override fun getKeys(): List<UniqueKey<Record>> = listOf(SUBSTITUTE_OPERATING_PERIOD_PKEY, SUBSTITUTE_OPERATING_PERIOD_PERIOD_NAME_KEY)
+    override fun getUniqueKeys(): List<UniqueKey<Record>> = listOf(SUBSTITUTE_OPERATING_PERIOD_PERIOD_NAME_KEY)
     override fun `as`(alias: String): SubstituteOperatingPeriod = SubstituteOperatingPeriod(DSL.name(alias), this)
     override fun `as`(alias: Name): SubstituteOperatingPeriod = SubstituteOperatingPeriod(alias, this)
+    override fun `as`(alias: Table<*>): SubstituteOperatingPeriod = SubstituteOperatingPeriod(alias.getQualifiedName(), this)
 
     /**
      * Rename this table
@@ -110,4 +121,9 @@ open class SubstituteOperatingPeriod(
      * Rename this table
      */
     override fun rename(name: Name): SubstituteOperatingPeriod = SubstituteOperatingPeriod(name, null)
+
+    /**
+     * Rename this table
+     */
+    override fun rename(name: Table<*>): SubstituteOperatingPeriod = SubstituteOperatingPeriod(name.getQualifiedName(), null)
 }
