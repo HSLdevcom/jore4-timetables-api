@@ -1,0 +1,250 @@
+{
+  "_vehicle_schedule_frames": {
+    "staging": {
+      "vehicle_schedule_frame_id": "77fa8187-9a8e-4ce6-9fe2-5855f438b0e2",
+      "validity_start": "2023-01-01",
+      "validity_end": "2023-05-31",
+      "name": "Talvi 2022 luonnos",
+      "priority": "Staging",
+      "_vehicle_services": {
+        "monFri": {
+          "day_type_id": "MONDAY_FRIDAY",
+          "_blocks": {
+            "block": {
+              "_vehicle_journeys": {
+                "route123Outbound1": {
+                  "_journey_pattern_ref_name": "route123Outbound",
+                  "_passing_times": [
+                    {
+                      "_scheduled_stop_point_label": "H2201",
+                      "arrival_time": null,
+                      "departure_time": "PT7H5M"
+                    },
+                    {
+                      "_scheduled_stop_point_label": "H2202",
+                      "arrival_time": "PT7H15M",
+                      "departure_time": "PT7H15M"
+                    },
+                    {
+                      "_scheduled_stop_point_label": "H2203",
+                      "arrival_time": "PT7H22M",
+                      "departure_time": "PT7H22M"
+                    },
+                    {
+                      "_scheduled_stop_point_label": "H2204",
+                      "arrival_time": "PT7H27M",
+                      "departure_time": null
+                    }
+                  ]
+                },
+                "route123Inbound1": {
+                  "_journey_pattern_ref_name": "route123Inbound",
+                  "_passing_times": [
+                    {
+                      "_scheduled_stop_point_label": "H2204",
+                      "arrival_time": null,
+                      "departure_time": "PT8H10M"
+                    },
+                    {
+                      "_scheduled_stop_point_label": "H2203",
+                      "arrival_time": "PT8H15M",
+                      "departure_time": "PT8H15M"
+                    },
+                    {
+                      "_scheduled_stop_point_label": "H2202",
+                      "arrival_time": "PT8H19M",
+                      "departure_time": "PT8H19M"
+                    },
+                    {
+                      "_scheduled_stop_point_label": "H2201",
+                      "arrival_time": "PT8H25M",
+                      "departure_time": null
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "current": {
+      "vehicle_schedule_frame_id": "35e94feb-21d0-4418-9c9a-58345066af78",
+      "validity_start": "2022-07-01",
+      "validity_end": "2023-05-31",
+      "name": "Talvi 2022",
+      "priority": "Standard",
+      "_vehicle_services": {
+        "monFri": {
+          "day_type_id": "MONDAY_FRIDAY",
+          "_blocks": {
+            "block": {
+              "_vehicle_journeys": {
+                "route123Outbound1": {
+                  "_journey_pattern_ref_name": "route123Outbound",
+                  "_passing_times": [
+                    {
+                      "_scheduled_stop_point_label": "H2201",
+                      "arrival_time": null,
+                      "departure_time": "PT9H5M"
+                    },
+                    {
+                      "_scheduled_stop_point_label": "H2202",
+                      "arrival_time": "PT9H15M",
+                      "departure_time": "PT9H15M"
+                    },
+                    {
+                      "_scheduled_stop_point_label": "H2203",
+                      "arrival_time": "PT9H22M",
+                      "departure_time": "PT9H22M"
+                    },
+                    {
+                      "_scheduled_stop_point_label": "H2204",
+                      "arrival_time": "PT9H27M",
+                      "departure_time": null
+                    }
+                  ]
+                },
+                "route234Outbound1": {
+                  "_journey_pattern_ref_name": "route234Outbound",
+                  "_passing_times": [
+                    {
+                      "_scheduled_stop_point_label": "K2201",
+                      "arrival_time": null,
+                      "departure_time": "PT12H5M"
+                    },
+                    {
+                      "_scheduled_stop_point_label": "K2202",
+                      "arrival_time": "PT12H15M",
+                      "departure_time": "PT12H15M"
+                    },
+                    {
+                      "_scheduled_stop_point_label": "K2203",
+                      "arrival_time": "PT12H27M",
+                      "departure_time": null
+                    }
+                  ]
+                },
+                "route234Inbound1": {
+                  "_journey_pattern_ref_name": "route234Inbound",
+                  "_passing_times": [
+                    {
+                      "_scheduled_stop_point_label": "K2203",
+                      "arrival_time": null,
+                      "departure_time": "PT13H5M"
+                    },
+                    {
+                      "_scheduled_stop_point_label": "K2202",
+                      "arrival_time": "PT13H15M",
+                      "departure_time": "PT13H15M"
+                    },
+                    {
+                      "_scheduled_stop_point_label": "K2201",
+                      "arrival_time": "PT13H25M",
+                      "departure_time": null
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "_journey_pattern_refs": {
+    "route123Outbound": {
+      "journey_pattern_id": "250c7d57-24f9-4bdf-ae0d-ca0ff54987ec",
+      "type_of_line": "stopping_bus_service",
+      "observation_timestamp": "2023-07-01T00:00:00+00:00",
+      "snapshot_timestamp": "2023-09-28T00:00:00+00:00",
+
+      "_stop_points": [
+        {
+          "scheduled_stop_point_sequence": 1,
+          "scheduled_stop_point_label": "H2201"
+        },
+        {
+          "scheduled_stop_point_sequence": 2,
+          "scheduled_stop_point_label": "H2202"
+        },
+        {
+          "scheduled_stop_point_sequence": 3,
+          "scheduled_stop_point_label": "H2203"
+        },
+        {
+          "scheduled_stop_point_sequence": 4,
+          "scheduled_stop_point_label": "H2204"
+        }
+      ]
+    },
+    "route123Inbound": {
+      "journey_pattern_id": "21ce14d7-93a1-41bc-8cef-5e239af4ad60",
+      "type_of_line": "stopping_bus_service",
+      "observation_timestamp": "2023-07-01T00:00:00+00:00",
+      "snapshot_timestamp": "2023-09-28T00:00:00+00:00",
+
+      "_stop_points": [
+        {
+          "scheduled_stop_point_sequence": 1,
+          "scheduled_stop_point_label": "H2204"
+        },
+        {
+          "scheduled_stop_point_sequence": 2,
+          "scheduled_stop_point_label": "H2203"
+        },
+        {
+          "scheduled_stop_point_sequence": 3,
+          "scheduled_stop_point_label": "H2202"
+        },
+        {
+          "scheduled_stop_point_sequence": 4,
+          "scheduled_stop_point_label": "H2201"
+        }
+      ]
+    },
+
+    "route234Outbound": {
+      "journey_pattern_id": "f91198e9-b67d-4f40-84e0-7860261c584a",
+      "type_of_line": "stopping_bus_service",
+      "observation_timestamp": "2023-06-01T00:00:00+00:00",
+      "snapshot_timestamp": "2023-08-28T00:00:00+00:00",
+
+      "_stop_points": [
+        {
+          "scheduled_stop_point_sequence": 1,
+          "scheduled_stop_point_label": "K2201"
+        },
+        {
+          "scheduled_stop_point_sequence": 2,
+          "scheduled_stop_point_label": "K2202"
+        },
+        {
+          "scheduled_stop_point_sequence": 3,
+          "scheduled_stop_point_label": "K2203"
+        }
+      ]
+    },
+    "route234Inbound": {
+      "journey_pattern_id": "375f22b1-bd28-4174-8f56-aa7dbc3ee2fb",
+      "type_of_line": "stopping_bus_service",
+      "observation_timestamp": "2023-06-01T00:00:00+00:00",
+      "snapshot_timestamp": "2023-08-28T00:00:00+00:00",
+
+      "_stop_points": [
+        {
+          "scheduled_stop_point_sequence": 1,
+          "scheduled_stop_point_label": "K2203"
+        },
+        {
+          "scheduled_stop_point_sequence": 2,
+          "scheduled_stop_point_label": "K2202"
+        },
+        {
+          "scheduled_stop_point_sequence": 3,
+          "scheduled_stop_point_label": "K2201"
+        }
+      ]
+    }
+  }
+}
