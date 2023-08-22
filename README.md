@@ -24,6 +24,16 @@ Uses maven to build the project, use `mvn install` to build the server. You can 
 
 jOOQ! classes are not automatically generated and should be refreshed using the `development.sh generate:jooq` command. This is necessary when the structure of a part of the database used by this API changes.
 
+### Submodules
+
+Tests use `timetables-data-inserter` from ´jore4-hasura´ repository.
+This is included as a Git submodule.
+
+When the submodule is updated, to get the newest version of inserter you need to:
+- Update git submodules with `git submodule update`
+- Install dependencies and build the timetables data inserter with `development.sh`,
+  by running either of the `start` tasks or `build:data-inserter`
+
 ## API structure
 
 ### GET
