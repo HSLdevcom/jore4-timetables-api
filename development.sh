@@ -15,6 +15,7 @@ instruct_and_exit() {
   echo "start               Start the dependencies and the dockerized application"
   echo "start:deps          Start the dependencies only"
   echo "generate:jooq       Start the dependencies and generate jOOQ classes"
+  echo "build:data-inserter Installs required dependencies and builds the timetables data inserter"
   echo "stop                Stop the dependencies and the dockerized application"
   exit 1
 }
@@ -30,6 +31,7 @@ start_all() {
   download_docker_bundle
   $DOCKER_COMPOSE_CMD up -d jore4-hasura jore4-testdb
   $DOCKER_COMPOSE_CMD up --build -d jore4-timetables-api
+  prepare_timetables_data_inserter
 }
 
 start_deps() {
@@ -38,10 +40,18 @@ start_deps() {
   # jore4-hasura - Hasura. We have to start Hasura because it ensures that db migrations are run to the Jore 4 database.
   # jore4-testdb - Jore 4 database. This is the database used by the API.
   $DOCKER_COMPOSE_CMD up --build -d jore4-hasura jore4-testdb
+  prepare_timetables_data_inserter
 }
 
 generate_jooq() {
   mvn clean generate-sources -Pci
+}
+
+prepare_timetables_data_inserter() {
+  cd jore4-hasura/test/hasura
+  yarn install
+  yarn timetables-data-inserter:build
+  cd -
 }
 
 ### Control flow
@@ -57,6 +67,11 @@ fi
 
 if [[ ${COMMAND} == "start:deps" ]]; then
   start_deps
+  exit 0
+fi
+
+if [[ ${COMMAND} == "build:data-inserter" ]]; then
+  prepare_timetables_data_inserter
   exit 0
 fi
 
