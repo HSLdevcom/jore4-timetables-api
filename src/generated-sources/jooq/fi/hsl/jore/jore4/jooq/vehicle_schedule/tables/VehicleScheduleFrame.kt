@@ -6,17 +6,22 @@ package fi.hsl.jore.jore4.jooq.vehicle_schedule.tables
 
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.VehicleSchedule
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.keys.VEHICLE_SCHEDULE_FRAME_PKEY
+import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.records.VehicleScheduleFrameRecord
 
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
+import java.util.function.Function
 
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.JSONB
 import org.jooq.Name
 import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row10
 import org.jooq.Schema
+import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -36,10 +41,10 @@ import org.jooq.impl.TableImpl
 open class VehicleScheduleFrame(
     alias: Name,
     child: Table<out Record>?,
-    path: ForeignKey<out Record, Record>?,
-    aliased: Table<Record>?,
+    path: ForeignKey<out Record, VehicleScheduleFrameRecord>?,
+    aliased: Table<VehicleScheduleFrameRecord>?,
     parameters: Array<Field<*>?>?
-): TableImpl<Record>(
+): TableImpl<VehicleScheduleFrameRecord>(
     alias,
     VehicleSchedule.VEHICLE_SCHEDULE,
     child,
@@ -61,20 +66,20 @@ open class VehicleScheduleFrame(
     /**
      * The class holding records for this type
      */
-    override fun getRecordType(): Class<Record> = Record::class.java
+    override fun getRecordType(): Class<VehicleScheduleFrameRecord> = VehicleScheduleFrameRecord::class.java
 
     /**
      * The column
      * <code>vehicle_schedule.vehicle_schedule_frame.vehicle_schedule_frame_id</code>.
      */
-    val VEHICLE_SCHEDULE_FRAME_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_schedule_frame_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
+    val VEHICLE_SCHEDULE_FRAME_ID: TableField<VehicleScheduleFrameRecord, UUID?> = createField(DSL.name("vehicle_schedule_frame_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
 
     /**
      * The column
      * <code>vehicle_schedule.vehicle_schedule_frame.name_i18n</code>.
      * Human-readable name for the VEHICLE SCHEDULE FRAME
      */
-    val NAME_I18N: TableField<Record, JSONB?> = createField(DSL.name("name_i18n"), SQLDataType.JSONB, this, "Human-readable name for the VEHICLE SCHEDULE FRAME")
+    val NAME_I18N: TableField<VehicleScheduleFrameRecord, JSONB?> = createField(DSL.name("name_i18n"), SQLDataType.JSONB, this, "Human-readable name for the VEHICLE SCHEDULE FRAME")
 
     /**
      * The column
@@ -82,7 +87,7 @@ open class VehicleScheduleFrame(
      * OPERATING DAY when the VEHICLE SCHEDULE FRAME validity starts
      * (inclusive). Null if always has been valid.
      */
-    val VALIDITY_START: TableField<Record, LocalDate?> = createField(DSL.name("validity_start"), SQLDataType.LOCALDATE.nullable(false), this, "OPERATING DAY when the VEHICLE SCHEDULE FRAME validity starts (inclusive). Null if always has been valid.")
+    val VALIDITY_START: TableField<VehicleScheduleFrameRecord, LocalDate?> = createField(DSL.name("validity_start"), SQLDataType.LOCALDATE.nullable(false), this, "OPERATING DAY when the VEHICLE SCHEDULE FRAME validity starts (inclusive). Null if always has been valid.")
 
     /**
      * The column
@@ -90,21 +95,21 @@ open class VehicleScheduleFrame(
      * OPERATING DAY when the VEHICLE SCHEDULE FRAME validity ends (inclusive).
      * Null if always will be valid.
      */
-    val VALIDITY_END: TableField<Record, LocalDate?> = createField(DSL.name("validity_end"), SQLDataType.LOCALDATE.nullable(false), this, "OPERATING DAY when the VEHICLE SCHEDULE FRAME validity ends (inclusive). Null if always will be valid.")
+    val VALIDITY_END: TableField<VehicleScheduleFrameRecord, LocalDate?> = createField(DSL.name("validity_end"), SQLDataType.LOCALDATE.nullable(false), this, "OPERATING DAY when the VEHICLE SCHEDULE FRAME validity ends (inclusive). Null if always will be valid.")
 
     /**
      * The column <code>vehicle_schedule.vehicle_schedule_frame.priority</code>.
      * The priority of the timetable definition. The definition may be
      * overridden by higher priority definitions.
      */
-    val PRIORITY: TableField<Record, Int?> = createField(DSL.name("priority"), SQLDataType.INTEGER.nullable(false), this, "The priority of the timetable definition. The definition may be overridden by higher priority definitions.")
+    val PRIORITY: TableField<VehicleScheduleFrameRecord, Int?> = createField(DSL.name("priority"), SQLDataType.INTEGER.nullable(false), this, "The priority of the timetable definition. The definition may be overridden by higher priority definitions.")
 
     /**
      * The column <code>vehicle_schedule.vehicle_schedule_frame.label</code>.
      * Label for the vehicle schedule frame. Comes from BookingRecord vsc_name
      * field from Hastus.
      */
-    val LABEL: TableField<Record, String?> = createField(DSL.name("label"), SQLDataType.CLOB.nullable(false), this, "Label for the vehicle schedule frame. Comes from BookingRecord vsc_name field from Hastus.")
+    val LABEL: TableField<VehicleScheduleFrameRecord, String?> = createField(DSL.name("label"), SQLDataType.CLOB.nullable(false), this, "Label for the vehicle schedule frame. Comes from BookingRecord vsc_name field from Hastus.")
 
     /**
      * The column
@@ -112,7 +117,7 @@ open class VehicleScheduleFrame(
      * Booking label for the vehicle schedule frame. Comes from BookingRecord
      * vsc_booking field from Hastus.
      */
-    val BOOKING_LABEL: TableField<Record, String?> = createField(DSL.name("booking_label"), SQLDataType.CLOB.nullable(false).defaultValue(DSL.field(DSL.raw("''::text"), SQLDataType.CLOB)), this, "Booking label for the vehicle schedule frame. Comes from BookingRecord vsc_booking field from Hastus.")
+    val BOOKING_LABEL: TableField<VehicleScheduleFrameRecord, String?> = createField(DSL.name("booking_label"), SQLDataType.CLOB.nullable(false).defaultValue(DSL.field(DSL.raw("''::text"), SQLDataType.CLOB)), this, "Booking label for the vehicle schedule frame. Comes from BookingRecord vsc_booking field from Hastus.")
 
     /**
      * The column
@@ -120,18 +125,18 @@ open class VehicleScheduleFrame(
      * Booking description for the vehicle schedule frame. Comes from
      * BookingRecord vsc_booking_desc field from Hastus.
      */
-    val BOOKING_DESCRIPTION_I18N: TableField<Record, JSONB?> = createField(DSL.name("booking_description_i18n"), SQLDataType.JSONB, this, "Booking description for the vehicle schedule frame. Comes from BookingRecord vsc_booking_desc field from Hastus.")
+    val BOOKING_DESCRIPTION_I18N: TableField<VehicleScheduleFrameRecord, JSONB?> = createField(DSL.name("booking_description_i18n"), SQLDataType.JSONB, this, "Booking description for the vehicle schedule frame. Comes from BookingRecord vsc_booking_desc field from Hastus.")
     @Deprecated(message = "Unknown data type. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
-    val VALIDITY_RANGE: TableField<Record, Any?> = createField(DSL.name("validity_range"), org.jooq.impl.DefaultDataType.getDefaultDataType("\"pg_catalog\".\"daterange\"").nullable(false), this, "\nA denormalized column for actual daterange when vehicle schedule frame is valid,\nthat is, a closed date range [validity_start, validity_end].\nAdded to make working with PostgreSQL functions easier:\nthey typically expect ranges to be half closed.")
+    val VALIDITY_RANGE: TableField<VehicleScheduleFrameRecord, Any?> = createField(DSL.name("validity_range"), org.jooq.impl.DefaultDataType.getDefaultDataType("\"pg_catalog\".\"daterange\"").nullable(false), this, "\nA denormalized column for actual daterange when vehicle schedule frame is valid,\nthat is, a closed date range [validity_start, validity_end].\nAdded to make working with PostgreSQL functions easier:\nthey typically expect ranges to be half closed.")
 
     /**
      * The column
      * <code>vehicle_schedule.vehicle_schedule_frame.created_at</code>.
      */
-    val CREATED_AT: TableField<Record, OffsetDateTime?> = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "")
+    val CREATED_AT: TableField<VehicleScheduleFrameRecord, OffsetDateTime?> = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<VehicleScheduleFrameRecord>?): this(alias, null, null, aliased, null)
+    private constructor(alias: Name, aliased: Table<VehicleScheduleFrameRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
      * Create an aliased <code>vehicle_schedule.vehicle_schedule_frame</code>
@@ -151,9 +156,9 @@ open class VehicleScheduleFrame(
      */
     constructor(): this(DSL.name("vehicle_schedule_frame"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_SCHEDULE_FRAME, null)
+    constructor(child: Table<out Record>, key: ForeignKey<out Record, VehicleScheduleFrameRecord>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_SCHEDULE_FRAME, null)
     override fun getSchema(): Schema? = if (aliased()) null else VehicleSchedule.VEHICLE_SCHEDULE
-    override fun getPrimaryKey(): UniqueKey<Record> = VEHICLE_SCHEDULE_FRAME_PKEY
+    override fun getPrimaryKey(): UniqueKey<VehicleScheduleFrameRecord> = VEHICLE_SCHEDULE_FRAME_PKEY
     override fun `as`(alias: String): VehicleScheduleFrame = VehicleScheduleFrame(DSL.name(alias), this)
     override fun `as`(alias: Name): VehicleScheduleFrame = VehicleScheduleFrame(alias, this)
     override fun `as`(alias: Table<*>): VehicleScheduleFrame = VehicleScheduleFrame(alias.getQualifiedName(), this)
@@ -172,4 +177,20 @@ open class VehicleScheduleFrame(
      * Rename this table
      */
     override fun rename(name: Table<*>): VehicleScheduleFrame = VehicleScheduleFrame(name.getQualifiedName(), null)
+
+    // -------------------------------------------------------------------------
+    // Row10 type methods
+    // -------------------------------------------------------------------------
+    override fun fieldsRow(): Row10<UUID?, JSONB?, LocalDate?, LocalDate?, Int?, String?, String?, JSONB?, Any?, OffsetDateTime?> = super.fieldsRow() as Row10<UUID?, JSONB?, LocalDate?, LocalDate?, Int?, String?, String?, JSONB?, Any?, OffsetDateTime?>
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    fun <U> mapping(from: (UUID?, JSONB?, LocalDate?, LocalDate?, Int?, String?, String?, JSONB?, Any?, OffsetDateTime?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    fun <U> mapping(toType: Class<U>, from: (UUID?, JSONB?, LocalDate?, LocalDate?, Int?, String?, String?, JSONB?, Any?, OffsetDateTime?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

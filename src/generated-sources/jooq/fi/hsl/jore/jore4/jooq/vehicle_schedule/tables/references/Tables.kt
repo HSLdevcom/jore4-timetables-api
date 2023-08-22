@@ -6,12 +6,12 @@ package fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.references
 
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.VehicleScheduleFrame
+import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.records.GetOverlappingSchedulesRecord
 
 import java.util.UUID
 
 import org.jooq.Configuration
 import org.jooq.Field
-import org.jooq.Record
 import org.jooq.Result
 
 
@@ -28,9 +28,11 @@ fun GET_OVERLAPPING_SCHEDULES(
       configuration: Configuration
     , filterVehicleScheduleFrameIds: Array<UUID?>?
     , filterJourneyPatternRefIds: Array<UUID?>?
-): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES.call(
+    , ignorePriority: Boolean?
+): Result<GetOverlappingSchedulesRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES.call(
       filterVehicleScheduleFrameIds
     , filterJourneyPatternRefIds
+    , ignorePriority
 )).fetch()
 
 /**
@@ -39,9 +41,11 @@ fun GET_OVERLAPPING_SCHEDULES(
 fun GET_OVERLAPPING_SCHEDULES(
       filterVehicleScheduleFrameIds: Array<UUID?>?
     , filterJourneyPatternRefIds: Array<UUID?>?
+    , ignorePriority: Boolean?
 ): GetOverlappingSchedules = fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES.call(
     filterVehicleScheduleFrameIds,
-    filterJourneyPatternRefIds
+    filterJourneyPatternRefIds,
+    ignorePriority
 )
 
 /**
@@ -50,9 +54,11 @@ fun GET_OVERLAPPING_SCHEDULES(
 fun GET_OVERLAPPING_SCHEDULES(
       filterVehicleScheduleFrameIds: Field<Array<UUID?>?>
     , filterJourneyPatternRefIds: Field<Array<UUID?>?>
+    , ignorePriority: Field<Boolean?>
 ): GetOverlappingSchedules = fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES.call(
     filterVehicleScheduleFrameIds,
-    filterJourneyPatternRefIds
+    filterJourneyPatternRefIds,
+    ignorePriority
 )
 
 /**

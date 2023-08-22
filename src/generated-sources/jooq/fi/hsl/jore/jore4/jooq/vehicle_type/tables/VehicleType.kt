@@ -5,15 +5,20 @@ package fi.hsl.jore.jore4.jooq.vehicle_type.tables
 
 
 import fi.hsl.jore.jore4.jooq.vehicle_type.keys.VEHICLE_TYPE_PKEY
+import fi.hsl.jore.jore4.jooq.vehicle_type.tables.records.VehicleTypeRecord
 
 import java.util.UUID
+import java.util.function.Function
 
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.JSONB
 import org.jooq.Name
 import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row4
 import org.jooq.Schema
+import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -35,10 +40,10 @@ import org.jooq.impl.TableImpl
 open class VehicleType(
     alias: Name,
     child: Table<out Record>?,
-    path: ForeignKey<out Record, Record>?,
-    aliased: Table<Record>?,
+    path: ForeignKey<out Record, VehicleTypeRecord>?,
+    aliased: Table<VehicleTypeRecord>?,
     parameters: Array<Field<*>?>?
-): TableImpl<Record>(
+): TableImpl<VehicleTypeRecord>(
     alias,
     fi.hsl.jore.jore4.jooq.vehicle_type.VehicleType.VEHICLE_TYPE,
     child,
@@ -59,33 +64,33 @@ open class VehicleType(
     /**
      * The class holding records for this type
      */
-    override fun getRecordType(): Class<Record> = Record::class.java
+    override fun getRecordType(): Class<VehicleTypeRecord> = VehicleTypeRecord::class.java
 
     /**
      * The column <code>vehicle_type.vehicle_type.vehicle_type_id</code>.
      */
-    val VEHICLE_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_type_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
+    val VEHICLE_TYPE_ID: TableField<VehicleTypeRecord, UUID?> = createField(DSL.name("vehicle_type_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
 
     /**
      * The column <code>vehicle_type.vehicle_type.label</code>. Label of the
      * vehicle type.
      */
-    val LABEL: TableField<Record, String?> = createField(DSL.name("label"), SQLDataType.CLOB.nullable(false), this, "Label of the vehicle type.")
+    val LABEL: TableField<VehicleTypeRecord, String?> = createField(DSL.name("label"), SQLDataType.CLOB.nullable(false), this, "Label of the vehicle type.")
 
     /**
      * The column <code>vehicle_type.vehicle_type.description_i18n</code>.
      * Description of the vehicle type.
      */
-    val DESCRIPTION_I18N: TableField<Record, JSONB?> = createField(DSL.name("description_i18n"), SQLDataType.JSONB, this, "Description of the vehicle type.")
+    val DESCRIPTION_I18N: TableField<VehicleTypeRecord, JSONB?> = createField(DSL.name("description_i18n"), SQLDataType.JSONB, this, "Description of the vehicle type.")
 
     /**
      * The column <code>vehicle_type.vehicle_type.hsl_id</code>. ID used in
      * Hastus to represent the vehicle type.
      */
-    val HSL_ID: TableField<Record, Short?> = createField(DSL.name("hsl_id"), SQLDataType.SMALLINT.nullable(false), this, "ID used in Hastus to represent the vehicle type.")
+    val HSL_ID: TableField<VehicleTypeRecord, Short?> = createField(DSL.name("hsl_id"), SQLDataType.SMALLINT.nullable(false), this, "ID used in Hastus to represent the vehicle type.")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<VehicleTypeRecord>?): this(alias, null, null, aliased, null)
+    private constructor(alias: Name, aliased: Table<VehicleTypeRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
      * Create an aliased <code>vehicle_type.vehicle_type</code> table reference
@@ -102,9 +107,9 @@ open class VehicleType(
      */
     constructor(): this(DSL.name("vehicle_type"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_TYPE_, null)
+    constructor(child: Table<out Record>, key: ForeignKey<out Record, VehicleTypeRecord>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_TYPE_, null)
     override fun getSchema(): Schema? = if (aliased()) null else fi.hsl.jore.jore4.jooq.vehicle_type.VehicleType.VEHICLE_TYPE
-    override fun getPrimaryKey(): UniqueKey<Record> = VEHICLE_TYPE_PKEY
+    override fun getPrimaryKey(): UniqueKey<VehicleTypeRecord> = VEHICLE_TYPE_PKEY
     override fun `as`(alias: String): VehicleType = VehicleType(DSL.name(alias), this)
     override fun `as`(alias: Name): VehicleType = VehicleType(alias, this)
     override fun `as`(alias: Table<*>): VehicleType = VehicleType(alias.getQualifiedName(), this)
@@ -123,4 +128,20 @@ open class VehicleType(
      * Rename this table
      */
     override fun rename(name: Table<*>): VehicleType = VehicleType(name.getQualifiedName(), null)
+
+    // -------------------------------------------------------------------------
+    // Row4 type methods
+    // -------------------------------------------------------------------------
+    override fun fieldsRow(): Row4<UUID?, String?, JSONB?, Short?> = super.fieldsRow() as Row4<UUID?, String?, JSONB?, Short?>
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    fun <U> mapping(from: (UUID?, String?, JSONB?, Short?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    fun <U> mapping(toType: Class<U>, from: (UUID?, String?, JSONB?, Short?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

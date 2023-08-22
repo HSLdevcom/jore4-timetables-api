@@ -10,6 +10,7 @@ import fi.hsl.jore.jore4.jooq.service_calendar.tables.DayTypeActiveOnDayOfWeek
 import fi.hsl.jore.jore4.jooq.service_calendar.tables.GetActiveDayTypesForDate
 import fi.hsl.jore.jore4.jooq.service_calendar.tables.SubstituteOperatingDayByLineType
 import fi.hsl.jore.jore4.jooq.service_calendar.tables.SubstituteOperatingPeriod
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.records.DayTypeRecord
 
 import java.time.LocalDate
 
@@ -18,7 +19,6 @@ import kotlin.collections.List
 import org.jooq.Catalog
 import org.jooq.Configuration
 import org.jooq.Field
-import org.jooq.Record
 import org.jooq.Result
 import org.jooq.Table
 import org.jooq.impl.SchemaImpl
@@ -60,7 +60,7 @@ open class ServiceCalendar : SchemaImpl("service_calendar", DefaultCatalog.DEFAU
     fun GET_ACTIVE_DAY_TYPES_FOR_DATE(
           configuration: Configuration
         , observationDate: LocalDate?
-    ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.service_calendar.tables.GetActiveDayTypesForDate.GET_ACTIVE_DAY_TYPES_FOR_DATE.call(
+    ): Result<DayTypeRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.service_calendar.tables.GetActiveDayTypesForDate.GET_ACTIVE_DAY_TYPES_FOR_DATE.call(
           observationDate
     )).fetch()
 
