@@ -6,12 +6,12 @@ package fi.hsl.jore.jore4.jooq.passing_times.tables.references
 
 import fi.hsl.jore.jore4.jooq.passing_times.tables.GetPassingTimeOrderValidityData
 import fi.hsl.jore.jore4.jooq.passing_times.tables.TimetabledPassingTime
+import fi.hsl.jore.jore4.jooq.passing_times.tables.records.GetPassingTimeOrderValidityDataRecord
 
 import java.util.UUID
 
 import org.jooq.Configuration
 import org.jooq.Field
-import org.jooq.Record
 import org.jooq.Result
 
 
@@ -28,7 +28,7 @@ fun GET_PASSING_TIME_ORDER_VALIDITY_DATA(
       configuration: Configuration
     , filterVehicleJourneyIds: Array<UUID?>?
     , filterJourneyPatternRefIds: Array<UUID?>?
-): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.passing_times.tables.GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA.call(
+): Result<GetPassingTimeOrderValidityDataRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.passing_times.tables.GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA.call(
       filterVehicleJourneyIds
     , filterJourneyPatternRefIds
 )).fetch()

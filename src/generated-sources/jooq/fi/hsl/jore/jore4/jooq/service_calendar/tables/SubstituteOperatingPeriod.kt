@@ -7,8 +7,10 @@ package fi.hsl.jore.jore4.jooq.service_calendar.tables
 import fi.hsl.jore.jore4.jooq.service_calendar.ServiceCalendar
 import fi.hsl.jore.jore4.jooq.service_calendar.keys.SUBSTITUTE_OPERATING_PERIOD_PERIOD_NAME_KEY
 import fi.hsl.jore.jore4.jooq.service_calendar.keys.SUBSTITUTE_OPERATING_PERIOD_PKEY
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.records.SubstituteOperatingPeriodRecord
 
 import java.util.UUID
+import java.util.function.Function
 
 import kotlin.collections.List
 
@@ -16,7 +18,10 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row3
 import org.jooq.Schema
+import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -35,10 +40,10 @@ import org.jooq.impl.TableImpl
 open class SubstituteOperatingPeriod(
     alias: Name,
     child: Table<out Record>?,
-    path: ForeignKey<out Record, Record>?,
-    aliased: Table<Record>?,
+    path: ForeignKey<out Record, SubstituteOperatingPeriodRecord>?,
+    aliased: Table<SubstituteOperatingPeriodRecord>?,
     parameters: Array<Field<*>?>?
-): TableImpl<Record>(
+): TableImpl<SubstituteOperatingPeriodRecord>(
     alias,
     ServiceCalendar.SERVICE_CALENDAR,
     child,
@@ -60,20 +65,20 @@ open class SubstituteOperatingPeriod(
     /**
      * The class holding records for this type
      */
-    override fun getRecordType(): Class<Record> = Record::class.java
+    override fun getRecordType(): Class<SubstituteOperatingPeriodRecord> = SubstituteOperatingPeriodRecord::class.java
 
     /**
      * The column
      * <code>service_calendar.substitute_operating_period.substitute_operating_period_id</code>.
      */
-    val SUBSTITUTE_OPERATING_PERIOD_ID: TableField<Record, UUID?> = createField(DSL.name("substitute_operating_period_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
+    val SUBSTITUTE_OPERATING_PERIOD_ID: TableField<SubstituteOperatingPeriodRecord, UUID?> = createField(DSL.name("substitute_operating_period_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
 
     /**
      * The column
      * <code>service_calendar.substitute_operating_period.period_name</code>.
      * Substitute operating period's name
      */
-    val PERIOD_NAME: TableField<Record, String?> = createField(DSL.name("period_name"), SQLDataType.CLOB.nullable(false), this, "Substitute operating period's name")
+    val PERIOD_NAME: TableField<SubstituteOperatingPeriodRecord, String?> = createField(DSL.name("period_name"), SQLDataType.CLOB.nullable(false), this, "Substitute operating period's name")
 
     /**
      * The column
@@ -81,10 +86,10 @@ open class SubstituteOperatingPeriod(
      * indicating whether operating period is preset or not. Preset operating
      * periods have restrictions on the UI
      */
-    val IS_PRESET: TableField<Record, Boolean?> = createField(DSL.name("is_preset"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field(DSL.raw("false"), SQLDataType.BOOLEAN)), this, "Flag indicating whether operating period is preset or not. Preset operating periods have restrictions on the UI")
+    val IS_PRESET: TableField<SubstituteOperatingPeriodRecord, Boolean?> = createField(DSL.name("is_preset"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field(DSL.raw("false"), SQLDataType.BOOLEAN)), this, "Flag indicating whether operating period is preset or not. Preset operating periods have restrictions on the UI")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<SubstituteOperatingPeriodRecord>?): this(alias, null, null, aliased, null)
+    private constructor(alias: Name, aliased: Table<SubstituteOperatingPeriodRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
      * Create an aliased
@@ -104,10 +109,10 @@ open class SubstituteOperatingPeriod(
      */
     constructor(): this(DSL.name("substitute_operating_period"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, SUBSTITUTE_OPERATING_PERIOD, null)
+    constructor(child: Table<out Record>, key: ForeignKey<out Record, SubstituteOperatingPeriodRecord>): this(Internal.createPathAlias(child, key), child, key, SUBSTITUTE_OPERATING_PERIOD, null)
     override fun getSchema(): Schema? = if (aliased()) null else ServiceCalendar.SERVICE_CALENDAR
-    override fun getPrimaryKey(): UniqueKey<Record> = SUBSTITUTE_OPERATING_PERIOD_PKEY
-    override fun getUniqueKeys(): List<UniqueKey<Record>> = listOf(SUBSTITUTE_OPERATING_PERIOD_PERIOD_NAME_KEY)
+    override fun getPrimaryKey(): UniqueKey<SubstituteOperatingPeriodRecord> = SUBSTITUTE_OPERATING_PERIOD_PKEY
+    override fun getUniqueKeys(): List<UniqueKey<SubstituteOperatingPeriodRecord>> = listOf(SUBSTITUTE_OPERATING_PERIOD_PERIOD_NAME_KEY)
     override fun `as`(alias: String): SubstituteOperatingPeriod = SubstituteOperatingPeriod(DSL.name(alias), this)
     override fun `as`(alias: Name): SubstituteOperatingPeriod = SubstituteOperatingPeriod(alias, this)
     override fun `as`(alias: Table<*>): SubstituteOperatingPeriod = SubstituteOperatingPeriod(alias.getQualifiedName(), this)
@@ -126,4 +131,20 @@ open class SubstituteOperatingPeriod(
      * Rename this table
      */
     override fun rename(name: Table<*>): SubstituteOperatingPeriod = SubstituteOperatingPeriod(name.getQualifiedName(), null)
+
+    // -------------------------------------------------------------------------
+    // Row3 type methods
+    // -------------------------------------------------------------------------
+    override fun fieldsRow(): Row3<UUID?, String?, Boolean?> = super.fieldsRow() as Row3<UUID?, String?, Boolean?>
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    fun <U> mapping(from: (UUID?, String?, Boolean?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    fun <U> mapping(toType: Class<U>, from: (UUID?, String?, Boolean?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

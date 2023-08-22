@@ -7,8 +7,10 @@ package fi.hsl.jore.jore4.jooq.vehicle_service.tables
 import fi.hsl.jore.jore4.jooq.vehicle_service.VehicleService
 import fi.hsl.jore.jore4.jooq.vehicle_service.keys.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_PKEY
 import fi.hsl.jore.jore4.jooq.vehicle_service.keys.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE__JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_VEHICLE_SERVICE_ID_FKEY
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.records.JourneyPatternsInVehicleServiceRecord
 
 import java.util.UUID
+import java.util.function.Function
 
 import kotlin.collections.List
 
@@ -16,7 +18,10 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row3
 import org.jooq.Schema
+import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -38,10 +43,10 @@ import org.jooq.impl.TableImpl
 open class JourneyPatternsInVehicleService(
     alias: Name,
     child: Table<out Record>?,
-    path: ForeignKey<out Record, Record>?,
-    aliased: Table<Record>?,
+    path: ForeignKey<out Record, JourneyPatternsInVehicleServiceRecord>?,
+    aliased: Table<JourneyPatternsInVehicleServiceRecord>?,
     parameters: Array<Field<*>?>?
-): TableImpl<Record>(
+): TableImpl<JourneyPatternsInVehicleServiceRecord>(
     alias,
     VehicleService.VEHICLE_SERVICE,
     child,
@@ -63,13 +68,13 @@ open class JourneyPatternsInVehicleService(
     /**
      * The class holding records for this type
      */
-    override fun getRecordType(): Class<Record> = Record::class.java
+    override fun getRecordType(): Class<JourneyPatternsInVehicleServiceRecord> = JourneyPatternsInVehicleServiceRecord::class.java
 
     /**
      * The column
      * <code>vehicle_service.journey_patterns_in_vehicle_service.vehicle_service_id</code>.
      */
-    val VEHICLE_SERVICE_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_service_id"), SQLDataType.UUID.nullable(false), this, "")
+    val VEHICLE_SERVICE_ID: TableField<JourneyPatternsInVehicleServiceRecord, UUID?> = createField(DSL.name("vehicle_service_id"), SQLDataType.UUID.nullable(false), this, "")
 
     /**
      * The column
@@ -77,7 +82,7 @@ open class JourneyPatternsInVehicleService(
      * The journey_pattern_id from journey_pattern.journey_pattern_ref.
      *  No foreign key reference is set because the target column is not unique.
      */
-    val JOURNEY_PATTERN_ID: TableField<Record, UUID?> = createField(DSL.name("journey_pattern_id"), SQLDataType.UUID.nullable(false), this, "The journey_pattern_id from journey_pattern.journey_pattern_ref.\n No foreign key reference is set because the target column is not unique.")
+    val JOURNEY_PATTERN_ID: TableField<JourneyPatternsInVehicleServiceRecord, UUID?> = createField(DSL.name("journey_pattern_id"), SQLDataType.UUID.nullable(false), this, "The journey_pattern_id from journey_pattern.journey_pattern_ref.\n No foreign key reference is set because the target column is not unique.")
 
     /**
      * The column
@@ -86,10 +91,10 @@ open class JourneyPatternsInVehicleService(
      * vehicle_service.
      *   When this reaches 0 the row will be deleted.
      */
-    val REFERENCE_COUNT: TableField<Record, Int?> = createField(DSL.name("reference_count"), SQLDataType.INTEGER.nullable(false), this, "The amount of unique references between the journey_pattern and vehicle_service.\n  When this reaches 0 the row will be deleted.")
+    val REFERENCE_COUNT: TableField<JourneyPatternsInVehicleServiceRecord, Int?> = createField(DSL.name("reference_count"), SQLDataType.INTEGER.nullable(false), this, "The amount of unique references between the journey_pattern and vehicle_service.\n  When this reaches 0 the row will be deleted.")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<JourneyPatternsInVehicleServiceRecord>?): this(alias, null, null, aliased, null)
+    private constructor(alias: Name, aliased: Table<JourneyPatternsInVehicleServiceRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
      * Create an aliased
@@ -111,10 +116,10 @@ open class JourneyPatternsInVehicleService(
      */
     constructor(): this(DSL.name("journey_patterns_in_vehicle_service"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, JOURNEY_PATTERNS_IN_VEHICLE_SERVICE, null)
+    constructor(child: Table<out Record>, key: ForeignKey<out Record, JourneyPatternsInVehicleServiceRecord>): this(Internal.createPathAlias(child, key), child, key, JOURNEY_PATTERNS_IN_VEHICLE_SERVICE, null)
     override fun getSchema(): Schema? = if (aliased()) null else VehicleService.VEHICLE_SERVICE
-    override fun getPrimaryKey(): UniqueKey<Record> = JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_PKEY
-    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(JOURNEY_PATTERNS_IN_VEHICLE_SERVICE__JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_VEHICLE_SERVICE_ID_FKEY)
+    override fun getPrimaryKey(): UniqueKey<JourneyPatternsInVehicleServiceRecord> = JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_PKEY
+    override fun getReferences(): List<ForeignKey<JourneyPatternsInVehicleServiceRecord, *>> = listOf(JOURNEY_PATTERNS_IN_VEHICLE_SERVICE__JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_VEHICLE_SERVICE_ID_FKEY)
 
     private lateinit var _vehicleService: fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService
 
@@ -149,4 +154,20 @@ open class JourneyPatternsInVehicleService(
      * Rename this table
      */
     override fun rename(name: Table<*>): JourneyPatternsInVehicleService = JourneyPatternsInVehicleService(name.getQualifiedName(), null)
+
+    // -------------------------------------------------------------------------
+    // Row3 type methods
+    // -------------------------------------------------------------------------
+    override fun fieldsRow(): Row3<UUID?, UUID?, Int?> = super.fieldsRow() as Row3<UUID?, UUID?, Int?>
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    fun <U> mapping(from: (UUID?, UUID?, Int?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, Int?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

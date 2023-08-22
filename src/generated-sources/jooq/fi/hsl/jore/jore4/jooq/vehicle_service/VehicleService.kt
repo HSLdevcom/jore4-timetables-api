@@ -5,11 +5,13 @@ package fi.hsl.jore.jore4.jooq.vehicle_service
 
 
 import fi.hsl.jore.jore4.jooq.DefaultCatalog
+import fi.hsl.jore.jore4.jooq.return_value.tables.records.TimetableVersionRecord
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.Block
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetableVersionsByJourneyPatternIds
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetablesAndSubstituteOperatingDays
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.JourneyPatternsInVehicleService
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.records.VehicleServiceRecord
 
 import java.time.LocalDate
 import java.util.UUID
@@ -19,7 +21,6 @@ import kotlin.collections.List
 import org.jooq.Catalog
 import org.jooq.Configuration
 import org.jooq.Field
-import org.jooq.Record
 import org.jooq.Result
 import org.jooq.Table
 import org.jooq.impl.SchemaImpl
@@ -63,7 +64,7 @@ open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT
         , startDate: LocalDate?
         , endDate: LocalDate?
         , observationDate: LocalDate?
-    ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetableVersionsByJourneyPatternIds.GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS.call(
+    ): Result<TimetableVersionRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetableVersionsByJourneyPatternIds.GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS.call(
           journeyPatternIds
         , startDate
         , endDate
@@ -119,7 +120,7 @@ open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT
         , journeyPatternIds: Array<UUID?>?
         , startDate: LocalDate?
         , endDate: LocalDate?
-    ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetablesAndSubstituteOperatingDays.GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS.call(
+    ): Result<TimetableVersionRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetablesAndSubstituteOperatingDays.GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS.call(
           journeyPatternIds
         , startDate
         , endDate
@@ -166,7 +167,7 @@ open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT
     fun GET_VEHICLE_SERVICES_FOR_DATE(
           configuration: Configuration
         , observationDate: LocalDate?
-    ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE.call(
+    ): Result<VehicleServiceRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE.call(
           observationDate
     )).fetch()
 

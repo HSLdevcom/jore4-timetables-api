@@ -6,16 +6,21 @@ package fi.hsl.jore.jore4.jooq.vehicle_service.keys
 
 import fi.hsl.jore.jore4.jooq.service_calendar.keys.DAY_TYPE_PKEY
 import fi.hsl.jore.jore4.jooq.service_calendar.tables.DayType
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.records.DayTypeRecord
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.keys.VEHICLE_SCHEDULE_FRAME_PKEY
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.VehicleScheduleFrame
+import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.records.VehicleScheduleFrameRecord
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.Block
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.JourneyPatternsInVehicleService
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.records.BlockRecord
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.records.JourneyPatternsInVehicleServiceRecord
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.records.VehicleServiceRecord
 import fi.hsl.jore.jore4.jooq.vehicle_type.keys.VEHICLE_TYPE_PKEY
 import fi.hsl.jore.jore4.jooq.vehicle_type.tables.VehicleType
+import fi.hsl.jore.jore4.jooq.vehicle_type.tables.records.VehicleTypeRecord
 
 import org.jooq.ForeignKey
-import org.jooq.Record
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
@@ -26,16 +31,16 @@ import org.jooq.impl.Internal
 // UNIQUE and PRIMARY KEY definitions
 // -------------------------------------------------------------------------
 
-val BLOCK_PKEY: UniqueKey<Record> = Internal.createUniqueKey(Block.BLOCK, DSL.name("block_pkey"), arrayOf(Block.BLOCK.BLOCK_ID), true)
-val JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_PKEY: UniqueKey<Record> = Internal.createUniqueKey(JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE, DSL.name("journey_patterns_in_vehicle_service_pkey"), arrayOf(JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE.VEHICLE_SERVICE_ID, JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE.JOURNEY_PATTERN_ID), true)
-val VEHICLE_SERVICE_PKEY: UniqueKey<Record> = Internal.createUniqueKey(VehicleService.VEHICLE_SERVICE_, DSL.name("vehicle_service_pkey"), arrayOf(VehicleService.VEHICLE_SERVICE_.VEHICLE_SERVICE_ID), true)
+val BLOCK_PKEY: UniqueKey<BlockRecord> = Internal.createUniqueKey(Block.BLOCK, DSL.name("block_pkey"), arrayOf(Block.BLOCK.BLOCK_ID), true)
+val JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_PKEY: UniqueKey<JourneyPatternsInVehicleServiceRecord> = Internal.createUniqueKey(JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE, DSL.name("journey_patterns_in_vehicle_service_pkey"), arrayOf(JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE.VEHICLE_SERVICE_ID, JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE.JOURNEY_PATTERN_ID), true)
+val VEHICLE_SERVICE_PKEY: UniqueKey<VehicleServiceRecord> = Internal.createUniqueKey(VehicleService.VEHICLE_SERVICE_, DSL.name("vehicle_service_pkey"), arrayOf(VehicleService.VEHICLE_SERVICE_.VEHICLE_SERVICE_ID), true)
 
 // -------------------------------------------------------------------------
 // FOREIGN KEY definitions
 // -------------------------------------------------------------------------
 
-val BLOCK__BLOCK_VEHICLE_SERVICE_ID_FKEY: ForeignKey<Record, Record> = Internal.createForeignKey(Block.BLOCK, DSL.name("block_vehicle_service_id_fkey"), arrayOf(Block.BLOCK.VEHICLE_SERVICE_ID), fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE_PKEY, arrayOf(VehicleService.VEHICLE_SERVICE_.VEHICLE_SERVICE_ID), true)
-val BLOCK__VEHICLE_TYPE_FKEY: ForeignKey<Record, Record> = Internal.createForeignKey(Block.BLOCK, DSL.name("vehicle_type_fkey"), arrayOf(Block.BLOCK.VEHICLE_TYPE_ID), VEHICLE_TYPE_PKEY, arrayOf(VehicleType.VEHICLE_TYPE_.VEHICLE_TYPE_ID), true)
-val JOURNEY_PATTERNS_IN_VEHICLE_SERVICE__JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_VEHICLE_SERVICE_ID_FKEY: ForeignKey<Record, Record> = Internal.createForeignKey(JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE, DSL.name("journey_patterns_in_vehicle_service_vehicle_service_id_fkey"), arrayOf(JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE.VEHICLE_SERVICE_ID), fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE_PKEY, arrayOf(VehicleService.VEHICLE_SERVICE_.VEHICLE_SERVICE_ID), true)
-val VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY: ForeignKey<Record, Record> = Internal.createForeignKey(VehicleService.VEHICLE_SERVICE_, DSL.name("vehicle_service_day_type_id_fkey"), arrayOf(VehicleService.VEHICLE_SERVICE_.DAY_TYPE_ID), DAY_TYPE_PKEY, arrayOf(DayType.DAY_TYPE.DAY_TYPE_ID), true)
-val VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY: ForeignKey<Record, Record> = Internal.createForeignKey(VehicleService.VEHICLE_SERVICE_, DSL.name("vehicle_service_vehicle_schedule_frame_id_fkey"), arrayOf(VehicleService.VEHICLE_SERVICE_.VEHICLE_SCHEDULE_FRAME_ID), VEHICLE_SCHEDULE_FRAME_PKEY, arrayOf(VehicleScheduleFrame.VEHICLE_SCHEDULE_FRAME.VEHICLE_SCHEDULE_FRAME_ID), true)
+val BLOCK__BLOCK_VEHICLE_SERVICE_ID_FKEY: ForeignKey<BlockRecord, VehicleServiceRecord> = Internal.createForeignKey(Block.BLOCK, DSL.name("block_vehicle_service_id_fkey"), arrayOf(Block.BLOCK.VEHICLE_SERVICE_ID), fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE_PKEY, arrayOf(VehicleService.VEHICLE_SERVICE_.VEHICLE_SERVICE_ID), true)
+val BLOCK__VEHICLE_TYPE_FKEY: ForeignKey<BlockRecord, VehicleTypeRecord> = Internal.createForeignKey(Block.BLOCK, DSL.name("vehicle_type_fkey"), arrayOf(Block.BLOCK.VEHICLE_TYPE_ID), VEHICLE_TYPE_PKEY, arrayOf(VehicleType.VEHICLE_TYPE_.VEHICLE_TYPE_ID), true)
+val JOURNEY_PATTERNS_IN_VEHICLE_SERVICE__JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_VEHICLE_SERVICE_ID_FKEY: ForeignKey<JourneyPatternsInVehicleServiceRecord, VehicleServiceRecord> = Internal.createForeignKey(JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE, DSL.name("journey_patterns_in_vehicle_service_vehicle_service_id_fkey"), arrayOf(JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE.VEHICLE_SERVICE_ID), fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE_PKEY, arrayOf(VehicleService.VEHICLE_SERVICE_.VEHICLE_SERVICE_ID), true)
+val VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY: ForeignKey<VehicleServiceRecord, DayTypeRecord> = Internal.createForeignKey(VehicleService.VEHICLE_SERVICE_, DSL.name("vehicle_service_day_type_id_fkey"), arrayOf(VehicleService.VEHICLE_SERVICE_.DAY_TYPE_ID), DAY_TYPE_PKEY, arrayOf(DayType.DAY_TYPE.DAY_TYPE_ID), true)
+val VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY: ForeignKey<VehicleServiceRecord, VehicleScheduleFrameRecord> = Internal.createForeignKey(VehicleService.VEHICLE_SERVICE_, DSL.name("vehicle_service_vehicle_schedule_frame_id_fkey"), arrayOf(VehicleService.VEHICLE_SERVICE_.VEHICLE_SCHEDULE_FRAME_ID), VEHICLE_SCHEDULE_FRAME_PKEY, arrayOf(VehicleScheduleFrame.VEHICLE_SCHEDULE_FRAME.VEHICLE_SCHEDULE_FRAME_ID), true)

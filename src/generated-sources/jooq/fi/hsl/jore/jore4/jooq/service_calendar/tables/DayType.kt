@@ -6,15 +6,20 @@ package fi.hsl.jore.jore4.jooq.service_calendar.tables
 
 import fi.hsl.jore.jore4.jooq.service_calendar.ServiceCalendar
 import fi.hsl.jore.jore4.jooq.service_calendar.keys.DAY_TYPE_PKEY
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.records.DayTypeRecord
 
 import java.util.UUID
+import java.util.function.Function
 
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.JSONB
 import org.jooq.Name
 import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row3
 import org.jooq.Schema
+import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -34,10 +39,10 @@ import org.jooq.impl.TableImpl
 open class DayType(
     alias: Name,
     child: Table<out Record>?,
-    path: ForeignKey<out Record, Record>?,
-    aliased: Table<Record>?,
+    path: ForeignKey<out Record, DayTypeRecord>?,
+    aliased: Table<DayTypeRecord>?,
     parameters: Array<Field<*>?>?
-): TableImpl<Record>(
+): TableImpl<DayTypeRecord>(
     alias,
     ServiceCalendar.SERVICE_CALENDAR,
     child,
@@ -58,12 +63,12 @@ open class DayType(
     /**
      * The class holding records for this type
      */
-    override fun getRecordType(): Class<Record> = Record::class.java
+    override fun getRecordType(): Class<DayTypeRecord> = DayTypeRecord::class.java
 
     /**
      * The column <code>service_calendar.day_type.day_type_id</code>.
      */
-    val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
+    val DAY_TYPE_ID: TableField<DayTypeRecord, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
 
     /**
      * The column <code>service_calendar.day_type.label</code>. The label for
@@ -71,16 +76,16 @@ open class DayType(
      * Hastus. Includes both basic (e.g. "Monday-Thursday") and special ("Easter
      * Sunday") day types
      */
-    val LABEL: TableField<Record, String?> = createField(DSL.name("label"), SQLDataType.CLOB.nullable(false), this, "The label for the DAY TYPE. Used for identifying the DAY TYPE when importing data from Hastus. Includes both basic (e.g. \"Monday-Thursday\") and special (\"Easter Sunday\") day types")
+    val LABEL: TableField<DayTypeRecord, String?> = createField(DSL.name("label"), SQLDataType.CLOB.nullable(false), this, "The label for the DAY TYPE. Used for identifying the DAY TYPE when importing data from Hastus. Includes both basic (e.g. \"Monday-Thursday\") and special (\"Easter Sunday\") day types")
 
     /**
      * The column <code>service_calendar.day_type.name_i18n</code>.
      * Human-readable name for the DAY TYPE
      */
-    val NAME_I18N: TableField<Record, JSONB?> = createField(DSL.name("name_i18n"), SQLDataType.JSONB.nullable(false), this, "Human-readable name for the DAY TYPE")
+    val NAME_I18N: TableField<DayTypeRecord, JSONB?> = createField(DSL.name("name_i18n"), SQLDataType.JSONB.nullable(false), this, "Human-readable name for the DAY TYPE")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<DayTypeRecord>?): this(alias, null, null, aliased, null)
+    private constructor(alias: Name, aliased: Table<DayTypeRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
      * Create an aliased <code>service_calendar.day_type</code> table reference
@@ -97,9 +102,9 @@ open class DayType(
      */
     constructor(): this(DSL.name("day_type"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, DAY_TYPE, null)
+    constructor(child: Table<out Record>, key: ForeignKey<out Record, DayTypeRecord>): this(Internal.createPathAlias(child, key), child, key, DAY_TYPE, null)
     override fun getSchema(): Schema? = if (aliased()) null else ServiceCalendar.SERVICE_CALENDAR
-    override fun getPrimaryKey(): UniqueKey<Record> = DAY_TYPE_PKEY
+    override fun getPrimaryKey(): UniqueKey<DayTypeRecord> = DAY_TYPE_PKEY
     override fun `as`(alias: String): DayType = DayType(DSL.name(alias), this)
     override fun `as`(alias: Name): DayType = DayType(alias, this)
     override fun `as`(alias: Table<*>): DayType = DayType(alias.getQualifiedName(), this)
@@ -118,4 +123,20 @@ open class DayType(
      * Rename this table
      */
     override fun rename(name: Table<*>): DayType = DayType(name.getQualifiedName(), null)
+
+    // -------------------------------------------------------------------------
+    // Row3 type methods
+    // -------------------------------------------------------------------------
+    override fun fieldsRow(): Row3<UUID?, String?, JSONB?> = super.fieldsRow() as Row3<UUID?, String?, JSONB?>
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    fun <U> mapping(from: (UUID?, String?, JSONB?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    fun <U> mapping(toType: Class<U>, from: (UUID?, String?, JSONB?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }
