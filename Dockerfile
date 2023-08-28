@@ -10,15 +10,9 @@ RUN mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
 # copy sources
 COPY ./src /build/src
 
-# generate jOOQ classes using "dev" profile
-COPY ./profiles/dev/config.properties /build/profiles/dev/config.properties
-COPY ./profiles/dev/config.properties /build/profiles/dev/config.root.properties
-RUN mvn -Pdev clean generate-sources
-
 # package using "prod" profile
 COPY ./profiles/prod /build/profiles/prod
-RUN mvn -Pprod package spring-boot:repackage
-
+RUN mvn -Pprod clean package spring-boot:repackage
 
 FROM eclipse-temurin:17.0.8_7-jre
 
@@ -26,7 +20,7 @@ FROM eclipse-temurin:17.0.8_7-jre
 EXPOSE 8080
 
 # download script for reading Docker secrets
-RUN curl -o /tmp/read-secrets.sh "https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/read-secrets.sh"
+RUN curl -o /tmp/lread-secrets.sh "https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/read-secrets.sh"
 
 # copy over helper scripts
 COPY ./script/build-jdbc-urls.sh /tmp/
