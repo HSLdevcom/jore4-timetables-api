@@ -86,7 +86,7 @@
                 <build.profile.id>dev</build.profile.id>
                 <build.property.file>profiles/${build.profile.id}/config.properties</build.property.file>
                 <build.property.user-override.file>profiles/${build.profile.id}/config.${user.name}.properties</build.property.user-override.file>
-                <skip.jooq.generation>false</skip.jooq.generation>
+                <skip.jooq.generation>true</skip.jooq.generation>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -138,7 +138,7 @@
             <properties>
                 <build.profile.id>ci</build.profile.id>
                 <build.property.file>profiles/${build.profile.id}/config.properties</build.property.file>
-                <skip.jooq.generation>true</skip.jooq.generation>
+                <skip.jooq.generation>false</skip.jooq.generation>
             </properties>
             <build>
                 <filters>
@@ -261,7 +261,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-sources/jooq</source>
+                                <source>${project.build.sourceDirectory}/generated-sources/jooq</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -447,7 +447,7 @@
                                 </generate>
                                 <target>
                                     <packageName>fi.hsl.jore.jore4.jooq</packageName>
-                                    <directory>${project.build.directory}/generated-sources/jooq</directory>
+                                    <directory>${project.build.sourceDirectory}/generated-sources/jooq</directory>
                                 </target>
                             </generator>
                         </configuration>
