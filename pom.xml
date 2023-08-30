@@ -261,7 +261,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.sourceDirectory}/generated-sources/jooq</source>
+                                <source>${project.basedir}/src/generated-sources/jooq</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -448,7 +448,7 @@
                                 </generate>
                                 <target>
                                     <packageName>fi.hsl.jore.jore4.jooq</packageName>
-                                    <directory>${project.build.sourceDirectory}/generated-sources/jooq</directory>
+                                    <directory>${project.basedir}/src/generated-sources/jooq</directory>
                                 </target>
                             </generator>
                         </configuration>
