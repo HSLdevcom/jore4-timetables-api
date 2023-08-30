@@ -5,9 +5,17 @@ package fi.hsl.jore.jore4.jooq.return_value.tables
 
 
 import fi.hsl.jore.jore4.jooq.return_value.ReturnValue
+import fi.hsl.jore.jore4.jooq.return_value.keys.TIMETABLE_VERSION__TIMETABLE_VERSION_DAY_TYPE_ID_FKEY
+import fi.hsl.jore.jore4.jooq.return_value.keys.TIMETABLE_VERSION__TIMETABLE_VERSION_SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID_FKEY
+import fi.hsl.jore.jore4.jooq.return_value.keys.TIMETABLE_VERSION__TIMETABLE_VERSION_VEHICLE_SCHEDULE_FRAME_ID_FKEY
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.DayType
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.SubstituteOperatingDayByLineType
+import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.VehicleScheduleFrame
 
 import java.time.LocalDate
 import java.util.UUID
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -134,6 +142,29 @@ open class TimetableVersion(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, TIMETABLE_VERSION, null)
     override fun getSchema(): Schema = ReturnValue.RETURN_VALUE
+    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(TIMETABLE_VERSION__TIMETABLE_VERSION_VEHICLE_SCHEDULE_FRAME_ID_FKEY, TIMETABLE_VERSION__TIMETABLE_VERSION_SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID_FKEY, TIMETABLE_VERSION__TIMETABLE_VERSION_DAY_TYPE_ID_FKEY)
+
+    private lateinit var _vehicleScheduleFrame: VehicleScheduleFrame
+    private lateinit var _substituteOperatingDayByLineType: SubstituteOperatingDayByLineType
+    private lateinit var _dayType: DayType
+    fun vehicleScheduleFrame(): VehicleScheduleFrame {
+        if (!this::_vehicleScheduleFrame.isInitialized)
+            _vehicleScheduleFrame = VehicleScheduleFrame(this, TIMETABLE_VERSION__TIMETABLE_VERSION_VEHICLE_SCHEDULE_FRAME_ID_FKEY)
+
+        return _vehicleScheduleFrame;
+    }
+    fun substituteOperatingDayByLineType(): SubstituteOperatingDayByLineType {
+        if (!this::_substituteOperatingDayByLineType.isInitialized)
+            _substituteOperatingDayByLineType = SubstituteOperatingDayByLineType(this, TIMETABLE_VERSION__TIMETABLE_VERSION_SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID_FKEY)
+
+        return _substituteOperatingDayByLineType;
+    }
+    fun dayType(): DayType {
+        if (!this::_dayType.isInitialized)
+            _dayType = DayType(this, TIMETABLE_VERSION__TIMETABLE_VERSION_DAY_TYPE_ID_FKEY)
+
+        return _dayType;
+    }
     override fun `as`(alias: String): TimetableVersion = TimetableVersion(DSL.name(alias), this)
     override fun `as`(alias: Name): TimetableVersion = TimetableVersion(alias, this)
 

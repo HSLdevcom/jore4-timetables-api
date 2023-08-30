@@ -5,10 +5,13 @@ package fi.hsl.jore.jore4.jooq.vehicle_schedule.tables
 
 
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.VehicleSchedule
+import fi.hsl.jore.jore4.jooq.vehicle_schedule.keys.VEHICLE_SCHEDULE_FRAME_PKEY
 
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -19,6 +22,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -127,6 +131,8 @@ open class VehicleScheduleFrame(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_SCHEDULE_FRAME, null)
     override fun getSchema(): Schema = VehicleSchedule.VEHICLE_SCHEDULE
+    override fun getPrimaryKey(): UniqueKey<Record> = VEHICLE_SCHEDULE_FRAME_PKEY
+    override fun getKeys(): List<UniqueKey<Record>> = listOf(VEHICLE_SCHEDULE_FRAME_PKEY)
     override fun `as`(alias: String): VehicleScheduleFrame = VehicleScheduleFrame(DSL.name(alias), this)
     override fun `as`(alias: Name): VehicleScheduleFrame = VehicleScheduleFrame(alias, this)
 

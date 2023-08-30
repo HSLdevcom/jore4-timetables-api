@@ -4,11 +4,17 @@
 package fi.hsl.jore.jore4.jooq.service_calendar.tables
 
 
+import fi.hsl.jore.jore4.jooq.route.tables.TypeOfLine
 import fi.hsl.jore.jore4.jooq.service_calendar.ServiceCalendar
+import fi.hsl.jore.jore4.jooq.service_calendar.keys.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_PKEY
+import fi.hsl.jore.jore4.jooq.service_calendar.keys.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_SUBSTITUTE_PERIOD_FKEY
+import fi.hsl.jore.jore4.jooq.service_calendar.keys.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY
 
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -18,6 +24,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -135,6 +142,24 @@ open class SubstituteOperatingDayByLineType(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE, null)
     override fun getSchema(): Schema = ServiceCalendar.SERVICE_CALENDAR
+    override fun getPrimaryKey(): UniqueKey<Record> = SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_PKEY
+    override fun getKeys(): List<UniqueKey<Record>> = listOf(SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_PKEY)
+    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_SUBSTITUTE_PERIOD_FKEY)
+
+    private lateinit var _typeOfLine: TypeOfLine
+    private lateinit var _substituteOperatingPeriod: SubstituteOperatingPeriod
+    fun typeOfLine(): TypeOfLine {
+        if (!this::_typeOfLine.isInitialized)
+            _typeOfLine = TypeOfLine(this, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY)
+
+        return _typeOfLine;
+    }
+    fun substituteOperatingPeriod(): SubstituteOperatingPeriod {
+        if (!this::_substituteOperatingPeriod.isInitialized)
+            _substituteOperatingPeriod = SubstituteOperatingPeriod(this, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_SUBSTITUTE_PERIOD_FKEY)
+
+        return _substituteOperatingPeriod;
+    }
     override fun `as`(alias: String): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(DSL.name(alias), this)
     override fun `as`(alias: Name): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(alias, this)
 

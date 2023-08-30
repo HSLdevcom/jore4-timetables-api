@@ -5,6 +5,9 @@ package fi.hsl.jore.jore4.jooq.route.tables
 
 
 import fi.hsl.jore.jore4.jooq.route.Route
+import fi.hsl.jore.jore4.jooq.route.keys.TYPE_OF_LINE_PKEY
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -14,6 +17,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -78,6 +82,8 @@ open class TypeOfLine(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, TYPE_OF_LINE, null)
     override fun getSchema(): Schema = Route.ROUTE
+    override fun getPrimaryKey(): UniqueKey<Record> = TYPE_OF_LINE_PKEY
+    override fun getKeys(): List<UniqueKey<Record>> = listOf(TYPE_OF_LINE_PKEY)
     override fun `as`(alias: String): TypeOfLine = TypeOfLine(DSL.name(alias), this)
     override fun `as`(alias: Name): TypeOfLine = TypeOfLine(alias, this)
 

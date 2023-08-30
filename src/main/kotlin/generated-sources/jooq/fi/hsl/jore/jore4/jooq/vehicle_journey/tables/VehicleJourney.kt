@@ -4,7 +4,16 @@
 package fi.hsl.jore.jore4.jooq.vehicle_journey.tables
 
 
+import fi.hsl.jore.jore4.jooq.journey_pattern.tables.JourneyPatternRef
+import fi.hsl.jore.jore4.jooq.vehicle_journey.keys.VEHICLE_JOURNEY_PKEY
+import fi.hsl.jore.jore4.jooq.vehicle_journey.keys.VEHICLE_JOURNEY__VEHICLE_JOURNEY_BLOCK_ID_FKEY
+import fi.hsl.jore.jore4.jooq.vehicle_journey.keys.VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_PATTERN_REF_ID_FKEY
+import fi.hsl.jore.jore4.jooq.vehicle_journey.keys.VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_TYPE_FKEY
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.Block
+
 import java.util.UUID
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -15,6 +24,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -132,6 +142,31 @@ open class VehicleJourney(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_JOURNEY_, null)
     override fun getSchema(): Schema = fi.hsl.jore.jore4.jooq.vehicle_journey.VehicleJourney.VEHICLE_JOURNEY
+    override fun getPrimaryKey(): UniqueKey<Record> = VEHICLE_JOURNEY_PKEY
+    override fun getKeys(): List<UniqueKey<Record>> = listOf(VEHICLE_JOURNEY_PKEY)
+    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_PATTERN_REF_ID_FKEY, VEHICLE_JOURNEY__VEHICLE_JOURNEY_BLOCK_ID_FKEY, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_TYPE_FKEY)
+
+    private lateinit var _journeyPatternRef: JourneyPatternRef
+    private lateinit var _block: Block
+    private lateinit var _journeyType: JourneyType
+    fun journeyPatternRef(): JourneyPatternRef {
+        if (!this::_journeyPatternRef.isInitialized)
+            _journeyPatternRef = JourneyPatternRef(this, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_PATTERN_REF_ID_FKEY)
+
+        return _journeyPatternRef;
+    }
+    fun block(): Block {
+        if (!this::_block.isInitialized)
+            _block = Block(this, VEHICLE_JOURNEY__VEHICLE_JOURNEY_BLOCK_ID_FKEY)
+
+        return _block;
+    }
+    fun journeyType(): JourneyType {
+        if (!this::_journeyType.isInitialized)
+            _journeyType = JourneyType(this, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_TYPE_FKEY)
+
+        return _journeyType;
+    }
     override fun `as`(alias: String): VehicleJourney = VehicleJourney(DSL.name(alias), this)
     override fun `as`(alias: Name): VehicleJourney = VehicleJourney(alias, this)
 

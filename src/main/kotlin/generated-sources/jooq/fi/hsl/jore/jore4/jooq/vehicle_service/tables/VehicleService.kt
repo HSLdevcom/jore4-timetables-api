@@ -4,7 +4,15 @@
 package fi.hsl.jore.jore4.jooq.vehicle_service.tables
 
 
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.DayType
+import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.VehicleScheduleFrame
+import fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE_PKEY
+import fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY
+import fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY
+
 import java.util.UUID
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -15,6 +23,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -97,6 +106,24 @@ open class VehicleService(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_SERVICE_, null)
     override fun getSchema(): Schema = fi.hsl.jore.jore4.jooq.vehicle_service.VehicleService.VEHICLE_SERVICE
+    override fun getPrimaryKey(): UniqueKey<Record> = VEHICLE_SERVICE_PKEY
+    override fun getKeys(): List<UniqueKey<Record>> = listOf(VEHICLE_SERVICE_PKEY)
+    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY, VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY)
+
+    private lateinit var _dayType: DayType
+    private lateinit var _vehicleScheduleFrame: VehicleScheduleFrame
+    fun dayType(): DayType {
+        if (!this::_dayType.isInitialized)
+            _dayType = DayType(this, VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY)
+
+        return _dayType;
+    }
+    fun vehicleScheduleFrame(): VehicleScheduleFrame {
+        if (!this::_vehicleScheduleFrame.isInitialized)
+            _vehicleScheduleFrame = VehicleScheduleFrame(this, VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY)
+
+        return _vehicleScheduleFrame;
+    }
     override fun `as`(alias: String): VehicleService = VehicleService(DSL.name(alias), this)
     override fun `as`(alias: Name): VehicleService = VehicleService(alias, this)
 
