@@ -5,8 +5,14 @@ package fi.hsl.jore.jore4.jooq.vehicle_service.tables
 
 
 import fi.hsl.jore.jore4.jooq.vehicle_service.VehicleService
+import fi.hsl.jore.jore4.jooq.vehicle_service.keys.BLOCK_PKEY
+import fi.hsl.jore.jore4.jooq.vehicle_service.keys.BLOCK__BLOCK_VEHICLE_SERVICE_ID_FKEY
+import fi.hsl.jore.jore4.jooq.vehicle_service.keys.BLOCK__VEHICLE_TYPE_FKEY
+import fi.hsl.jore.jore4.jooq.vehicle_type.tables.VehicleType
 
 import java.util.UUID
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -16,6 +22,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -104,6 +111,24 @@ open class Block(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, BLOCK, null)
     override fun getSchema(): Schema = VehicleService.VEHICLE_SERVICE
+    override fun getPrimaryKey(): UniqueKey<Record> = BLOCK_PKEY
+    override fun getKeys(): List<UniqueKey<Record>> = listOf(BLOCK_PKEY)
+    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(BLOCK__BLOCK_VEHICLE_SERVICE_ID_FKEY, BLOCK__VEHICLE_TYPE_FKEY)
+
+    private lateinit var _vehicleService: fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService
+    private lateinit var _vehicleType: VehicleType
+    fun vehicleService(): fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService {
+        if (!this::_vehicleService.isInitialized)
+            _vehicleService = fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService(this, BLOCK__BLOCK_VEHICLE_SERVICE_ID_FKEY)
+
+        return _vehicleService;
+    }
+    fun vehicleType(): VehicleType {
+        if (!this::_vehicleType.isInitialized)
+            _vehicleType = VehicleType(this, BLOCK__VEHICLE_TYPE_FKEY)
+
+        return _vehicleType;
+    }
     override fun `as`(alias: String): Block = Block(DSL.name(alias), this)
     override fun `as`(alias: Name): Block = Block(alias, this)
 

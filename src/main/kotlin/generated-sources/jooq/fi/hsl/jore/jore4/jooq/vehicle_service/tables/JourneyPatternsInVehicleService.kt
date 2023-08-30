@@ -5,8 +5,12 @@ package fi.hsl.jore.jore4.jooq.vehicle_service.tables
 
 
 import fi.hsl.jore.jore4.jooq.vehicle_service.VehicleService
+import fi.hsl.jore.jore4.jooq.vehicle_service.keys.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_PKEY
+import fi.hsl.jore.jore4.jooq.vehicle_service.keys.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE__JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_VEHICLE_SERVICE_ID_FKEY
 
 import java.util.UUID
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -16,6 +20,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -96,6 +101,17 @@ open class JourneyPatternsInVehicleService(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, JOURNEY_PATTERNS_IN_VEHICLE_SERVICE, null)
     override fun getSchema(): Schema = VehicleService.VEHICLE_SERVICE
+    override fun getPrimaryKey(): UniqueKey<Record> = JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_PKEY
+    override fun getKeys(): List<UniqueKey<Record>> = listOf(JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_PKEY)
+    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(JOURNEY_PATTERNS_IN_VEHICLE_SERVICE__JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_VEHICLE_SERVICE_ID_FKEY)
+
+    private lateinit var _vehicleService: fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService
+    fun vehicleService(): fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService {
+        if (!this::_vehicleService.isInitialized)
+            _vehicleService = fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService(this, JOURNEY_PATTERNS_IN_VEHICLE_SERVICE__JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_VEHICLE_SERVICE_ID_FKEY)
+
+        return _vehicleService;
+    }
     override fun `as`(alias: String): JourneyPatternsInVehicleService = JourneyPatternsInVehicleService(DSL.name(alias), this)
     override fun `as`(alias: Name): JourneyPatternsInVehicleService = JourneyPatternsInVehicleService(alias, this)
 

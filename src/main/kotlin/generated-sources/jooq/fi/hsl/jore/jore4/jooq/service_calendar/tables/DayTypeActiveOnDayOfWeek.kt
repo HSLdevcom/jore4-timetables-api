@@ -5,8 +5,12 @@ package fi.hsl.jore.jore4.jooq.service_calendar.tables
 
 
 import fi.hsl.jore.jore4.jooq.service_calendar.ServiceCalendar
+import fi.hsl.jore.jore4.jooq.service_calendar.keys.DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_PKEY
+import fi.hsl.jore.jore4.jooq.service_calendar.keys.DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK__DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_DAY_TYPE_ID_FKEY
 
 import java.util.UUID
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -16,6 +20,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -85,6 +90,17 @@ open class DayTypeActiveOnDayOfWeek(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK, null)
     override fun getSchema(): Schema = ServiceCalendar.SERVICE_CALENDAR
+    override fun getPrimaryKey(): UniqueKey<Record> = DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_PKEY
+    override fun getKeys(): List<UniqueKey<Record>> = listOf(DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_PKEY)
+    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK__DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_DAY_TYPE_ID_FKEY)
+
+    private lateinit var _dayType: DayType
+    fun dayType(): DayType {
+        if (!this::_dayType.isInitialized)
+            _dayType = DayType(this, DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK__DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_DAY_TYPE_ID_FKEY)
+
+        return _dayType;
+    }
     override fun `as`(alias: String): DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek(DSL.name(alias), this)
     override fun `as`(alias: Name): DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek(alias, this)
 

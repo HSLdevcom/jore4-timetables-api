@@ -5,8 +5,15 @@ package fi.hsl.jore.jore4.jooq.passing_times.tables
 
 
 import fi.hsl.jore.jore4.jooq.passing_times.PassingTimes
+import fi.hsl.jore.jore4.jooq.passing_times.keys.TIMETABLED_PASSING_TIME_PKEY
+import fi.hsl.jore.jore4.jooq.passing_times.keys.TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_SCHEDULED_STOP_POINT_IN_JOURNEY_PA_FKEY
+import fi.hsl.jore.jore4.jooq.passing_times.keys.TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_VEHICLE_JOURNEY_ID_FKEY
+import fi.hsl.jore.jore4.jooq.service_pattern.tables.ScheduledStopPointInJourneyPatternRef
+import fi.hsl.jore.jore4.jooq.vehicle_journey.tables.VehicleJourney
 
 import java.util.UUID
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -16,6 +23,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -108,6 +116,24 @@ open class TimetabledPassingTime(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, TIMETABLED_PASSING_TIME, null)
     override fun getSchema(): Schema = PassingTimes.PASSING_TIMES
+    override fun getPrimaryKey(): UniqueKey<Record> = TIMETABLED_PASSING_TIME_PKEY
+    override fun getKeys(): List<UniqueKey<Record>> = listOf(TIMETABLED_PASSING_TIME_PKEY)
+    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_VEHICLE_JOURNEY_ID_FKEY, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_SCHEDULED_STOP_POINT_IN_JOURNEY_PA_FKEY)
+
+    private lateinit var _vehicleJourney: VehicleJourney
+    private lateinit var _scheduledStopPointInJourneyPatternRef: ScheduledStopPointInJourneyPatternRef
+    fun vehicleJourney(): VehicleJourney {
+        if (!this::_vehicleJourney.isInitialized)
+            _vehicleJourney = VehicleJourney(this, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_VEHICLE_JOURNEY_ID_FKEY)
+
+        return _vehicleJourney;
+    }
+    fun scheduledStopPointInJourneyPatternRef(): ScheduledStopPointInJourneyPatternRef {
+        if (!this::_scheduledStopPointInJourneyPatternRef.isInitialized)
+            _scheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef(this, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_SCHEDULED_STOP_POINT_IN_JOURNEY_PA_FKEY)
+
+        return _scheduledStopPointInJourneyPatternRef;
+    }
     override fun `as`(alias: String): TimetabledPassingTime = TimetabledPassingTime(DSL.name(alias), this)
     override fun `as`(alias: Name): TimetabledPassingTime = TimetabledPassingTime(alias, this)
 

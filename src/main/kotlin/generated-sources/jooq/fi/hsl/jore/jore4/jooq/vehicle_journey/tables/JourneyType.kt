@@ -5,6 +5,9 @@ package fi.hsl.jore.jore4.jooq.vehicle_journey.tables
 
 
 import fi.hsl.jore.jore4.jooq.vehicle_journey.VehicleJourney
+import fi.hsl.jore.jore4.jooq.vehicle_journey.keys.JOURNEY_TYPE_PKEY
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -14,6 +17,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -78,6 +82,8 @@ open class JourneyType(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, JOURNEY_TYPE, null)
     override fun getSchema(): Schema = VehicleJourney.VEHICLE_JOURNEY
+    override fun getPrimaryKey(): UniqueKey<Record> = JOURNEY_TYPE_PKEY
+    override fun getKeys(): List<UniqueKey<Record>> = listOf(JOURNEY_TYPE_PKEY)
     override fun `as`(alias: String): JourneyType = JourneyType(DSL.name(alias), this)
     override fun `as`(alias: Name): JourneyType = JourneyType(alias, this)
 

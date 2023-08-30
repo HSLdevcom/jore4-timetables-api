@@ -5,9 +5,14 @@ package fi.hsl.jore.jore4.jooq.journey_pattern.tables
 
 
 import fi.hsl.jore.jore4.jooq.journey_pattern.JourneyPattern
+import fi.hsl.jore.jore4.jooq.journey_pattern.keys.JOURNEY_PATTERN_REF_PKEY
+import fi.hsl.jore.jore4.jooq.journey_pattern.keys.JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY
+import fi.hsl.jore.jore4.jooq.route.tables.TypeOfLine
 
 import java.time.OffsetDateTime
 import java.util.UUID
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -17,6 +22,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -102,6 +108,17 @@ open class JourneyPatternRef(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, JOURNEY_PATTERN_REF, null)
     override fun getSchema(): Schema = JourneyPattern.JOURNEY_PATTERN
+    override fun getPrimaryKey(): UniqueKey<Record> = JOURNEY_PATTERN_REF_PKEY
+    override fun getKeys(): List<UniqueKey<Record>> = listOf(JOURNEY_PATTERN_REF_PKEY)
+    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY)
+
+    private lateinit var _typeOfLine: TypeOfLine
+    fun typeOfLine(): TypeOfLine {
+        if (!this::_typeOfLine.isInitialized)
+            _typeOfLine = TypeOfLine(this, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY)
+
+        return _typeOfLine;
+    }
     override fun `as`(alias: String): JourneyPatternRef = JourneyPatternRef(DSL.name(alias), this)
     override fun `as`(alias: Name): JourneyPatternRef = JourneyPatternRef(alias, this)
 
