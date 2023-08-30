@@ -4,7 +4,6 @@
 package fi.hsl.jore.jore4.jooq
 
 
-import fi.hsl.jore.jore4.jooq.information_schema.InformationSchema
 import fi.hsl.jore.jore4.jooq.journey_pattern.JourneyPattern
 import fi.hsl.jore.jore4.jooq.passing_times.PassingTimes
 import fi.hsl.jore.jore4.jooq.return_value.ReturnValue
@@ -34,11 +33,6 @@ open class DefaultCatalog : CatalogImpl("") {
          */
         val DEFAULT_CATALOG = DefaultCatalog()
     }
-
-    /**
-     * The schema <code>information_schema</code>.
-     */
-    val INFORMATION_SCHEMA get() = InformationSchema.INFORMATION_SCHEMA
 
     /**
      * The schema <code>journey_pattern</code>.
@@ -91,7 +85,6 @@ open class DefaultCatalog : CatalogImpl("") {
     val VEHICLE_TYPE get() = VehicleType.VEHICLE_TYPE
 
     override fun getSchemas(): List<Schema> = listOf(
-        InformationSchema.INFORMATION_SCHEMA,
         JourneyPattern.JOURNEY_PATTERN,
         PassingTimes.PASSING_TIMES,
         ReturnValue.RETURN_VALUE,

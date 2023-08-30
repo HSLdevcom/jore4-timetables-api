@@ -5,8 +5,11 @@ package fi.hsl.jore.jore4.jooq.service_calendar.tables
 
 
 import fi.hsl.jore.jore4.jooq.service_calendar.ServiceCalendar
+import fi.hsl.jore.jore4.jooq.service_calendar.keys.DAY_TYPE_PKEY
 
 import java.util.UUID
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -17,6 +20,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -93,6 +97,8 @@ open class DayType(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, DAY_TYPE, null)
     override fun getSchema(): Schema = ServiceCalendar.SERVICE_CALENDAR
+    override fun getPrimaryKey(): UniqueKey<Record> = DAY_TYPE_PKEY
+    override fun getKeys(): List<UniqueKey<Record>> = listOf(DAY_TYPE_PKEY)
     override fun `as`(alias: String): DayType = DayType(DSL.name(alias), this)
     override fun `as`(alias: Name): DayType = DayType(alias, this)
 

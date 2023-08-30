@@ -422,6 +422,7 @@
                                         | EACH
                                         | PUBLIC.*
                                         | pg_catalog.*
+                                        | information_schema.*
                                     </excludes>
                                     <includeTables>true</includeTables>
                                     <includeInvisibleColumns>false</includeInvisibleColumns>
@@ -433,10 +434,10 @@
                                     <includePackageConstants>false</includePackageConstants>
                                     <includeUDTs>false</includeUDTs>
                                     <includeDomains>false</includeDomains>
-                                    <includeSequences>false</includeSequences>
-                                    <includePrimaryKeys>false</includePrimaryKeys>
-                                    <includeUniqueKeys>false</includeUniqueKeys>
-                                    <includeForeignKeys>false</includeForeignKeys>
+                                    <includeSequences>true</includeSequences>
+                                    <includePrimaryKeys>true</includePrimaryKeys>
+                                    <includeUniqueKeys>true</includeUniqueKeys>
+                                    <includeForeignKeys>true</includeForeignKeys>
                                     <includeCheckConstraints>false</includeCheckConstraints>
                                     <includeSystemCheckConstraints>false</includeSystemCheckConstraints>
                                     <includeIndexes>false</includeIndexes>

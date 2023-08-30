@@ -4,9 +4,14 @@
 package fi.hsl.jore.jore4.jooq.service_pattern.tables
 
 
+import fi.hsl.jore.jore4.jooq.journey_pattern.tables.JourneyPatternRef
 import fi.hsl.jore.jore4.jooq.service_pattern.ServicePattern
+import fi.hsl.jore.jore4.jooq.service_pattern.keys.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_PKEY
+import fi.hsl.jore.jore4.jooq.service_pattern.keys.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY
 
 import java.util.UUID
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -16,6 +21,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -96,6 +102,17 @@ open class ScheduledStopPointInJourneyPatternRef(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF, null)
     override fun getSchema(): Schema = ServicePattern.SERVICE_PATTERN
+    override fun getPrimaryKey(): UniqueKey<Record> = SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_PKEY
+    override fun getKeys(): List<UniqueKey<Record>> = listOf(SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_PKEY)
+    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY)
+
+    private lateinit var _journeyPatternRef: JourneyPatternRef
+    fun journeyPatternRef(): JourneyPatternRef {
+        if (!this::_journeyPatternRef.isInitialized)
+            _journeyPatternRef = JourneyPatternRef(this, SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY)
+
+        return _journeyPatternRef;
+    }
     override fun `as`(alias: String): ScheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef(DSL.name(alias), this)
     override fun `as`(alias: Name): ScheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef(alias, this)
 

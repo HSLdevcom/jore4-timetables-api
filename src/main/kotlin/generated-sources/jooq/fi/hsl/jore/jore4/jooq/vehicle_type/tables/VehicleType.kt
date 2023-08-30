@@ -4,7 +4,11 @@
 package fi.hsl.jore.jore4.jooq.vehicle_type.tables
 
 
+import fi.hsl.jore.jore4.jooq.vehicle_type.keys.VEHICLE_TYPE_PKEY
+
 import java.util.UUID
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -15,6 +19,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -98,6 +103,8 @@ import org.jooq.impl.TableImpl
 
         constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_TYPE_, null)
         override fun getSchema(): Schema = fi.hsl.jore.jore4.jooq.vehicle_type.VehicleType.VEHICLE_TYPE
+        override fun getPrimaryKey(): UniqueKey<Record> = VEHICLE_TYPE_PKEY
+        override fun getKeys(): List<UniqueKey<Record>> = listOf(VEHICLE_TYPE_PKEY)
         override fun `as`(alias: String): VehicleType = VehicleType(DSL.name(alias), this)
         override fun `as`(alias: Name): VehicleType = VehicleType(alias, this)
 

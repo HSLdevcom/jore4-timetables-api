@@ -5,8 +5,12 @@ package fi.hsl.jore.jore4.jooq.service_calendar.tables
 
 
 import fi.hsl.jore.jore4.jooq.service_calendar.ServiceCalendar
+import fi.hsl.jore.jore4.jooq.service_calendar.keys.SUBSTITUTE_OPERATING_PERIOD_PERIOD_NAME_KEY
+import fi.hsl.jore.jore4.jooq.service_calendar.keys.SUBSTITUTE_OPERATING_PERIOD_PKEY
 
 import java.util.UUID
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -16,6 +20,7 @@ import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
+import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
@@ -91,6 +96,8 @@ open class SubstituteOperatingPeriod(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, SUBSTITUTE_OPERATING_PERIOD, null)
     override fun getSchema(): Schema = ServiceCalendar.SERVICE_CALENDAR
+    override fun getPrimaryKey(): UniqueKey<Record> = SUBSTITUTE_OPERATING_PERIOD_PKEY
+    override fun getKeys(): List<UniqueKey<Record>> = listOf(SUBSTITUTE_OPERATING_PERIOD_PKEY, SUBSTITUTE_OPERATING_PERIOD_PERIOD_NAME_KEY)
     override fun `as`(alias: String): SubstituteOperatingPeriod = SubstituteOperatingPeriod(DSL.name(alias), this)
     override fun `as`(alias: Name): SubstituteOperatingPeriod = SubstituteOperatingPeriod(alias, this)
 
