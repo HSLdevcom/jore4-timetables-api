@@ -5,8 +5,8 @@ package fi.hsl.jore.jore4.jooq.vehicle_schedule.keys
 
 
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.VehicleScheduleFrame
+import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.records.VehicleScheduleFrameRecord
 
-import org.jooq.Record
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
@@ -17,4 +17,4 @@ import org.jooq.impl.Internal
 // UNIQUE and PRIMARY KEY definitions
 // -------------------------------------------------------------------------
 
-val VEHICLE_SCHEDULE_FRAME_PKEY: UniqueKey<Record> = Internal.createUniqueKey(VehicleScheduleFrame.VEHICLE_SCHEDULE_FRAME, DSL.name("vehicle_schedule_frame_pkey"), arrayOf(VehicleScheduleFrame.VEHICLE_SCHEDULE_FRAME.VEHICLE_SCHEDULE_FRAME_ID), true)
+val VEHICLE_SCHEDULE_FRAME_PKEY: UniqueKey<VehicleScheduleFrameRecord> = Internal.createUniqueKey(VehicleScheduleFrame.VEHICLE_SCHEDULE_FRAME, DSL.name("vehicle_schedule_frame_pkey"), arrayOf(VehicleScheduleFrame.VEHICLE_SCHEDULE_FRAME.VEHICLE_SCHEDULE_FRAME_ID), true)

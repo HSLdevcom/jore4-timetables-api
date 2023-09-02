@@ -8,8 +8,10 @@ import fi.hsl.jore.jore4.jooq.journey_pattern.tables.JourneyPatternRef
 import fi.hsl.jore.jore4.jooq.service_pattern.ServicePattern
 import fi.hsl.jore.jore4.jooq.service_pattern.keys.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_PKEY
 import fi.hsl.jore.jore4.jooq.service_pattern.keys.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY
+import fi.hsl.jore.jore4.jooq.service_pattern.tables.records.ScheduledStopPointInJourneyPatternRefRecord
 
 import java.util.UUID
+import java.util.function.Function
 
 import kotlin.collections.List
 
@@ -17,7 +19,10 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row4
 import org.jooq.Schema
+import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -36,10 +41,10 @@ import org.jooq.impl.TableImpl
 open class ScheduledStopPointInJourneyPatternRef(
     alias: Name,
     child: Table<out Record>?,
-    path: ForeignKey<out Record, Record>?,
-    aliased: Table<Record>?,
+    path: ForeignKey<out Record, ScheduledStopPointInJourneyPatternRefRecord>?,
+    aliased: Table<ScheduledStopPointInJourneyPatternRefRecord>?,
     parameters: Array<Field<*>?>?
-): TableImpl<Record>(
+): TableImpl<ScheduledStopPointInJourneyPatternRefRecord>(
     alias,
     ServicePattern.SERVICE_PATTERN,
     child,
@@ -61,37 +66,37 @@ open class ScheduledStopPointInJourneyPatternRef(
     /**
      * The class holding records for this type
      */
-    override fun getRecordType(): Class<Record> = Record::class.java
+    override fun getRecordType(): Class<ScheduledStopPointInJourneyPatternRefRecord> = ScheduledStopPointInJourneyPatternRefRecord::class.java
 
     /**
      * The column
      * <code>service_pattern.scheduled_stop_point_in_journey_pattern_ref.scheduled_stop_point_in_journey_pattern_ref_id</code>.
      */
-    val SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_ID: TableField<Record, UUID?> = createField(DSL.name("scheduled_stop_point_in_journey_pattern_ref_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
+    val SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_ID: TableField<ScheduledStopPointInJourneyPatternRefRecord, UUID?> = createField(DSL.name("scheduled_stop_point_in_journey_pattern_ref_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
 
     /**
      * The column
      * <code>service_pattern.scheduled_stop_point_in_journey_pattern_ref.journey_pattern_ref_id</code>.
      * JOURNEY PATTERN to which the SCHEDULED STOP POINT belongs
      */
-    val JOURNEY_PATTERN_REF_ID: TableField<Record, UUID?> = createField(DSL.name("journey_pattern_ref_id"), SQLDataType.UUID.nullable(false), this, "JOURNEY PATTERN to which the SCHEDULED STOP POINT belongs")
+    val JOURNEY_PATTERN_REF_ID: TableField<ScheduledStopPointInJourneyPatternRefRecord, UUID?> = createField(DSL.name("journey_pattern_ref_id"), SQLDataType.UUID.nullable(false), this, "JOURNEY PATTERN to which the SCHEDULED STOP POINT belongs")
 
     /**
      * The column
      * <code>service_pattern.scheduled_stop_point_in_journey_pattern_ref.scheduled_stop_point_label</code>.
      * The label of the SCHEDULED STOP POINT
      */
-    val SCHEDULED_STOP_POINT_LABEL: TableField<Record, String?> = createField(DSL.name("scheduled_stop_point_label"), SQLDataType.CLOB.nullable(false), this, "The label of the SCHEDULED STOP POINT")
+    val SCHEDULED_STOP_POINT_LABEL: TableField<ScheduledStopPointInJourneyPatternRefRecord, String?> = createField(DSL.name("scheduled_stop_point_label"), SQLDataType.CLOB.nullable(false), this, "The label of the SCHEDULED STOP POINT")
 
     /**
      * The column
      * <code>service_pattern.scheduled_stop_point_in_journey_pattern_ref.scheduled_stop_point_sequence</code>.
      * The order of the SCHEDULED STOP POINT within the JOURNEY PATTERN.
      */
-    val SCHEDULED_STOP_POINT_SEQUENCE: TableField<Record, Int?> = createField(DSL.name("scheduled_stop_point_sequence"), SQLDataType.INTEGER.nullable(false), this, "The order of the SCHEDULED STOP POINT within the JOURNEY PATTERN.")
+    val SCHEDULED_STOP_POINT_SEQUENCE: TableField<ScheduledStopPointInJourneyPatternRefRecord, Int?> = createField(DSL.name("scheduled_stop_point_sequence"), SQLDataType.INTEGER.nullable(false), this, "The order of the SCHEDULED STOP POINT within the JOURNEY PATTERN.")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<ScheduledStopPointInJourneyPatternRefRecord>?): this(alias, null, null, aliased, null)
+    private constructor(alias: Name, aliased: Table<ScheduledStopPointInJourneyPatternRefRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
      * Create an aliased
@@ -114,10 +119,10 @@ open class ScheduledStopPointInJourneyPatternRef(
      */
     constructor(): this(DSL.name("scheduled_stop_point_in_journey_pattern_ref"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF, null)
+    constructor(child: Table<out Record>, key: ForeignKey<out Record, ScheduledStopPointInJourneyPatternRefRecord>): this(Internal.createPathAlias(child, key), child, key, SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF, null)
     override fun getSchema(): Schema? = if (aliased()) null else ServicePattern.SERVICE_PATTERN
-    override fun getPrimaryKey(): UniqueKey<Record> = SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_PKEY
-    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY)
+    override fun getPrimaryKey(): UniqueKey<ScheduledStopPointInJourneyPatternRefRecord> = SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_PKEY
+    override fun getReferences(): List<ForeignKey<ScheduledStopPointInJourneyPatternRefRecord, *>> = listOf(SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY)
 
     private lateinit var _journeyPatternRef: JourneyPatternRef
 
@@ -152,4 +157,20 @@ open class ScheduledStopPointInJourneyPatternRef(
      * Rename this table
      */
     override fun rename(name: Table<*>): ScheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef(name.getQualifiedName(), null)
+
+    // -------------------------------------------------------------------------
+    // Row4 type methods
+    // -------------------------------------------------------------------------
+    override fun fieldsRow(): Row4<UUID?, UUID?, String?, Int?> = super.fieldsRow() as Row4<UUID?, UUID?, String?, Int?>
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    fun <U> mapping(from: (UUID?, UUID?, String?, Int?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, String?, Int?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

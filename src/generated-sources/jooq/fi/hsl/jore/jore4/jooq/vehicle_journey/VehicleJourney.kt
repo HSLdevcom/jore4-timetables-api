@@ -5,6 +5,7 @@ package fi.hsl.jore.jore4.jooq.vehicle_journey
 
 
 import fi.hsl.jore.jore4.jooq.DefaultCatalog
+import fi.hsl.jore.jore4.jooq.return_value.tables.records.VehicleScheduleRecord
 import fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate
 import fi.hsl.jore.jore4.jooq.vehicle_journey.tables.JourneyType
 
@@ -16,7 +17,6 @@ import kotlin.collections.List
 import org.jooq.Catalog
 import org.jooq.Configuration
 import org.jooq.Field
-import org.jooq.Record
 import org.jooq.Result
 import org.jooq.Table
 import org.jooq.impl.SchemaImpl
@@ -47,7 +47,7 @@ open class VehicleJourney : SchemaImpl("vehicle_journey", DefaultCatalog.DEFAULT
           configuration: Configuration
         , journeyPatternUuid: UUID?
         , observationDate: LocalDate?
-    ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE.call(
+    ): Result<VehicleScheduleRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE.call(
           journeyPatternUuid
         , observationDate
     )).fetch()

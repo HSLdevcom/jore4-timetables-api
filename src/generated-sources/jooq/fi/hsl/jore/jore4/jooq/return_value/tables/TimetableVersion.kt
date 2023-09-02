@@ -5,23 +5,20 @@ package fi.hsl.jore.jore4.jooq.return_value.tables
 
 
 import fi.hsl.jore.jore4.jooq.return_value.ReturnValue
-import fi.hsl.jore.jore4.jooq.return_value.keys.TIMETABLE_VERSION__TIMETABLE_VERSION_DAY_TYPE_ID_FKEY
-import fi.hsl.jore.jore4.jooq.return_value.keys.TIMETABLE_VERSION__TIMETABLE_VERSION_SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID_FKEY
-import fi.hsl.jore.jore4.jooq.return_value.keys.TIMETABLE_VERSION__TIMETABLE_VERSION_VEHICLE_SCHEDULE_FRAME_ID_FKEY
-import fi.hsl.jore.jore4.jooq.service_calendar.tables.DayType
-import fi.hsl.jore.jore4.jooq.service_calendar.tables.SubstituteOperatingDayByLineType
-import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.VehicleScheduleFrame
+import fi.hsl.jore.jore4.jooq.return_value.tables.records.TimetableVersionRecord
 
 import java.time.LocalDate
 import java.util.UUID
-
-import kotlin.collections.List
+import java.util.function.Function
 
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row7
 import org.jooq.Schema
+import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -62,10 +59,10 @@ import org.jooq.impl.TableImpl
 open class TimetableVersion(
     alias: Name,
     child: Table<out Record>?,
-    path: ForeignKey<out Record, Record>?,
-    aliased: Table<Record>?,
+    path: ForeignKey<out Record, TimetableVersionRecord>?,
+    aliased: Table<TimetableVersionRecord>?,
     parameters: Array<Field<*>?>?
-): TableImpl<Record>(
+): TableImpl<TimetableVersionRecord>(
     alias,
     ReturnValue.RETURN_VALUE,
     child,
@@ -86,47 +83,47 @@ open class TimetableVersion(
     /**
      * The class holding records for this type
      */
-    override fun getRecordType(): Class<Record> = Record::class.java
+    override fun getRecordType(): Class<TimetableVersionRecord> = TimetableVersionRecord::class.java
 
     /**
      * The column
      * <code>return_value.timetable_version.vehicle_schedule_frame_id</code>.
      */
-    val VEHICLE_SCHEDULE_FRAME_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_schedule_frame_id"), SQLDataType.UUID, this, "")
+    val VEHICLE_SCHEDULE_FRAME_ID: TableField<TimetableVersionRecord, UUID?> = createField(DSL.name("vehicle_schedule_frame_id"), SQLDataType.UUID, this, "")
 
     /**
      * The column
      * <code>return_value.timetable_version.substitute_operating_day_by_line_type_id</code>.
      */
-    val SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("substitute_operating_day_by_line_type_id"), SQLDataType.UUID, this, "")
+    val SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID: TableField<TimetableVersionRecord, UUID?> = createField(DSL.name("substitute_operating_day_by_line_type_id"), SQLDataType.UUID, this, "")
 
     /**
      * The column <code>return_value.timetable_version.validity_start</code>.
      */
-    val VALIDITY_START: TableField<Record, LocalDate?> = createField(DSL.name("validity_start"), SQLDataType.LOCALDATE.nullable(false), this, "")
+    val VALIDITY_START: TableField<TimetableVersionRecord, LocalDate?> = createField(DSL.name("validity_start"), SQLDataType.LOCALDATE.nullable(false), this, "")
 
     /**
      * The column <code>return_value.timetable_version.validity_end</code>.
      */
-    val VALIDITY_END: TableField<Record, LocalDate?> = createField(DSL.name("validity_end"), SQLDataType.LOCALDATE.nullable(false), this, "")
+    val VALIDITY_END: TableField<TimetableVersionRecord, LocalDate?> = createField(DSL.name("validity_end"), SQLDataType.LOCALDATE.nullable(false), this, "")
 
     /**
      * The column <code>return_value.timetable_version.priority</code>.
      */
-    val PRIORITY: TableField<Record, Int?> = createField(DSL.name("priority"), SQLDataType.INTEGER.nullable(false), this, "")
+    val PRIORITY: TableField<TimetableVersionRecord, Int?> = createField(DSL.name("priority"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
      * The column <code>return_value.timetable_version.in_effect</code>.
      */
-    val IN_EFFECT: TableField<Record, Boolean?> = createField(DSL.name("in_effect"), SQLDataType.BOOLEAN.nullable(false), this, "")
+    val IN_EFFECT: TableField<TimetableVersionRecord, Boolean?> = createField(DSL.name("in_effect"), SQLDataType.BOOLEAN.nullable(false), this, "")
 
     /**
      * The column <code>return_value.timetable_version.day_type_id</code>.
      */
-    val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "")
+    val DAY_TYPE_ID: TableField<TimetableVersionRecord, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<TimetableVersionRecord>?): this(alias, null, null, aliased, null)
+    private constructor(alias: Name, aliased: Table<TimetableVersionRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
      * Create an aliased <code>return_value.timetable_version</code> table
@@ -145,56 +142,8 @@ open class TimetableVersion(
      */
     constructor(): this(DSL.name("timetable_version"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, TIMETABLE_VERSION, null)
+    constructor(child: Table<out Record>, key: ForeignKey<out Record, TimetableVersionRecord>): this(Internal.createPathAlias(child, key), child, key, TIMETABLE_VERSION, null)
     override fun getSchema(): Schema? = if (aliased()) null else ReturnValue.RETURN_VALUE
-    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(TIMETABLE_VERSION__TIMETABLE_VERSION_VEHICLE_SCHEDULE_FRAME_ID_FKEY, TIMETABLE_VERSION__TIMETABLE_VERSION_SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID_FKEY, TIMETABLE_VERSION__TIMETABLE_VERSION_DAY_TYPE_ID_FKEY)
-
-    private lateinit var _vehicleScheduleFrame: VehicleScheduleFrame
-    private lateinit var _substituteOperatingDayByLineType: SubstituteOperatingDayByLineType
-    private lateinit var _dayType: DayType
-
-    /**
-     * Get the implicit join path to the
-     * <code>vehicle_schedule.vehicle_schedule_frame</code> table.
-     */
-    fun vehicleScheduleFrame(): VehicleScheduleFrame {
-        if (!this::_vehicleScheduleFrame.isInitialized)
-            _vehicleScheduleFrame = VehicleScheduleFrame(this, TIMETABLE_VERSION__TIMETABLE_VERSION_VEHICLE_SCHEDULE_FRAME_ID_FKEY)
-
-        return _vehicleScheduleFrame;
-    }
-
-    val vehicleScheduleFrame: VehicleScheduleFrame
-        get(): VehicleScheduleFrame = vehicleScheduleFrame()
-
-    /**
-     * Get the implicit join path to the
-     * <code>service_calendar.substitute_operating_day_by_line_type</code>
-     * table.
-     */
-    fun substituteOperatingDayByLineType(): SubstituteOperatingDayByLineType {
-        if (!this::_substituteOperatingDayByLineType.isInitialized)
-            _substituteOperatingDayByLineType = SubstituteOperatingDayByLineType(this, TIMETABLE_VERSION__TIMETABLE_VERSION_SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID_FKEY)
-
-        return _substituteOperatingDayByLineType;
-    }
-
-    val substituteOperatingDayByLineType: SubstituteOperatingDayByLineType
-        get(): SubstituteOperatingDayByLineType = substituteOperatingDayByLineType()
-
-    /**
-     * Get the implicit join path to the <code>service_calendar.day_type</code>
-     * table.
-     */
-    fun dayType(): DayType {
-        if (!this::_dayType.isInitialized)
-            _dayType = DayType(this, TIMETABLE_VERSION__TIMETABLE_VERSION_DAY_TYPE_ID_FKEY)
-
-        return _dayType;
-    }
-
-    val dayType: DayType
-        get(): DayType = dayType()
     override fun `as`(alias: String): TimetableVersion = TimetableVersion(DSL.name(alias), this)
     override fun `as`(alias: Name): TimetableVersion = TimetableVersion(alias, this)
     override fun `as`(alias: Table<*>): TimetableVersion = TimetableVersion(alias.getQualifiedName(), this)
@@ -213,4 +162,20 @@ open class TimetableVersion(
      * Rename this table
      */
     override fun rename(name: Table<*>): TimetableVersion = TimetableVersion(name.getQualifiedName(), null)
+
+    // -------------------------------------------------------------------------
+    // Row7 type methods
+    // -------------------------------------------------------------------------
+    override fun fieldsRow(): Row7<UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?> = super.fieldsRow() as Row7<UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?>
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    fun <U> mapping(from: (UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

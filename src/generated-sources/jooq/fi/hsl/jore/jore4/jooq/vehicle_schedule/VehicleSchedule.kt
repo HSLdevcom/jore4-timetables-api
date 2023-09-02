@@ -7,6 +7,7 @@ package fi.hsl.jore.jore4.jooq.vehicle_schedule
 import fi.hsl.jore.jore4.jooq.DefaultCatalog
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.VehicleScheduleFrame
+import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.records.GetOverlappingSchedulesRecord
 
 import java.util.UUID
 
@@ -15,7 +16,6 @@ import kotlin.collections.List
 import org.jooq.Catalog
 import org.jooq.Configuration
 import org.jooq.Field
-import org.jooq.Record
 import org.jooq.Result
 import org.jooq.Table
 import org.jooq.impl.SchemaImpl
@@ -46,9 +46,11 @@ open class VehicleSchedule : SchemaImpl("vehicle_schedule", DefaultCatalog.DEFAU
           configuration: Configuration
         , filterVehicleScheduleFrameIds: Array<UUID?>?
         , filterJourneyPatternRefIds: Array<UUID?>?
-    ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES.call(
+        , ignorePriority: Boolean?
+    ): Result<GetOverlappingSchedulesRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES.call(
           filterVehicleScheduleFrameIds
         , filterJourneyPatternRefIds
+        , ignorePriority
     )).fetch()
 
     /**
@@ -57,9 +59,11 @@ open class VehicleSchedule : SchemaImpl("vehicle_schedule", DefaultCatalog.DEFAU
     fun GET_OVERLAPPING_SCHEDULES(
           filterVehicleScheduleFrameIds: Array<UUID?>?
         , filterJourneyPatternRefIds: Array<UUID?>?
+        , ignorePriority: Boolean?
     ): GetOverlappingSchedules = fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES.call(
         filterVehicleScheduleFrameIds,
-        filterJourneyPatternRefIds
+        filterJourneyPatternRefIds,
+        ignorePriority
     )
 
     /**
@@ -68,9 +72,11 @@ open class VehicleSchedule : SchemaImpl("vehicle_schedule", DefaultCatalog.DEFAU
     fun GET_OVERLAPPING_SCHEDULES(
           filterVehicleScheduleFrameIds: Field<Array<UUID?>?>
         , filterJourneyPatternRefIds: Field<Array<UUID?>?>
+        , ignorePriority: Field<Boolean?>
     ): GetOverlappingSchedules = fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES.call(
         filterVehicleScheduleFrameIds,
-        filterJourneyPatternRefIds
+        filterJourneyPatternRefIds,
+        ignorePriority
     )
 
     /**
