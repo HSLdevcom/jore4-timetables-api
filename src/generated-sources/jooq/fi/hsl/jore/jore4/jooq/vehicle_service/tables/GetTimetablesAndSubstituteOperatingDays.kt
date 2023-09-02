@@ -4,16 +4,21 @@
 package fi.hsl.jore.jore4.jooq.vehicle_service.tables
 
 
+import fi.hsl.jore.jore4.jooq.return_value.tables.records.TimetableVersionRecord
 import fi.hsl.jore.jore4.jooq.vehicle_service.VehicleService
 
 import java.time.LocalDate
 import java.util.UUID
+import java.util.function.Function
 
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row7
 import org.jooq.Schema
+import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -29,10 +34,10 @@ import org.jooq.impl.TableImpl
 open class GetTimetablesAndSubstituteOperatingDays(
     alias: Name,
     child: Table<out Record>?,
-    path: ForeignKey<out Record, Record>?,
-    aliased: Table<Record>?,
+    path: ForeignKey<out Record, TimetableVersionRecord>?,
+    aliased: Table<TimetableVersionRecord>?,
     parameters: Array<Field<*>?>?
-): TableImpl<Record>(
+): TableImpl<TimetableVersionRecord>(
     alias,
     VehicleService.VEHICLE_SERVICE,
     child,
@@ -54,56 +59,56 @@ open class GetTimetablesAndSubstituteOperatingDays(
     /**
      * The class holding records for this type
      */
-    override fun getRecordType(): Class<Record> = Record::class.java
+    override fun getRecordType(): Class<TimetableVersionRecord> = TimetableVersionRecord::class.java
 
     /**
      * The column
      * <code>vehicle_service.get_timetables_and_substitute_operating_days.vehicle_schedule_frame_id</code>.
      */
-    val VEHICLE_SCHEDULE_FRAME_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_schedule_frame_id"), SQLDataType.UUID, this, "")
+    val VEHICLE_SCHEDULE_FRAME_ID: TableField<TimetableVersionRecord, UUID?> = createField(DSL.name("vehicle_schedule_frame_id"), SQLDataType.UUID, this, "")
 
     /**
      * The column
      * <code>vehicle_service.get_timetables_and_substitute_operating_days.substitute_operating_day_by_line_type_id</code>.
      */
-    val SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("substitute_operating_day_by_line_type_id"), SQLDataType.UUID, this, "")
+    val SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID: TableField<TimetableVersionRecord, UUID?> = createField(DSL.name("substitute_operating_day_by_line_type_id"), SQLDataType.UUID, this, "")
 
     /**
      * The column
      * <code>vehicle_service.get_timetables_and_substitute_operating_days.validity_start</code>.
      */
-    val VALIDITY_START: TableField<Record, LocalDate?> = createField(DSL.name("validity_start"), SQLDataType.LOCALDATE.nullable(false), this, "")
+    val VALIDITY_START: TableField<TimetableVersionRecord, LocalDate?> = createField(DSL.name("validity_start"), SQLDataType.LOCALDATE.nullable(false), this, "")
 
     /**
      * The column
      * <code>vehicle_service.get_timetables_and_substitute_operating_days.validity_end</code>.
      */
-    val VALIDITY_END: TableField<Record, LocalDate?> = createField(DSL.name("validity_end"), SQLDataType.LOCALDATE.nullable(false), this, "")
+    val VALIDITY_END: TableField<TimetableVersionRecord, LocalDate?> = createField(DSL.name("validity_end"), SQLDataType.LOCALDATE.nullable(false), this, "")
 
     /**
      * The column
      * <code>vehicle_service.get_timetables_and_substitute_operating_days.priority</code>.
      */
-    val PRIORITY: TableField<Record, Int?> = createField(DSL.name("priority"), SQLDataType.INTEGER.nullable(false), this, "")
+    val PRIORITY: TableField<TimetableVersionRecord, Int?> = createField(DSL.name("priority"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
      * The column
      * <code>vehicle_service.get_timetables_and_substitute_operating_days.in_effect</code>.
      */
-    val IN_EFFECT: TableField<Record, Boolean?> = createField(DSL.name("in_effect"), SQLDataType.BOOLEAN.nullable(false), this, "")
+    val IN_EFFECT: TableField<TimetableVersionRecord, Boolean?> = createField(DSL.name("in_effect"), SQLDataType.BOOLEAN.nullable(false), this, "")
 
     /**
      * The column
      * <code>vehicle_service.get_timetables_and_substitute_operating_days.day_type_id</code>.
      */
-    val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "")
+    val DAY_TYPE_ID: TableField<TimetableVersionRecord, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, arrayOf(
+    private constructor(alias: Name, aliased: Table<TimetableVersionRecord>?): this(alias, null, null, aliased, arrayOf(
         DSL.value(null, SQLDataType.UUID.array()),
         DSL.value(null, SQLDataType.LOCALDATE),
         DSL.value(null, SQLDataType.LOCALDATE)
     ))
-    private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<TimetableVersionRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
      * Create an aliased
@@ -145,6 +150,11 @@ open class GetTimetablesAndSubstituteOperatingDays(
      */
     override fun rename(name: Table<*>): GetTimetablesAndSubstituteOperatingDays = GetTimetablesAndSubstituteOperatingDays(name.getQualifiedName(), null, parameters)
 
+    // -------------------------------------------------------------------------
+    // Row7 type methods
+    // -------------------------------------------------------------------------
+    override fun fieldsRow(): Row7<UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?> = super.fieldsRow() as Row7<UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?>
+
     /**
      * Call this table-valued function
      */
@@ -170,4 +180,15 @@ open class GetTimetablesAndSubstituteOperatingDays(
         startDate,
         endDate
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    fun <U> mapping(from: (UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

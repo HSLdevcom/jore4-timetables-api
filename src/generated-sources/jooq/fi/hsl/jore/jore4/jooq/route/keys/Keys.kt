@@ -5,8 +5,8 @@ package fi.hsl.jore.jore4.jooq.route.keys
 
 
 import fi.hsl.jore.jore4.jooq.route.tables.TypeOfLine
+import fi.hsl.jore.jore4.jooq.route.tables.records.TypeOfLineRecord
 
-import org.jooq.Record
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
@@ -17,4 +17,4 @@ import org.jooq.impl.Internal
 // UNIQUE and PRIMARY KEY definitions
 // -------------------------------------------------------------------------
 
-val TYPE_OF_LINE_PKEY: UniqueKey<Record> = Internal.createUniqueKey(TypeOfLine.TYPE_OF_LINE, DSL.name("type_of_line_pkey"), arrayOf(TypeOfLine.TYPE_OF_LINE.TYPE_OF_LINE_), true)
+val TYPE_OF_LINE_PKEY: UniqueKey<TypeOfLineRecord> = Internal.createUniqueKey(TypeOfLine.TYPE_OF_LINE, DSL.name("type_of_line_pkey"), arrayOf(TypeOfLine.TYPE_OF_LINE.TYPE_OF_LINE_), true)

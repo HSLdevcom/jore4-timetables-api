@@ -9,8 +9,10 @@ import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.VehicleScheduleFrame
 import fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE_PKEY
 import fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY
 import fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.records.VehicleServiceRecord
 
 import java.util.UUID
+import java.util.function.Function
 
 import kotlin.collections.List
 
@@ -19,7 +21,10 @@ import org.jooq.ForeignKey
 import org.jooq.JSONB
 import org.jooq.Name
 import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row4
 import org.jooq.Schema
+import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -40,10 +45,10 @@ import org.jooq.impl.TableImpl
 open class VehicleService(
     alias: Name,
     child: Table<out Record>?,
-    path: ForeignKey<out Record, Record>?,
-    aliased: Table<Record>?,
+    path: ForeignKey<out Record, VehicleServiceRecord>?,
+    aliased: Table<VehicleServiceRecord>?,
     parameters: Array<Field<*>?>?
-): TableImpl<Record>(
+): TableImpl<VehicleServiceRecord>(
     alias,
     fi.hsl.jore.jore4.jooq.vehicle_service.VehicleService.VEHICLE_SERVICE,
     child,
@@ -65,35 +70,35 @@ open class VehicleService(
     /**
      * The class holding records for this type
      */
-    override fun getRecordType(): Class<Record> = Record::class.java
+    override fun getRecordType(): Class<VehicleServiceRecord> = VehicleServiceRecord::class.java
 
     /**
      * The column
      * <code>vehicle_service.vehicle_service.vehicle_service_id</code>.
      */
-    val VEHICLE_SERVICE_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_service_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
+    val VEHICLE_SERVICE_ID: TableField<VehicleServiceRecord, UUID?> = createField(DSL.name("vehicle_service_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
 
     /**
      * The column <code>vehicle_service.vehicle_service.day_type_id</code>. The
      * DAY TYPE for the VEHICLE SERVICE.
      */
-    val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "The DAY TYPE for the VEHICLE SERVICE.")
+    val DAY_TYPE_ID: TableField<VehicleServiceRecord, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "The DAY TYPE for the VEHICLE SERVICE.")
 
     /**
      * The column
      * <code>vehicle_service.vehicle_service.vehicle_schedule_frame_id</code>.
      * Human-readable name for the VEHICLE SCHEDULE FRAME
      */
-    val VEHICLE_SCHEDULE_FRAME_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_schedule_frame_id"), SQLDataType.UUID.nullable(false), this, "Human-readable name for the VEHICLE SCHEDULE FRAME")
+    val VEHICLE_SCHEDULE_FRAME_ID: TableField<VehicleServiceRecord, UUID?> = createField(DSL.name("vehicle_schedule_frame_id"), SQLDataType.UUID.nullable(false), this, "Human-readable name for the VEHICLE SCHEDULE FRAME")
 
     /**
      * The column <code>vehicle_service.vehicle_service.name_i18n</code>. Name
      * for vehicle service.
      */
-    val NAME_I18N: TableField<Record, JSONB?> = createField(DSL.name("name_i18n"), SQLDataType.JSONB, this, "Name for vehicle service.")
+    val NAME_I18N: TableField<VehicleServiceRecord, JSONB?> = createField(DSL.name("name_i18n"), SQLDataType.JSONB, this, "Name for vehicle service.")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<VehicleServiceRecord>?): this(alias, null, null, aliased, null)
+    private constructor(alias: Name, aliased: Table<VehicleServiceRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
      * Create an aliased <code>vehicle_service.vehicle_service</code> table
@@ -112,10 +117,10 @@ open class VehicleService(
      */
     constructor(): this(DSL.name("vehicle_service"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_SERVICE_, null)
+    constructor(child: Table<out Record>, key: ForeignKey<out Record, VehicleServiceRecord>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_SERVICE_, null)
     override fun getSchema(): Schema? = if (aliased()) null else fi.hsl.jore.jore4.jooq.vehicle_service.VehicleService.VEHICLE_SERVICE
-    override fun getPrimaryKey(): UniqueKey<Record> = VEHICLE_SERVICE_PKEY
-    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY, VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY)
+    override fun getPrimaryKey(): UniqueKey<VehicleServiceRecord> = VEHICLE_SERVICE_PKEY
+    override fun getReferences(): List<ForeignKey<VehicleServiceRecord, *>> = listOf(VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY, VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY)
 
     private lateinit var _dayType: DayType
     private lateinit var _vehicleScheduleFrame: VehicleScheduleFrame
@@ -165,4 +170,20 @@ open class VehicleService(
      * Rename this table
      */
     override fun rename(name: Table<*>): VehicleService = VehicleService(name.getQualifiedName(), null)
+
+    // -------------------------------------------------------------------------
+    // Row4 type methods
+    // -------------------------------------------------------------------------
+    override fun fieldsRow(): Row4<UUID?, UUID?, UUID?, JSONB?> = super.fieldsRow() as Row4<UUID?, UUID?, UUID?, JSONB?>
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    fun <U> mapping(from: (UUID?, UUID?, UUID?, JSONB?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, UUID?, JSONB?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

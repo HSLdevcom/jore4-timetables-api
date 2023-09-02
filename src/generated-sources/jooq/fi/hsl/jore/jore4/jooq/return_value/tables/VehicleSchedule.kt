@@ -5,16 +5,21 @@ package fi.hsl.jore.jore4.jooq.return_value.tables
 
 
 import fi.hsl.jore.jore4.jooq.return_value.ReturnValue
+import fi.hsl.jore.jore4.jooq.return_value.tables.records.VehicleScheduleRecord
 
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
+import java.util.function.Function
 
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row8
 import org.jooq.Schema
+import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -35,10 +40,10 @@ import org.jooq.impl.TableImpl
 open class VehicleSchedule(
     alias: Name,
     child: Table<out Record>?,
-    path: ForeignKey<out Record, Record>?,
-    aliased: Table<Record>?,
+    path: ForeignKey<out Record, VehicleScheduleRecord>?,
+    aliased: Table<VehicleScheduleRecord>?,
     parameters: Array<Field<*>?>?
-): TableImpl<Record>(
+): TableImpl<VehicleScheduleRecord>(
     alias,
     ReturnValue.RETURN_VALUE,
     child,
@@ -59,52 +64,52 @@ open class VehicleSchedule(
     /**
      * The class holding records for this type
      */
-    override fun getRecordType(): Class<Record> = Record::class.java
+    override fun getRecordType(): Class<VehicleScheduleRecord> = VehicleScheduleRecord::class.java
 
     /**
      * The column <code>return_value.vehicle_schedule.vehicle_journey_id</code>.
      */
-    val VEHICLE_JOURNEY_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_journey_id"), SQLDataType.UUID, this, "")
+    val VEHICLE_JOURNEY_ID: TableField<VehicleScheduleRecord, UUID?> = createField(DSL.name("vehicle_journey_id"), SQLDataType.UUID, this, "")
 
     /**
      * The column <code>return_value.vehicle_schedule.validity_start</code>.
      */
-    val VALIDITY_START: TableField<Record, LocalDate?> = createField(DSL.name("validity_start"), SQLDataType.LOCALDATE.nullable(false), this, "")
+    val VALIDITY_START: TableField<VehicleScheduleRecord, LocalDate?> = createField(DSL.name("validity_start"), SQLDataType.LOCALDATE.nullable(false), this, "")
 
     /**
      * The column <code>return_value.vehicle_schedule.validity_end</code>.
      */
-    val VALIDITY_END: TableField<Record, LocalDate?> = createField(DSL.name("validity_end"), SQLDataType.LOCALDATE.nullable(false), this, "")
+    val VALIDITY_END: TableField<VehicleScheduleRecord, LocalDate?> = createField(DSL.name("validity_end"), SQLDataType.LOCALDATE.nullable(false), this, "")
 
     /**
      * The column <code>return_value.vehicle_schedule.priority</code>.
      */
-    val PRIORITY: TableField<Record, Int?> = createField(DSL.name("priority"), SQLDataType.INTEGER.nullable(false), this, "")
+    val PRIORITY: TableField<VehicleScheduleRecord, Int?> = createField(DSL.name("priority"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
      * The column <code>return_value.vehicle_schedule.day_type_id</code>.
      */
-    val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "")
+    val DAY_TYPE_ID: TableField<VehicleScheduleRecord, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "")
 
     /**
      * The column
      * <code>return_value.vehicle_schedule.vehicle_schedule_frame_id</code>.
      */
-    val VEHICLE_SCHEDULE_FRAME_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_schedule_frame_id"), SQLDataType.UUID, this, "")
+    val VEHICLE_SCHEDULE_FRAME_ID: TableField<VehicleScheduleRecord, UUID?> = createField(DSL.name("vehicle_schedule_frame_id"), SQLDataType.UUID, this, "")
 
     /**
      * The column
      * <code>return_value.vehicle_schedule.substitute_operating_day_by_line_type_id</code>.
      */
-    val SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("substitute_operating_day_by_line_type_id"), SQLDataType.UUID, this, "")
+    val SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID: TableField<VehicleScheduleRecord, UUID?> = createField(DSL.name("substitute_operating_day_by_line_type_id"), SQLDataType.UUID, this, "")
 
     /**
      * The column <code>return_value.vehicle_schedule.created_at</code>.
      */
-    val CREATED_AT: TableField<Record, OffsetDateTime?> = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "")
+    val CREATED_AT: TableField<VehicleScheduleRecord, OffsetDateTime?> = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<VehicleScheduleRecord>?): this(alias, null, null, aliased, null)
+    private constructor(alias: Name, aliased: Table<VehicleScheduleRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
      * Create an aliased <code>return_value.vehicle_schedule</code> table
@@ -123,7 +128,7 @@ open class VehicleSchedule(
      */
     constructor(): this(DSL.name("vehicle_schedule"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_SCHEDULE, null)
+    constructor(child: Table<out Record>, key: ForeignKey<out Record, VehicleScheduleRecord>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_SCHEDULE, null)
     override fun getSchema(): Schema? = if (aliased()) null else ReturnValue.RETURN_VALUE
     override fun `as`(alias: String): VehicleSchedule = VehicleSchedule(DSL.name(alias), this)
     override fun `as`(alias: Name): VehicleSchedule = VehicleSchedule(alias, this)
@@ -143,4 +148,20 @@ open class VehicleSchedule(
      * Rename this table
      */
     override fun rename(name: Table<*>): VehicleSchedule = VehicleSchedule(name.getQualifiedName(), null)
+
+    // -------------------------------------------------------------------------
+    // Row8 type methods
+    // -------------------------------------------------------------------------
+    override fun fieldsRow(): Row8<UUID?, LocalDate?, LocalDate?, Int?, UUID?, UUID?, UUID?, OffsetDateTime?> = super.fieldsRow() as Row8<UUID?, LocalDate?, LocalDate?, Int?, UUID?, UUID?, UUID?, OffsetDateTime?>
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    fun <U> mapping(from: (UUID?, LocalDate?, LocalDate?, Int?, UUID?, UUID?, UUID?, OffsetDateTime?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    fun <U> mapping(toType: Class<U>, from: (UUID?, LocalDate?, LocalDate?, Int?, UUID?, UUID?, UUID?, OffsetDateTime?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

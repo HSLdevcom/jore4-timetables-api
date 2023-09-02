@@ -7,8 +7,10 @@ package fi.hsl.jore.jore4.jooq.service_calendar.tables
 import fi.hsl.jore.jore4.jooq.service_calendar.ServiceCalendar
 import fi.hsl.jore.jore4.jooq.service_calendar.keys.DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_PKEY
 import fi.hsl.jore.jore4.jooq.service_calendar.keys.DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK__DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_DAY_TYPE_ID_FKEY
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.records.DayTypeActiveOnDayOfWeekRecord
 
 import java.util.UUID
+import java.util.function.Function
 
 import kotlin.collections.List
 
@@ -16,7 +18,10 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row2
 import org.jooq.Schema
+import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -34,10 +39,10 @@ import org.jooq.impl.TableImpl
 open class DayTypeActiveOnDayOfWeek(
     alias: Name,
     child: Table<out Record>?,
-    path: ForeignKey<out Record, Record>?,
-    aliased: Table<Record>?,
+    path: ForeignKey<out Record, DayTypeActiveOnDayOfWeekRecord>?,
+    aliased: Table<DayTypeActiveOnDayOfWeekRecord>?,
     parameters: Array<Field<*>?>?
-): TableImpl<Record>(
+): TableImpl<DayTypeActiveOnDayOfWeekRecord>(
     alias,
     ServiceCalendar.SERVICE_CALENDAR,
     child,
@@ -59,24 +64,24 @@ open class DayTypeActiveOnDayOfWeek(
     /**
      * The class holding records for this type
      */
-    override fun getRecordType(): Class<Record> = Record::class.java
+    override fun getRecordType(): Class<DayTypeActiveOnDayOfWeekRecord> = DayTypeActiveOnDayOfWeekRecord::class.java
 
     /**
      * The column
      * <code>service_calendar.day_type_active_on_day_of_week.day_type_id</code>.
      * The DAY TYPE for which we define the activeness
      */
-    val DAY_TYPE_ID: TableField<Record, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "The DAY TYPE for which we define the activeness")
+    val DAY_TYPE_ID: TableField<DayTypeActiveOnDayOfWeekRecord, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "The DAY TYPE for which we define the activeness")
 
     /**
      * The column
      * <code>service_calendar.day_type_active_on_day_of_week.day_of_week</code>.
      * ISO week day definition (1 = Monday, 7 = Sunday)
      */
-    val DAY_OF_WEEK: TableField<Record, Int?> = createField(DSL.name("day_of_week"), SQLDataType.INTEGER.nullable(false), this, "ISO week day definition (1 = Monday, 7 = Sunday)")
+    val DAY_OF_WEEK: TableField<DayTypeActiveOnDayOfWeekRecord, Int?> = createField(DSL.name("day_of_week"), SQLDataType.INTEGER.nullable(false), this, "ISO week day definition (1 = Monday, 7 = Sunday)")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<DayTypeActiveOnDayOfWeekRecord>?): this(alias, null, null, aliased, null)
+    private constructor(alias: Name, aliased: Table<DayTypeActiveOnDayOfWeekRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
      * Create an aliased
@@ -98,10 +103,10 @@ open class DayTypeActiveOnDayOfWeek(
      */
     constructor(): this(DSL.name("day_type_active_on_day_of_week"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK, null)
+    constructor(child: Table<out Record>, key: ForeignKey<out Record, DayTypeActiveOnDayOfWeekRecord>): this(Internal.createPathAlias(child, key), child, key, DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK, null)
     override fun getSchema(): Schema? = if (aliased()) null else ServiceCalendar.SERVICE_CALENDAR
-    override fun getPrimaryKey(): UniqueKey<Record> = DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_PKEY
-    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK__DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_DAY_TYPE_ID_FKEY)
+    override fun getPrimaryKey(): UniqueKey<DayTypeActiveOnDayOfWeekRecord> = DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_PKEY
+    override fun getReferences(): List<ForeignKey<DayTypeActiveOnDayOfWeekRecord, *>> = listOf(DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK__DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_DAY_TYPE_ID_FKEY)
 
     private lateinit var _dayType: DayType
 
@@ -136,4 +141,20 @@ open class DayTypeActiveOnDayOfWeek(
      * Rename this table
      */
     override fun rename(name: Table<*>): DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek(name.getQualifiedName(), null)
+
+    // -------------------------------------------------------------------------
+    // Row2 type methods
+    // -------------------------------------------------------------------------
+    override fun fieldsRow(): Row2<UUID?, Int?> = super.fieldsRow() as Row2<UUID?, Int?>
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    fun <U> mapping(from: (UUID?, Int?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    fun <U> mapping(toType: Class<U>, from: (UUID?, Int?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

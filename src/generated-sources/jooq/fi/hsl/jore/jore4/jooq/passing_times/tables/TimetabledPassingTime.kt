@@ -8,10 +8,12 @@ import fi.hsl.jore.jore4.jooq.passing_times.PassingTimes
 import fi.hsl.jore.jore4.jooq.passing_times.keys.TIMETABLED_PASSING_TIME_PKEY
 import fi.hsl.jore.jore4.jooq.passing_times.keys.TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_SCHEDULED_STOP_POINT_IN_JOURNEY_PA_FKEY
 import fi.hsl.jore.jore4.jooq.passing_times.keys.TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_VEHICLE_JOURNEY_ID_FKEY
+import fi.hsl.jore.jore4.jooq.passing_times.tables.records.TimetabledPassingTimeRecord
 import fi.hsl.jore.jore4.jooq.service_pattern.tables.ScheduledStopPointInJourneyPatternRef
 import fi.hsl.jore.jore4.jooq.vehicle_journey.tables.VehicleJourney
 
 import java.util.UUID
+import java.util.function.Function
 
 import kotlin.collections.List
 
@@ -19,7 +21,10 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row5
 import org.jooq.Schema
+import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -41,10 +46,10 @@ import org.jooq.types.YearToSecond
 open class TimetabledPassingTime(
     alias: Name,
     child: Table<out Record>?,
-    path: ForeignKey<out Record, Record>?,
-    aliased: Table<Record>?,
+    path: ForeignKey<out Record, TimetabledPassingTimeRecord>?,
+    aliased: Table<TimetabledPassingTimeRecord>?,
     parameters: Array<Field<*>?>?
-): TableImpl<Record>(
+): TableImpl<TimetabledPassingTimeRecord>(
     alias,
     PassingTimes.PASSING_TIMES,
     child,
@@ -66,27 +71,27 @@ open class TimetabledPassingTime(
     /**
      * The class holding records for this type
      */
-    override fun getRecordType(): Class<Record> = Record::class.java
+    override fun getRecordType(): Class<TimetabledPassingTimeRecord> = TimetabledPassingTimeRecord::class.java
 
     /**
      * The column
      * <code>passing_times.timetabled_passing_time.timetabled_passing_time_id</code>.
      */
-    val TIMETABLED_PASSING_TIME_ID: TableField<Record, UUID?> = createField(DSL.name("timetabled_passing_time_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
+    val TIMETABLED_PASSING_TIME_ID: TableField<TimetabledPassingTimeRecord, UUID?> = createField(DSL.name("timetabled_passing_time_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "")
 
     /**
      * The column
      * <code>passing_times.timetabled_passing_time.vehicle_journey_id</code>.
      * The VEHICLE JOURNEY to which this TIMETABLED PASSING TIME belongs
      */
-    val VEHICLE_JOURNEY_ID: TableField<Record, UUID?> = createField(DSL.name("vehicle_journey_id"), SQLDataType.UUID.nullable(false), this, "The VEHICLE JOURNEY to which this TIMETABLED PASSING TIME belongs")
+    val VEHICLE_JOURNEY_ID: TableField<TimetabledPassingTimeRecord, UUID?> = createField(DSL.name("vehicle_journey_id"), SQLDataType.UUID.nullable(false), this, "The VEHICLE JOURNEY to which this TIMETABLED PASSING TIME belongs")
 
     /**
      * The column
      * <code>passing_times.timetabled_passing_time.scheduled_stop_point_in_journey_pattern_ref_id</code>.
      * The SCHEDULED STOP POINT of the JOURNEY PATTERN where the vehicle passes
      */
-    val SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_ID: TableField<Record, UUID?> = createField(DSL.name("scheduled_stop_point_in_journey_pattern_ref_id"), SQLDataType.UUID.nullable(false), this, "The SCHEDULED STOP POINT of the JOURNEY PATTERN where the vehicle passes")
+    val SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_ID: TableField<TimetabledPassingTimeRecord, UUID?> = createField(DSL.name("scheduled_stop_point_in_journey_pattern_ref_id"), SQLDataType.UUID.nullable(false), this, "The SCHEDULED STOP POINT of the JOURNEY PATTERN where the vehicle passes")
 
     /**
      * The column
@@ -96,7 +101,7 @@ open class TimetabledPassingTime(
      * the departure time is defined for the passing time. E.g. in case this is
      * the first SCHEDULED STOP POINT of the journey.
      */
-    val ARRIVAL_TIME: TableField<Record, YearToSecond?> = createField(DSL.name("arrival_time"), SQLDataType.INTERVAL, this, "The time when the vehicle arrives to the SCHEDULED STOP POINT. Measured as interval counted from the midnight of the OPERATING DAY. When NULL, only the departure time is defined for the passing time. E.g. in case this is the first SCHEDULED STOP POINT of the journey.")
+    val ARRIVAL_TIME: TableField<TimetabledPassingTimeRecord, YearToSecond?> = createField(DSL.name("arrival_time"), SQLDataType.INTERVAL, this, "The time when the vehicle arrives to the SCHEDULED STOP POINT. Measured as interval counted from the midnight of the OPERATING DAY. When NULL, only the departure time is defined for the passing time. E.g. in case this is the first SCHEDULED STOP POINT of the journey.")
 
     /**
      * The column
@@ -106,18 +111,10 @@ open class TimetabledPassingTime(
      * the arrival time is defined for the passing time. E.g. in case this is
      * the last SCHEDULED STOP POINT of the journey.
      */
-    val DEPARTURE_TIME: TableField<Record, YearToSecond?> = createField(DSL.name("departure_time"), SQLDataType.INTERVAL, this, "The time when the vehicle departs from the SCHEDULED STOP POINT. Measured as interval counted from the midnight of the OPERATING DAY. When NULL, only the arrival time is defined for the passing time. E.g. in case this is the last SCHEDULED STOP POINT of the journey.")
+    val DEPARTURE_TIME: TableField<TimetabledPassingTimeRecord, YearToSecond?> = createField(DSL.name("departure_time"), SQLDataType.INTERVAL, this, "The time when the vehicle departs from the SCHEDULED STOP POINT. Measured as interval counted from the midnight of the OPERATING DAY. When NULL, only the arrival time is defined for the passing time. E.g. in case this is the last SCHEDULED STOP POINT of the journey.")
 
-    /**
-     * The column
-     * <code>passing_times.timetabled_passing_time.passing_time</code>. The time
-     * when the vehicle can be considered as passing a SCHEDULED STOP POINT.
-     * Computed field to ease development; it can never be NULL.
-     */
-    val PASSING_TIME: TableField<Record, YearToSecond?> = createField(DSL.name("passing_time"), SQLDataType.INTERVAL.nullable(false), this, "The time when the vehicle can be considered as passing a SCHEDULED STOP POINT. Computed field to ease development; it can never be NULL.")
-
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<TimetabledPassingTimeRecord>?): this(alias, null, null, aliased, null)
+    private constructor(alias: Name, aliased: Table<TimetabledPassingTimeRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
      * Create an aliased <code>passing_times.timetabled_passing_time</code>
@@ -137,10 +134,10 @@ open class TimetabledPassingTime(
      */
     constructor(): this(DSL.name("timetabled_passing_time"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, TIMETABLED_PASSING_TIME, null)
+    constructor(child: Table<out Record>, key: ForeignKey<out Record, TimetabledPassingTimeRecord>): this(Internal.createPathAlias(child, key), child, key, TIMETABLED_PASSING_TIME, null)
     override fun getSchema(): Schema? = if (aliased()) null else PassingTimes.PASSING_TIMES
-    override fun getPrimaryKey(): UniqueKey<Record> = TIMETABLED_PASSING_TIME_PKEY
-    override fun getReferences(): List<ForeignKey<Record, *>> = listOf(TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_VEHICLE_JOURNEY_ID_FKEY, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_SCHEDULED_STOP_POINT_IN_JOURNEY_PA_FKEY)
+    override fun getPrimaryKey(): UniqueKey<TimetabledPassingTimeRecord> = TIMETABLED_PASSING_TIME_PKEY
+    override fun getReferences(): List<ForeignKey<TimetabledPassingTimeRecord, *>> = listOf(TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_VEHICLE_JOURNEY_ID_FKEY, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_SCHEDULED_STOP_POINT_IN_JOURNEY_PA_FKEY)
 
     private lateinit var _vehicleJourney: VehicleJourney
     private lateinit var _scheduledStopPointInJourneyPatternRef: ScheduledStopPointInJourneyPatternRef
@@ -191,4 +188,20 @@ open class TimetabledPassingTime(
      * Rename this table
      */
     override fun rename(name: Table<*>): TimetabledPassingTime = TimetabledPassingTime(name.getQualifiedName(), null)
+
+    // -------------------------------------------------------------------------
+    // Row5 type methods
+    // -------------------------------------------------------------------------
+    override fun fieldsRow(): Row5<UUID?, UUID?, UUID?, YearToSecond?, YearToSecond?> = super.fieldsRow() as Row5<UUID?, UUID?, UUID?, YearToSecond?, YearToSecond?>
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    fun <U> mapping(from: (UUID?, UUID?, UUID?, YearToSecond?, YearToSecond?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, UUID?, YearToSecond?, YearToSecond?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }
