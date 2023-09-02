@@ -4,6 +4,7 @@
 package fi.hsl.jore.jore4.jooq
 
 
+import fi.hsl.jore.jore4.jooq.internal_service_calendar.InternalServiceCalendar
 import fi.hsl.jore.jore4.jooq.journey_pattern.JourneyPattern
 import fi.hsl.jore.jore4.jooq.passing_times.PassingTimes
 import fi.hsl.jore.jore4.jooq.return_value.ReturnValue
@@ -34,6 +35,11 @@ open class DefaultCatalog : CatalogImpl("") {
          */
         public val DEFAULT_CATALOG: DefaultCatalog = DefaultCatalog()
     }
+
+    /**
+     * The schema <code>internal_service_calendar</code>.
+     */
+    val INTERNAL_SERVICE_CALENDAR: InternalServiceCalendar get(): InternalServiceCalendar = InternalServiceCalendar.INTERNAL_SERVICE_CALENDAR
 
     /**
      * The schema <code>journey_pattern</code>.
@@ -86,6 +92,7 @@ open class DefaultCatalog : CatalogImpl("") {
     val VEHICLE_TYPE: VehicleType get(): VehicleType = VehicleType.VEHICLE_TYPE
 
     override fun getSchemas(): List<Schema> = listOf(
+        InternalServiceCalendar.INTERNAL_SERVICE_CALENDAR,
         JourneyPattern.JOURNEY_PATTERN,
         PassingTimes.PASSING_TIMES,
         ReturnValue.RETURN_VALUE,

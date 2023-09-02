@@ -6,12 +6,18 @@ package fi.hsl.jore.jore4.jooq.vehicle_journey.tables
 
 import fi.hsl.jore.jore4.jooq.vehicle_journey.VehicleJourney
 import fi.hsl.jore.jore4.jooq.vehicle_journey.keys.JOURNEY_TYPE_PKEY
+import fi.hsl.jore.jore4.jooq.vehicle_journey.tables.records.JourneyTypeRecord
+
+import java.util.function.Function
 
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row1
 import org.jooq.Schema
+import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -29,10 +35,10 @@ import org.jooq.impl.TableImpl
 open class JourneyType(
     alias: Name,
     child: Table<out Record>?,
-    path: ForeignKey<out Record, Record>?,
-    aliased: Table<Record>?,
+    path: ForeignKey<out Record, JourneyTypeRecord>?,
+    aliased: Table<JourneyTypeRecord>?,
     parameters: Array<Field<*>?>?
-): TableImpl<Record>(
+): TableImpl<JourneyTypeRecord>(
     alias,
     VehicleJourney.VEHICLE_JOURNEY,
     child,
@@ -53,15 +59,15 @@ open class JourneyType(
     /**
      * The class holding records for this type
      */
-    override fun getRecordType(): Class<Record> = Record::class.java
+    override fun getRecordType(): Class<JourneyTypeRecord> = JourneyTypeRecord::class.java
 
     /**
      * The column <code>vehicle_journey.journey_type.type</code>.
      */
-    val TYPE: TableField<Record, String?> = createField(DSL.name("type"), SQLDataType.CLOB.nullable(false), this, "")
+    val TYPE: TableField<JourneyTypeRecord, String?> = createField(DSL.name("type"), SQLDataType.CLOB.nullable(false), this, "")
 
-    private constructor(alias: Name, aliased: Table<Record>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<Record>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<JourneyTypeRecord>?): this(alias, null, null, aliased, null)
+    private constructor(alias: Name, aliased: Table<JourneyTypeRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
      * Create an aliased <code>vehicle_journey.journey_type</code> table
@@ -80,9 +86,9 @@ open class JourneyType(
      */
     constructor(): this(DSL.name("journey_type"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, Record>): this(Internal.createPathAlias(child, key), child, key, JOURNEY_TYPE, null)
+    constructor(child: Table<out Record>, key: ForeignKey<out Record, JourneyTypeRecord>): this(Internal.createPathAlias(child, key), child, key, JOURNEY_TYPE, null)
     override fun getSchema(): Schema? = if (aliased()) null else VehicleJourney.VEHICLE_JOURNEY
-    override fun getPrimaryKey(): UniqueKey<Record> = JOURNEY_TYPE_PKEY
+    override fun getPrimaryKey(): UniqueKey<JourneyTypeRecord> = JOURNEY_TYPE_PKEY
     override fun `as`(alias: String): JourneyType = JourneyType(DSL.name(alias), this)
     override fun `as`(alias: Name): JourneyType = JourneyType(alias, this)
     override fun `as`(alias: Table<*>): JourneyType = JourneyType(alias.getQualifiedName(), this)
@@ -101,4 +107,20 @@ open class JourneyType(
      * Rename this table
      */
     override fun rename(name: Table<*>): JourneyType = JourneyType(name.getQualifiedName(), null)
+
+    // -------------------------------------------------------------------------
+    // Row1 type methods
+    // -------------------------------------------------------------------------
+    override fun fieldsRow(): Row1<String?> = super.fieldsRow() as Row1<String?>
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    fun <U> mapping(from: (String?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    fun <U> mapping(toType: Class<U>, from: (String?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

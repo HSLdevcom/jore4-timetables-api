@@ -4,6 +4,7 @@
 package fi.hsl.jore.jore4.jooq.vehicle_journey.tables.references
 
 
+import fi.hsl.jore.jore4.jooq.return_value.tables.records.VehicleScheduleRecord
 import fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate
 import fi.hsl.jore.jore4.jooq.vehicle_journey.tables.JourneyType
 import fi.hsl.jore.jore4.jooq.vehicle_journey.tables.VehicleJourney
@@ -13,7 +14,6 @@ import java.util.UUID
 
 import org.jooq.Configuration
 import org.jooq.Field
-import org.jooq.Record
 import org.jooq.Result
 
 
@@ -30,7 +30,7 @@ fun GET_VEHICLE_SCHEDULES_ON_DATE(
       configuration: Configuration
     , journeyPatternUuid: UUID?
     , observationDate: LocalDate?
-): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE.call(
+): Result<VehicleScheduleRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE.call(
       journeyPatternUuid
     , observationDate
 )).fetch()

@@ -7,6 +7,7 @@ package fi.hsl.jore.jore4.jooq.passing_times
 import fi.hsl.jore.jore4.jooq.DefaultCatalog
 import fi.hsl.jore.jore4.jooq.passing_times.tables.GetPassingTimeOrderValidityData
 import fi.hsl.jore.jore4.jooq.passing_times.tables.TimetabledPassingTime
+import fi.hsl.jore.jore4.jooq.passing_times.tables.records.GetPassingTimeOrderValidityDataRecord
 
 import java.util.UUID
 
@@ -15,7 +16,6 @@ import kotlin.collections.List
 import org.jooq.Catalog
 import org.jooq.Configuration
 import org.jooq.Field
-import org.jooq.Record
 import org.jooq.Result
 import org.jooq.Table
 import org.jooq.impl.SchemaImpl
@@ -47,7 +47,7 @@ open class PassingTimes : SchemaImpl("passing_times", DefaultCatalog.DEFAULT_CAT
           configuration: Configuration
         , filterVehicleJourneyIds: Array<UUID?>?
         , filterJourneyPatternRefIds: Array<UUID?>?
-    ): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.passing_times.tables.GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA.call(
+    ): Result<GetPassingTimeOrderValidityDataRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.passing_times.tables.GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA.call(
           filterVehicleJourneyIds
         , filterJourneyPatternRefIds
     )).fetch()

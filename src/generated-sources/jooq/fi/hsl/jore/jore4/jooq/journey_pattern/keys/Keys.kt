@@ -5,11 +5,12 @@ package fi.hsl.jore.jore4.jooq.journey_pattern.keys
 
 
 import fi.hsl.jore.jore4.jooq.journey_pattern.tables.JourneyPatternRef
+import fi.hsl.jore.jore4.jooq.journey_pattern.tables.records.JourneyPatternRefRecord
 import fi.hsl.jore.jore4.jooq.route.keys.TYPE_OF_LINE_PKEY
 import fi.hsl.jore.jore4.jooq.route.tables.TypeOfLine
+import fi.hsl.jore.jore4.jooq.route.tables.records.TypeOfLineRecord
 
 import org.jooq.ForeignKey
-import org.jooq.Record
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
@@ -20,10 +21,10 @@ import org.jooq.impl.Internal
 // UNIQUE and PRIMARY KEY definitions
 // -------------------------------------------------------------------------
 
-val JOURNEY_PATTERN_REF_PKEY: UniqueKey<Record> = Internal.createUniqueKey(JourneyPatternRef.JOURNEY_PATTERN_REF, DSL.name("journey_pattern_ref_pkey"), arrayOf(JourneyPatternRef.JOURNEY_PATTERN_REF.JOURNEY_PATTERN_REF_ID), true)
+val JOURNEY_PATTERN_REF_PKEY: UniqueKey<JourneyPatternRefRecord> = Internal.createUniqueKey(JourneyPatternRef.JOURNEY_PATTERN_REF, DSL.name("journey_pattern_ref_pkey"), arrayOf(JourneyPatternRef.JOURNEY_PATTERN_REF.JOURNEY_PATTERN_REF_ID), true)
 
 // -------------------------------------------------------------------------
 // FOREIGN KEY definitions
 // -------------------------------------------------------------------------
 
-val JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY: ForeignKey<Record, Record> = Internal.createForeignKey(JourneyPatternRef.JOURNEY_PATTERN_REF, DSL.name("journey_pattern_ref_type_of_line_fkey"), arrayOf(JourneyPatternRef.JOURNEY_PATTERN_REF.TYPE_OF_LINE), TYPE_OF_LINE_PKEY, arrayOf(TypeOfLine.TYPE_OF_LINE.TYPE_OF_LINE_), true)
+val JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY: ForeignKey<JourneyPatternRefRecord, TypeOfLineRecord> = Internal.createForeignKey(JourneyPatternRef.JOURNEY_PATTERN_REF, DSL.name("journey_pattern_ref_type_of_line_fkey"), arrayOf(JourneyPatternRef.JOURNEY_PATTERN_REF.TYPE_OF_LINE), TYPE_OF_LINE_PKEY, arrayOf(TypeOfLine.TYPE_OF_LINE.TYPE_OF_LINE_), true)
