@@ -444,7 +444,7 @@
                                     <includeSystemIndexes>false</includeSystemIndexes>
                                 </database>
                                 <generate>
-                                    <records>false</records>
+                                    <records>true</records>
                                 </generate>
                                 <target>
                                     <packageName>fi.hsl.jore.jore4.jooq</packageName>
