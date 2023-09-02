@@ -5,8 +5,8 @@ package fi.hsl.jore.jore4.jooq.vehicle_type.keys
 
 
 import fi.hsl.jore.jore4.jooq.vehicle_type.tables.VehicleType
+import fi.hsl.jore.jore4.jooq.vehicle_type.tables.records.VehicleTypeRecord
 
-import org.jooq.Record
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
@@ -17,4 +17,4 @@ import org.jooq.impl.Internal
 // UNIQUE and PRIMARY KEY definitions
 // -------------------------------------------------------------------------
 
-val VEHICLE_TYPE_PKEY: UniqueKey<Record> = Internal.createUniqueKey(VehicleType.VEHICLE_TYPE_, DSL.name("vehicle_type_pkey"), arrayOf(VehicleType.VEHICLE_TYPE_.VEHICLE_TYPE_ID), true)
+val VEHICLE_TYPE_PKEY: UniqueKey<VehicleTypeRecord> = Internal.createUniqueKey(VehicleType.VEHICLE_TYPE_, DSL.name("vehicle_type_pkey"), arrayOf(VehicleType.VEHICLE_TYPE_.VEHICLE_TYPE_ID), true)

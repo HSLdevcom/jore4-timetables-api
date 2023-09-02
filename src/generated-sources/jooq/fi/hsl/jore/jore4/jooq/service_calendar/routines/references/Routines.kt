@@ -7,12 +7,12 @@ package fi.hsl.jore.jore4.jooq.service_calendar.routines.references
 import fi.hsl.jore.jore4.jooq.service_calendar.routines.ConstOperatingDayEndTime
 import fi.hsl.jore.jore4.jooq.service_calendar.routines.ConstOperatingDayStartTime
 import fi.hsl.jore.jore4.jooq.service_calendar.tables.GetActiveDayTypesForDate
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.records.DayTypeRecord
 
 import java.time.LocalDate
 
 import org.jooq.Configuration
 import org.jooq.Field
-import org.jooq.Record
 import org.jooq.Result
 import org.jooq.types.YearToSecond
 
@@ -66,7 +66,7 @@ fun constOperatingDayStartTime(): Field<YearToSecond?> {
 fun getActiveDayTypesForDate(
       configuration: Configuration
     , observationDate: LocalDate?
-): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.service_calendar.tables.GetActiveDayTypesForDate.GET_ACTIVE_DAY_TYPES_FOR_DATE.call(
+): Result<DayTypeRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.service_calendar.tables.GetActiveDayTypesForDate.GET_ACTIVE_DAY_TYPES_FOR_DATE.call(
       observationDate
 )).fetch()
 

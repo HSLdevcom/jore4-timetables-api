@@ -4,16 +4,17 @@
 package fi.hsl.jore.jore4.jooq.vehicle_journey.routines.references
 
 
+import fi.hsl.jore.jore4.jooq.return_value.tables.records.VehicleScheduleRecord
 import fi.hsl.jore.jore4.jooq.vehicle_journey.routines.VehicleJourneyEndTime
 import fi.hsl.jore.jore4.jooq.vehicle_journey.routines.VehicleJourneyStartTime
 import fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate
+import fi.hsl.jore.jore4.jooq.vehicle_journey.tables.records.VehicleJourneyRecord
 
 import java.time.LocalDate
 import java.util.UUID
 
 import org.jooq.Configuration
 import org.jooq.Field
-import org.jooq.Record
 import org.jooq.Result
 
 
@@ -23,7 +24,7 @@ import org.jooq.Result
  */
 fun vehicleJourneyEndTime(
       configuration: Configuration
-    , vj: Record?
+    , vj: VehicleJourneyRecord?
 ): String? {
     val f = VehicleJourneyEndTime()
     f.setVj(vj)
@@ -36,7 +37,7 @@ fun vehicleJourneyEndTime(
  * Get <code>vehicle_journey.vehicle_journey_end_time</code> as a field.
  */
 fun vehicleJourneyEndTime(
-      vj: Record?
+      vj: VehicleJourneyRecord?
 ): Field<String?> {
     val f = VehicleJourneyEndTime()
     f.setVj(vj)
@@ -48,7 +49,7 @@ fun vehicleJourneyEndTime(
  * Get <code>vehicle_journey.vehicle_journey_end_time</code> as a field.
  */
 fun vehicleJourneyEndTime(
-      vj: Field<Record?>
+      vj: Field<VehicleJourneyRecord?>
 ): Field<String?> {
     val f = VehicleJourneyEndTime()
     f.setVj(vj)
@@ -61,7 +62,7 @@ fun vehicleJourneyEndTime(
  */
 fun vehicleJourneyStartTime(
       configuration: Configuration
-    , vj: Record?
+    , vj: VehicleJourneyRecord?
 ): String? {
     val f = VehicleJourneyStartTime()
     f.setVj(vj)
@@ -74,7 +75,7 @@ fun vehicleJourneyStartTime(
  * Get <code>vehicle_journey.vehicle_journey_start_time</code> as a field.
  */
 fun vehicleJourneyStartTime(
-      vj: Record?
+      vj: VehicleJourneyRecord?
 ): Field<String?> {
     val f = VehicleJourneyStartTime()
     f.setVj(vj)
@@ -86,7 +87,7 @@ fun vehicleJourneyStartTime(
  * Get <code>vehicle_journey.vehicle_journey_start_time</code> as a field.
  */
 fun vehicleJourneyStartTime(
-      vj: Field<Record?>
+      vj: Field<VehicleJourneyRecord?>
 ): Field<String?> {
     val f = VehicleJourneyStartTime()
     f.setVj(vj)
@@ -101,7 +102,7 @@ fun getVehicleSchedulesOnDate(
       configuration: Configuration
     , journeyPatternUuid: UUID?
     , observationDate: LocalDate?
-): Result<Record> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE.call(
+): Result<VehicleScheduleRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_journey.tables.GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE.call(
       journeyPatternUuid
     , observationDate
 )).fetch()

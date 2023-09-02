@@ -6,10 +6,11 @@ package fi.hsl.jore.jore4.jooq.service_pattern.keys
 
 import fi.hsl.jore.jore4.jooq.journey_pattern.keys.JOURNEY_PATTERN_REF_PKEY
 import fi.hsl.jore.jore4.jooq.journey_pattern.tables.JourneyPatternRef
+import fi.hsl.jore.jore4.jooq.journey_pattern.tables.records.JourneyPatternRefRecord
 import fi.hsl.jore.jore4.jooq.service_pattern.tables.ScheduledStopPointInJourneyPatternRef
+import fi.hsl.jore.jore4.jooq.service_pattern.tables.records.ScheduledStopPointInJourneyPatternRefRecord
 
 import org.jooq.ForeignKey
-import org.jooq.Record
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
@@ -20,10 +21,10 @@ import org.jooq.impl.Internal
 // UNIQUE and PRIMARY KEY definitions
 // -------------------------------------------------------------------------
 
-val SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_PKEY: UniqueKey<Record> = Internal.createUniqueKey(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF, DSL.name("scheduled_stop_point_in_journey_pattern_ref_pkey"), arrayOf(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_ID), true)
+val SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_PKEY: UniqueKey<ScheduledStopPointInJourneyPatternRefRecord> = Internal.createUniqueKey(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF, DSL.name("scheduled_stop_point_in_journey_pattern_ref_pkey"), arrayOf(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_ID), true)
 
 // -------------------------------------------------------------------------
 // FOREIGN KEY definitions
 // -------------------------------------------------------------------------
 
-val SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY: ForeignKey<Record, Record> = Internal.createForeignKey(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF, DSL.name("scheduled_stop_point_in_journey_pat_journey_pattern_ref_id_fkey"), arrayOf(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF.JOURNEY_PATTERN_REF_ID), JOURNEY_PATTERN_REF_PKEY, arrayOf(JourneyPatternRef.JOURNEY_PATTERN_REF.JOURNEY_PATTERN_REF_ID), true)
+val SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY: ForeignKey<ScheduledStopPointInJourneyPatternRefRecord, JourneyPatternRefRecord> = Internal.createForeignKey(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF, DSL.name("scheduled_stop_point_in_journey_pat_journey_pattern_ref_id_fkey"), arrayOf(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF.JOURNEY_PATTERN_REF_ID), JOURNEY_PATTERN_REF_PKEY, arrayOf(JourneyPatternRef.JOURNEY_PATTERN_REF.JOURNEY_PATTERN_REF_ID), true)
