@@ -9,6 +9,8 @@ services:
       network: host
     ports:
       - "127.0.0.1:3009:8080"
+    networks:
+      - jore4
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
