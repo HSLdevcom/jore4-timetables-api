@@ -20,6 +20,10 @@ Uses maven to build the project, use `mvn install` to build the server. You can 
 - `generate:jooq` generate jOOQ classes
 - `test` runs all tests
 
+### jOOQ! database classes
+
+jOOQ! classes are not automatically generated and should be refreshed using the `development.sh generate:jooq` command. This is necessary when the structure of a part of the database used by this API changes.
+
 ## API structure
 
 ### GET
