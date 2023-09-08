@@ -106,4 +106,38 @@ class VehicleScheduleFrameRepository(private val dsl: DSLContext, config: Defaul
             )
             .fetchInto(VehicleScheduleFrame::class.java)
     }
+
+    @Transactional(readOnly = true, propagation = Propagation.MANDATORY)
+    fun fetchTargetVehicleScheduleFrames(
+        stagingVehicleScheduleFrame: VehicleScheduleFrame,
+        targetPriority: TimetablesPriority
+    ): MutableList<VehicleScheduleFrame> {
+        return dsl
+            .select()
+            .from(VehicleScheduleFrameTable.VEHICLE_SCHEDULE_FRAME)
+            .where(
+                VehicleScheduleFrameTable.VEHICLE_SCHEDULE_FRAME.PRIORITY
+                    .eq(targetPriority.value)
+            )
+            // The validity times must be exactly the same.
+            .and(
+                VehicleScheduleFrameTable.VEHICLE_SCHEDULE_FRAME.VALIDITY_START
+                    .eq(stagingVehicleScheduleFrame.validityStart)
+            )
+            .and(
+                VehicleScheduleFrameTable.VEHICLE_SCHEDULE_FRAME.VALIDITY_END
+                    .eq(stagingVehicleScheduleFrame.validityEnd)
+            )
+            // And should have some routes (journey patterns) in common.
+            .andExists(
+                DSL.selectOne().from(
+                    getOverlappingSchedules(
+                        arrayOf(stagingVehicleScheduleFrame.vehicleScheduleFrameId),
+                        arrayOf(),
+                        true
+                    )
+                )
+            )
+            .fetchInto(VehicleScheduleFrame::class.java)
+    }
 }
