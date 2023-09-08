@@ -61,6 +61,12 @@ Also:
 
 - ktlint is run automatically during build and will fail the build if any warnings are found
 - Additionally, minimize the use of mutable variables, using `val` whenever possible.
+- In tests, write test function names with backticks instead of `@DisplayName` annotation, eg:
+  ``
+  @Test
+  fun `some name with spaces`() {
+  ``
+  - Do *not* use this convention anywhere else besides test function names.
 
 ## Docker reference
 
