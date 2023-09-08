@@ -29,6 +29,13 @@ class WebSecurityConfig {
                         "/hello/test"
                     )
                     .permitAll()
+                it
+                    .requestMatchers(
+                        HttpMethod.POST,
+                        "/timetables/*",
+                    )
+                    .permitAll()
+
                     .anyRequest().denyAll()
             }
             .build()
