@@ -3,9 +3,12 @@ package fi.hsl.jore4.timetables.api
 import fi.hsl.jore4.timetables.api.util.HasuraErrorExtensions
 import fi.hsl.jore4.timetables.api.util.HasuraErrorResponse
 import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
+import fi.hsl.jore4.timetables.service.CombineTimetablesService
 import fi.hsl.jore4.timetables.service.InvalidTargetPriorityException
+import fi.hsl.jore4.timetables.service.MultipleTargetFramesFoundException
 import fi.hsl.jore4.timetables.service.ReplaceTimetablesService
 import fi.hsl.jore4.timetables.service.StagingVehicleScheduleFrameNotFoundException
+import fi.hsl.jore4.timetables.service.TargetFrameNotFoundException
 import jakarta.validation.Valid
 import jakarta.validation.constraints.AssertTrue
 import mu.KotlinLogging
@@ -24,6 +27,7 @@ private val LOGGER = KotlinLogging.logger {}
 @RestController
 @RequestMapping("/timetables")
 class TimetablesController(
+    private val combineTimetablesService: CombineTimetablesService,
     private val replaceTimetablesService: ReplaceTimetablesService
 ) {
     data class CombineOrReplaceTimetablesRequestBody(
@@ -33,6 +37,26 @@ class TimetablesController(
     ) {
         @AssertTrue(message = "false")
         fun isTargetPriorityValid(): Boolean = runCatching { TimetablesPriority.fromInt(targetPriority) }.isSuccess
+    }
+
+    data class CombineTimetablesResponseBody(
+        val combinedIntoVehicleScheduleFrameIds: List<UUID>
+    )
+
+    @PostMapping("combine")
+    fun combine(
+        @Valid @RequestBody
+        requestBody: CombineOrReplaceTimetablesRequestBody
+    ): ResponseEntity<CombineTimetablesResponseBody> {
+        LOGGER.debug { "Combine api, request: $requestBody" }
+        val combineResult = combineTimetablesService.combineTimetables(
+            requestBody.stagingVehicleScheduleFrameIds,
+            TimetablesPriority.fromInt(requestBody.targetPriority)
+        )
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(CombineTimetablesResponseBody(combinedIntoVehicleScheduleFrameIds = combineResult))
     }
 
     data class ReplaceTimetablesResponseBody(
@@ -92,6 +116,42 @@ class TimetablesController(
         val hasuraErrorExtensions = StagingVehicleScheduleFrameNotFoundExtensions(
             httpStatus.value(),
             ex.stagingVehicleScheduleFrameId
+        )
+        val hasuraErrorResponse = HasuraErrorResponse(ex.message, hasuraErrorExtensions)
+
+        return ResponseEntity(hasuraErrorResponse, httpStatus)
+    }
+
+    class TargetVehicleScheduleFrameNotFoundExtensions(
+        override val code: Int,
+        val stagingVehicleScheduleFrameId: UUID
+    ) : HasuraErrorExtensions(code)
+
+    @ExceptionHandler(TargetFrameNotFoundException::class)
+    fun handleTargetFrameNotFoundException(ex: TargetFrameNotFoundException): ResponseEntity<HasuraErrorResponse> {
+        val httpStatus = HttpStatus.NOT_FOUND
+        val hasuraErrorExtensions = TargetVehicleScheduleFrameNotFoundExtensions(
+            httpStatus.value(),
+            ex.stagingVehicleScheduleFrameId
+        )
+        val hasuraErrorResponse = HasuraErrorResponse(ex.message, hasuraErrorExtensions)
+
+        return ResponseEntity(hasuraErrorResponse, httpStatus)
+    }
+
+    class MultipleTargetFramesFoundExtensions(
+        override val code: Int,
+        val stagingVehicleScheduleFrameId: UUID,
+        val targetVehicleScheduleFrameIds: List<UUID>
+    ) : HasuraErrorExtensions(code)
+
+    @ExceptionHandler(MultipleTargetFramesFoundException::class)
+    fun handleTargetFrameNotFoundException(ex: MultipleTargetFramesFoundException): ResponseEntity<HasuraErrorResponse> {
+        val httpStatus = HttpStatus.CONFLICT
+        val hasuraErrorExtensions = MultipleTargetFramesFoundExtensions(
+            httpStatus.value(),
+            ex.stagingVehicleScheduleFrameId,
+            ex.targetVehicleScheduleFrameIds
         )
         val hasuraErrorResponse = HasuraErrorResponse(ex.message, hasuraErrorExtensions)
 
