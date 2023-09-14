@@ -3,6 +3,7 @@ package fi.hsl.jore4.timetables.api
 import fi.hsl.jore4.timetables.api.util.HasuraErrorExtensions
 import fi.hsl.jore4.timetables.api.util.HasuraErrorResponse
 import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
+import fi.hsl.jore4.timetables.service.CombineTimetablesService
 import fi.hsl.jore4.timetables.service.InvalidTargetPriorityException
 import fi.hsl.jore4.timetables.service.ReplaceTimetablesService
 import fi.hsl.jore4.timetables.service.StagingVehicleScheduleFrameNotFoundException
@@ -24,6 +25,7 @@ private val LOGGER = KotlinLogging.logger {}
 @RestController
 @RequestMapping("/timetables")
 class TimetablesController(
+    private val combineTimetablesService: CombineTimetablesService,
     private val replaceTimetablesService: ReplaceTimetablesService
 ) {
     data class CombineOrReplaceTimetablesRequestBody(
@@ -33,6 +35,26 @@ class TimetablesController(
     ) {
         @AssertTrue(message = "false")
         fun isTargetPriorityValid(): Boolean = runCatching { TimetablesPriority.fromInt(targetPriority) }.isSuccess
+    }
+
+    data class CombineTimetablesResponseBody(
+        val combinedIntoVehicleScheduleFrameIds: List<UUID>
+    )
+
+    @PostMapping("combine")
+    fun combine(
+        @Valid @RequestBody
+        requestBody: CombineOrReplaceTimetablesRequestBody
+    ): ResponseEntity<CombineTimetablesResponseBody> {
+        LOGGER.debug { "Combine api, request: $requestBody" }
+        val combineResult = combineTimetablesService.combineTimetables(
+            requestBody.stagingVehicleScheduleFrameIds,
+            TimetablesPriority.fromInt(requestBody.targetPriority)
+        )
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(CombineTimetablesResponseBody(combinedIntoVehicleScheduleFrameIds = combineResult))
     }
 
     data class ReplaceTimetablesResponseBody(
