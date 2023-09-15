@@ -12,15 +12,15 @@ import javax.sql.DataSource
 @Configuration
 @EnableTransactionManagement
 class DataSourceConfig(
-    val databaseConfiguration: DatabaseConfiguration
+    val databaseProperties: DatabaseProperties
 ) {
     @Bean
     fun timetablesDataSource() =
         DriverManagerDataSource().apply {
-            setDriverClassName(databaseConfiguration.driver)
-            url = databaseConfiguration.url
-            username = databaseConfiguration.username
-            password = databaseConfiguration.password
+            setDriverClassName(databaseProperties.driver)
+            url = databaseProperties.url
+            username = databaseProperties.username
+            password = databaseProperties.password
         }
 
     @Bean
