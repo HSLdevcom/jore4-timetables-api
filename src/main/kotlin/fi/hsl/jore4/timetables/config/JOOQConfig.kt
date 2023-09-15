@@ -13,7 +13,7 @@ import javax.sql.DataSource
 
 @Configuration
 class JOOQConfig(
-    val jooqConfiguration: JOOQConfiguration
+    val jooqProperties: JOOQProperties
 ) {
     @Bean
     fun connectionProvider(@Qualifier("timetablesDataSource") dataSource: DataSource): ConnectionProvider =
@@ -21,7 +21,7 @@ class JOOQConfig(
 
     @Bean
     fun configuration(connectionProvider: ConnectionProvider): org.jooq.Configuration {
-        val dialect = SQLDialect.valueOf(jooqConfiguration.dialect)
+        val dialect = SQLDialect.valueOf(jooqProperties.dialect)
 
         val config = DefaultConfiguration()
         config.set(connectionProvider)
