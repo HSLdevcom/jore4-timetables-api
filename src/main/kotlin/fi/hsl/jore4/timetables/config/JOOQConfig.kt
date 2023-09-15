@@ -28,31 +28,24 @@ class JOOQConfig(
         }
 
     @Bean
-    fun transactionAwareDataSource(): TransactionAwareDataSourceProxy {
-        return TransactionAwareDataSourceProxy(timetablesDataSource())
-    }
+    fun transactionAwareDataSource() = TransactionAwareDataSourceProxy(timetablesDataSource())
 
     @Bean
-    fun transactionManager(): DataSourceTransactionManager {
-        return DataSourceTransactionManager(timetablesDataSource())
-    }
+    fun transactionManager() = DataSourceTransactionManager(timetablesDataSource())
 
     @Bean
-    fun connectionProvider(): DataSourceConnectionProvider {
-        return DataSourceConnectionProvider(transactionAwareDataSource())
-    }
+    fun connectionProvider() = DataSourceConnectionProvider(transactionAwareDataSource())
 
     @Bean
     fun configuration(): DefaultConfiguration {
+        val dialect = SQLDialect.valueOf(jooqConfiguration.dialect)
+
         val config = DefaultConfiguration()
         config.set(connectionProvider())
-        val dialect = SQLDialect.valueOf(jooqConfiguration.dialect)
         config.set(dialect)
         return config
     }
 
     @Bean
-    fun dsl(): DefaultDSLContext {
-        return DefaultDSLContext(configuration())
-    }
+    fun dsl() = DefaultDSLContext(configuration())
 }
