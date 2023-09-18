@@ -49,6 +49,10 @@ class DataSourceConfig(
             // overriding the isolation level can be replaced by SELECT ... FOR UPDATE constructs
             // while creating SQL statements.
             hikariConfig.transactionIsolation = "TRANSACTION_SERIALIZABLE"
+
+            // Allow pool to start without failing in case that a connection cannot be obtained
+            // during initialization.
+            hikariConfig.initializationFailTimeout = -1
         }
 
         return hikariConfig
