@@ -455,6 +455,9 @@
                                     <daos>true</daos>
                                     <springAnnotations>true</springAnnotations>
                                     <springDao>true</springDao>
+                                    <kotlinNotNullPojoAttributes>true</kotlinNotNullPojoAttributes>
+                                    <kotlinNotNullRecordAttributes>true</kotlinNotNullRecordAttributes>
+                                    <kotlinNotNullInterfaceAttributes>true</kotlinNotNullInterfaceAttributes>
                                 </generate>
                                 <target>
                                     <packageName>fi.hsl.jore.jore4.jooq</packageName>
