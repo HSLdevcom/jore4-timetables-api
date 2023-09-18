@@ -424,8 +424,15 @@
                                         | pg_catalog.*
                                         | information_schema.*
                                     </excludes>
+                                    <excludeSql>
+                                        <!-- Select all generated columns. They don't work nicely with jOOQ DAO UPDATE methods. -->
+                                        SELECT table_schema || '\.' || table_name || '\.' || column_name AS fully_qualified_name
+                                        FROM information_schema.columns
+                                        WHERE is_generated = 'ALWAYS'
+                                    </excludeSql>
                                     <includeTables>true</includeTables>
                                     <includeInvisibleColumns>false</includeInvisibleColumns>
+                                    <includeExcludeColumns>true</includeExcludeColumns>
                                     <includeEmbeddables>false</includeEmbeddables>
                                     <includeRoutines>true</includeRoutines>
                                     <includePackages>false</includePackages>
