@@ -9,6 +9,11 @@
     <logger name="fi.hsl.jore4" level="DEBUG"/>
     <logger name="org.jooq" level="INFO"/>
 
+    <!-- Uncomment to debug Hikari connections.
+    <logger name="com.zaxxer.hikari" level="DEBUG" />
+    <logger name="HikariPool" level="DEBUG" />
+    -->
+
     <root level="${LOG_LEVEL:-INFO}">
         <appender-ref ref="STDOUT"/>
     </root>
