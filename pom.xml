@@ -445,6 +445,9 @@
                                 </database>
                                 <generate>
                                     <records>false</records>
+                                    <daos>true</daos>
+                                    <springAnnotations>true</springAnnotations>
+                                    <springDao>true</springDao>
                                 </generate>
                                 <target>
                                     <packageName>fi.hsl.jore.jore4.jooq</packageName>
