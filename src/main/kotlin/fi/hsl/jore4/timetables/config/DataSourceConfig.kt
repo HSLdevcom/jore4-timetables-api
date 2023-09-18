@@ -45,6 +45,10 @@ class DataSourceConfig(
             // Currently, the SERIALIZABLE isolation level is used throughout Jore4.
             // This prevents conflicts between parallel write transactions.
             hikariConfig.transactionIsolation = "TRANSACTION_SERIALIZABLE"
+
+            // Allow pool to start without failing in case that a connection cannot be obtained
+            // during initialization.
+            hikariConfig.initializationFailTimeout = -1
         }
 
         return hikariConfig
