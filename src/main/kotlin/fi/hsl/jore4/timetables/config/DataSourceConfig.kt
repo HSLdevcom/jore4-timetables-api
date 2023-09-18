@@ -1,10 +1,11 @@
 package fi.hsl.jore4.timetables.config
 
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.datasource.DataSourceTransactionManager
-import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import javax.sql.DataSource
@@ -14,14 +15,29 @@ import javax.sql.DataSource
 class DataSourceConfig(
     val databaseProperties: DatabaseProperties
 ) {
-    @Bean
-    fun timetablesDataSource() =
-        DriverManagerDataSource().apply {
-            setDriverClassName(databaseProperties.driver)
-            url = databaseProperties.url
-            username = databaseProperties.username
-            password = databaseProperties.password
+    // Creates configuration for Hikari database connection pool.
+    // Consider adding another configuration (besides "Standard") e.g. for integration tests.
+    private fun createStandardHikariConfig(): HikariConfig {
+        val hikariConfig = HikariConfig()
+
+        databaseProperties.apply {
+            // The pool name is fixed. There is only one database to connect to.
+            hikariConfig.poolName = "timetablesdb-pool"
+
+            hikariConfig.driverClassName = driver
+            hikariConfig.jdbcUrl = url
+            hikariConfig.username = username
+            hikariConfig.password = password
+            hikariConfig.minimumIdle = minConnections
+            hikariConfig.maximumPoolSize = maxConnections
         }
+
+        return hikariConfig
+    }
+
+    // The dataSource is a Hikari connection pool.
+    @Bean(destroyMethod = "close")
+    fun timetablesDataSource() = HikariDataSource(createStandardHikariConfig())
 
     @Bean
     fun transactionAwareDataSource(@Qualifier("timetablesDataSource") dataSource: DataSource) =
