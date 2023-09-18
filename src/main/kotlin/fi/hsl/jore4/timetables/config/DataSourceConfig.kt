@@ -30,6 +30,14 @@ class DataSourceConfig(
             hikariConfig.password = password
             hikariConfig.minimumIdle = minConnections
             hikariConfig.maximumPoolSize = maxConnections
+
+            // Currently, the SERIALIZABLE isolation level is used throughout Jore4.
+            // This prevents conflicts between parallel write transactions.
+            //
+            // Note: If in the future it is found that this does not scale well enough,
+            // overriding the isolation level can be replaced by SELECT ... FOR UPDATE constructs
+            // while creating SQL statements.
+            hikariConfig.transactionIsolation = "TRANSACTION_SERIALIZABLE"
         }
 
         return hikariConfig
