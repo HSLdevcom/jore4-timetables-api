@@ -34,6 +34,12 @@ jOOQ! classes are not automatically generated and should be refreshed using the 
 
 jore4-timetables-api is a Spring Boot application written in Kotlin, which implements a REST API for accessing the timetables database and creating more complicated updates in one transaction than is possible with the graphQL interface.
 
+### Database locking
+
+The SERIALIZABLE transaction isolation level is chosen as the way to deal with concurrency problems, i.e. multiple parallel write transactions that conflict each other. Currently, this solution is considered sufficient because the number of concurrent users is not that high and the number of daily API requests is expected to be quite small.
+
+If in the future it is found that this does not scale well enough, the SERIALIZABLE isolation level can be replaced by a `SELECT ... FOR UPDATE` construct in SQL statements.
+
 ### Package Structure
 
 - `fi.hsl.jore.timetables.api` package contains the API endpoint definitions
