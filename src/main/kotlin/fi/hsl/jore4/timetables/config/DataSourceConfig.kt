@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.datasource.DataSourceTransactionManager
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy
 import org.springframework.transaction.annotation.EnableTransactionManagement
+import java.util.concurrent.TimeUnit
 import javax.sql.DataSource
 
 @Configuration
@@ -18,7 +19,7 @@ class DataSourceConfig(
     // Creates configuration for Hikari database connection pool.
     // Consider adding another configuration (besides "Standard") e.g. for integration tests.
     private fun createStandardHikariConfig(): HikariConfig {
-        val hikariConfig = HikariConfig()
+        val hikariConfig = createCommonHikariConfig()
 
         databaseProperties.apply {
             // The pool name is fixed. There is only one database to connect to.
@@ -54,4 +55,16 @@ class DataSourceConfig(
     @Bean
     fun transactionManager(@Qualifier("timetablesDataSource") dataSource: DataSource) =
         DataSourceTransactionManager(dataSource)
+
+    companion object {
+        private fun createCommonHikariConfig() = HikariConfig().apply {
+            connectionTimeout = TimeUnit.SECONDS.toMillis(30)
+            idleTimeout = TimeUnit.MINUTES.toMillis(1)
+            leakDetectionThreshold = TimeUnit.MINUTES.toMillis(10)
+            maxLifetime = TimeUnit.MINUTES.toMillis(15)
+
+            // SQL query to test whether connection is alive
+            connectionTestQuery = "SELECT 1"
+        }
+    }
 }
