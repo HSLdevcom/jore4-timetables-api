@@ -8,10 +8,8 @@ import fi.hsl.jore.jore4.jooq.return_value.tables.records.TimetableVersionRecord
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.Block
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetableVersionsByJourneyPatternIds
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetablesAndSubstituteOperatingDays
-import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.JourneyPatternsInVehicleService
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService
-import fi.hsl.jore.jore4.jooq.vehicle_service.tables.records.VehicleServiceRecord
 
 import java.time.LocalDate
 import java.util.UUID
@@ -135,39 +133,6 @@ fun GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS(
     journeyPatternIds,
     startDate,
     endDate
-)
-
-/**
- * The table <code>vehicle_service.get_vehicle_services_for_date</code>.
- */
-val GET_VEHICLE_SERVICES_FOR_DATE: GetVehicleServicesForDate = GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE
-
-/**
- * Call <code>vehicle_service.get_vehicle_services_for_date</code>.
- */
-fun GET_VEHICLE_SERVICES_FOR_DATE(
-      configuration: Configuration
-    , observationDate: LocalDate?
-): Result<VehicleServiceRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE.call(
-      observationDate
-)).fetch()
-
-/**
- * Get <code>vehicle_service.get_vehicle_services_for_date</code> as a table.
- */
-fun GET_VEHICLE_SERVICES_FOR_DATE(
-      observationDate: LocalDate?
-): GetVehicleServicesForDate = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE.call(
-    observationDate
-)
-
-/**
- * Get <code>vehicle_service.get_vehicle_services_for_date</code> as a table.
- */
-fun GET_VEHICLE_SERVICES_FOR_DATE(
-      observationDate: Field<LocalDate?>
-): GetVehicleServicesForDate = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE.call(
-    observationDate
 )
 
 /**

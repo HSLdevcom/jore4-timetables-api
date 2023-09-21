@@ -8,8 +8,6 @@ import fi.hsl.jore.jore4.jooq.return_value.tables.records.TimetableVersionRecord
 import fi.hsl.jore.jore4.jooq.vehicle_service.routines.RefreshJourneyPatternsInVehicleService
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetableVersionsByJourneyPatternIds
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetablesAndSubstituteOperatingDays
-import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate
-import fi.hsl.jore.jore4.jooq.vehicle_service.tables.records.VehicleServiceRecord
 
 import java.time.LocalDate
 import java.util.UUID
@@ -123,32 +121,4 @@ fun getTimetablesAndSubstituteOperatingDays(
     journeyPatternIds,
     startDate,
     endDate
-)
-
-/**
- * Call <code>vehicle_service.get_vehicle_services_for_date</code>.
- */
-fun getVehicleServicesForDate(
-      configuration: Configuration
-    , observationDate: LocalDate?
-): Result<VehicleServiceRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE.call(
-      observationDate
-)).fetch()
-
-/**
- * Get <code>vehicle_service.get_vehicle_services_for_date</code> as a table.
- */
-fun getVehicleServicesForDate(
-      observationDate: LocalDate?
-): GetVehicleServicesForDate = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE.call(
-    observationDate
-)
-
-/**
- * Get <code>vehicle_service.get_vehicle_services_for_date</code> as a table.
- */
-fun getVehicleServicesForDate(
-      observationDate: Field<LocalDate?>
-): GetVehicleServicesForDate = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServicesForDate.GET_VEHICLE_SERVICES_FOR_DATE.call(
-    observationDate
 )
