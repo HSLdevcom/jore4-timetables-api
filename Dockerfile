@@ -12,7 +12,7 @@ COPY ./src /build/src
 
 # package using "prod" profile
 COPY ./profiles/prod /build/profiles/prod
-RUN mvn -Pprod clean package spring-boot:repackage
+RUN mvn -Pprod -DskipTests=true clean package spring-boot:repackage
 
 FROM eclipse-temurin:17.0.8_7-jre
 
