@@ -12,7 +12,7 @@ import org.jooq.impl.DefaultConfiguration
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
+import java.util.UUID
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.VehicleScheduleFrame as VehicleScheduleFrameTable
 
 @Repository
