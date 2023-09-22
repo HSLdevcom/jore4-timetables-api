@@ -6,7 +6,7 @@ import fi.hsl.jore4.timetables.repository.VehicleScheduleFrameRepository
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
+import java.util.UUID
 
 private val LOGGER = KotlinLogging.logger {}
 
