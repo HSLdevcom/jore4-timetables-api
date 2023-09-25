@@ -29,7 +29,7 @@ download_docker_bundle() {
 
 start_all() {
   download_docker_bundle
-  $DOCKER_COMPOSE_CMD up -d jore4-hasura jore4-testdb
+  $DOCKER_COMPOSE_CMD up -d jore4-hasura jore4-testdb jore4-auth
   $DOCKER_COMPOSE_CMD up --build -d jore4-timetables-api
   prepare_timetables_data_inserter
 }
