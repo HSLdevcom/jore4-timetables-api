@@ -30,6 +30,7 @@ jOOQ! classes are not automatically generated and should be refreshed using the 
 
 Tests use `timetables-data-inserter` from ´jore4-hasura´ repository.
 This is included as a Git submodule.
+The submodule is automatically initialized when dependencies are set up with `development.sh`.
 
 When the submodule is updated, to get the newest version of inserter you need to:
 - Update git submodules with `git submodule update`

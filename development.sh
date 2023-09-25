@@ -48,10 +48,32 @@ generate_jooq() {
 }
 
 prepare_timetables_data_inserter() {
+  ensure_hasura_submodule_initialized
+
   cd jore4-hasura/test/hasura
   yarn install
   yarn timetables-data-inserter:build
   cd -
+}
+
+ensure_hasura_submodule_initialized() {
+  if [ ! -d jore4-hasura/test ]; then
+    echo "jore4-hasura submodule not found! Initializing..."
+
+    git submodule init
+    git submodule update
+    echo "jore4-hasura submodule: setting sparse checkout..."
+    cd jore4-hasura
+    git sparse-checkout init --cone
+    git sparse-checkout set test/hasura
+    cd -
+
+    echo "jore4-hasura submodule initialized."
+  fi
+
+  echo "jore4-hasura submodule: updating..."
+  git submodule update
+  echo "jore4-hasura submodule up to date."
 }
 
 ### Control flow
