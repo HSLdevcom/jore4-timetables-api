@@ -7,19 +7,6 @@ import mu.KotlinLogging
 private val LOGGER = KotlinLogging.logger {}
 
 class TimetablesDataset : MutableMap<String, Any?> by mutableMapOf() {
-    fun getNested(propertyPath: String): MutableMap<String, Any?> {
-        val parts = propertyPath.split(".")
-
-        var child: MutableMap<String, Any?> = this
-        for (childPath in parts) {
-            LOGGER.debug { "Get path: $childPath" }
-            @Suppress("UNCHECKED_CAST")
-            child = child[childPath] as MutableMap<String, Any?>
-        }
-
-        return child
-    }
-
     fun toJSONString(): String {
         return OBJECT_MAPPER.writeValueAsString(this)
     }
