@@ -10,6 +10,10 @@ fun MutableMap<String, Any?>.getNested(propertyPath: String): MutableMap<String,
     var child: MutableMap<String, Any?> = this
     for (childPath in parts) {
         LOGGER.debug { "Get path: $childPath" }
+        if (childPath !in child) {
+            throw RuntimeException("No child item found at property '$childPath'")
+        }
+
         @Suppress("UNCHECKED_CAST")
         child = child[childPath] as MutableMap<String, Any?>
     }
