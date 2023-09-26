@@ -3,6 +3,7 @@ package fi.hsl.jore4.timetables.service
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.pojos.VehicleScheduleFrame
 import fi.hsl.jore4.timetables.TimetablesDataset
 import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
+import fi.hsl.jore4.timetables.extensions.getNested
 import fi.hsl.jore4.timetables.repository.VehicleScheduleFrameRepository
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
