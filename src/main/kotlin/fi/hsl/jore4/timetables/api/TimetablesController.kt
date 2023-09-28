@@ -55,16 +55,6 @@ class TimetablesController(
             .body(ReplaceTimetablesResponseBody(replacedVehicleScheduleFrameIds = replaceResult))
     }
 
-    class InvalidTargetPriorityExtensions(
-        override val code: Int,
-        val targetPriority: TimetablesPriority
-    ) : HasuraErrorExtensions(code)
-
-    class StagingVehicleScheduleFrameNotFoundExtensions(
-        override val code: Int,
-        val stagingVehicleScheduleFrameId: UUID
-    ) : HasuraErrorExtensions(code)
-
     @ExceptionHandler(RuntimeException::class)
     fun handleRuntimeException(ex: RuntimeException): ResponseEntity<HasuraErrorResponse> {
         LOGGER.error { "Exception during request:$ex" }
@@ -77,6 +67,11 @@ class TimetablesController(
         return ResponseEntity(hasuraErrorResponse, httpStatus)
     }
 
+    class InvalidTargetPriorityExtensions(
+        override val code: Int,
+        val targetPriority: TimetablesPriority
+    ) : HasuraErrorExtensions(code)
+
     @ExceptionHandler(InvalidTargetPriorityException::class)
     fun handleInvalidTargetPriorityException(ex: InvalidTargetPriorityException): ResponseEntity<HasuraErrorResponse> {
         val httpStatus = HttpStatus.BAD_REQUEST
@@ -86,10 +81,18 @@ class TimetablesController(
         return ResponseEntity(hasuraErrorResponse, httpStatus)
     }
 
+    class StagingVehicleScheduleFrameNotFoundExtensions(
+        override val code: Int,
+        val stagingVehicleScheduleFrameId: UUID
+    ) : HasuraErrorExtensions(code)
+
     @ExceptionHandler(StagingVehicleScheduleFrameNotFoundException::class)
     fun handleStagingVehicleScheduleFrameNotFoundException(ex: StagingVehicleScheduleFrameNotFoundException): ResponseEntity<HasuraErrorResponse> {
         val httpStatus = HttpStatus.NOT_FOUND
-        val hasuraErrorExtensions = StagingVehicleScheduleFrameNotFoundExtensions(httpStatus.value(), ex.stagingVehicleScheduleFrameId)
+        val hasuraErrorExtensions = StagingVehicleScheduleFrameNotFoundExtensions(
+            httpStatus.value(),
+            ex.stagingVehicleScheduleFrameId
+        )
         val hasuraErrorResponse = HasuraErrorResponse(ex.message, hasuraErrorExtensions)
 
         return ResponseEntity(hasuraErrorResponse, httpStatus)
