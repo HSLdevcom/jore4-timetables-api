@@ -39,9 +39,59 @@ When the submodule is updated, to get the newest version of inserter you need to
 
 ## API structure
 
-### GET
-
-`hello` Hello world example interface returns http 200
+- `GET /hello` Hello world example interface returns http 200
+- `POST /timetables/replace`: Import staging timetables to target priority
+  by replacing matching currently active vehicle schedule frames.
+  Example request body:
+  ```JSON
+  {
+    // Ids of staging vehicle schedule frames to import by replacing.
+    "stagingVehicleScheduleFrameIds": [
+      "77fa8187-9a8e-4ce6-9fe2-5855f438b0e2",
+      "b82d135a-bd47-466b-a3a4-710c9ea4b430"
+    ],
+    // The priority to which the staging timetables will be promoted.
+    // Timetables priority, e.g. STANDARD = 10
+    "targetPriority": 10
+  }
+  ```
+  Example response body:
+  ```JSON
+  {
+    // The IDs of vehicle schedule frames of target priority that got replaced.
+    // There can be 0-n of these per staging frame.
+    "replacedVehicleScheduleFrameIds": [
+      "d3d0aea6-db3f-4421-b4eb-39cffe8835a8",
+      "e0ea0778-833d-4ce1-8f2d-27109cab4a4e"
+    ]
+  }
+  ```
+- `POST /timetables/combine`: Import staging timetables to target priority
+  by combining new vehicle journeys to matching vehicle schedule frames.
+  Example request body:
+  ```JSON
+  {
+    // Ids of staging vehicle schedule frames to import by combining.
+    "stagingVehicleScheduleFrameIds": [
+      "77fa8187-9a8e-4ce6-9fe2-5855f438b0e2",
+      "b82d135a-bd47-466b-a3a4-710c9ea4b430"
+    ],
+    // The priority to which the staging timetables will be promoted.
+    // Timetables priority, e.g. STANDARD = 10
+    "targetPriority": 10
+  }
+  ```
+  Example response body:
+  ```JSON
+  {
+    // The IDs of vehicle schedule frames of target priority where staging vehicle schedule frames got combined to.
+    // One for each staging frame, in same order.
+    "combinedIntoVehicleScheduleFrameIds": [
+      "d3d0aea6-db3f-4421-b4eb-39cffe8835a8",
+      "e0ea0778-833d-4ce1-8f2d-27109cab4a4e"
+    ]
+  }
+  ```
 
 ## Technical Documentation
 
