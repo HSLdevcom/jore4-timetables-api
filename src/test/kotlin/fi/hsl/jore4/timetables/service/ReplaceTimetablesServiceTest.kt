@@ -44,7 +44,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
     @ExtendWith(MockKExtension::class)
     @MockKExtension.ConfirmVerification
     @DisplayName("replaceTimetables")
-    class ReplaceTimetables {
+    inner class ReplaceTimetables {
         @MockK
         private val replaceTimetablesServiceMock = mockk<ReplaceTimetablesService>()
 
