@@ -2,7 +2,9 @@ package fi.hsl.jore4.timetables.api
 
 import fi.hsl.jore4.timetables.service.ScheduleFrameService
 import io.mockk.every
+import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -10,6 +12,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 @DisplayName("Test Hello World API")
+@MockKExtension.ConfirmVerification
 class HelloWorldTest {
 
     private val scheduleFrameService = mockk<ScheduleFrameService>()
@@ -29,6 +32,8 @@ class HelloWorldTest {
 
         assertNotNull(returned.body)
         assertEquals(expected, returned.body, "Body content was not what was expected")
+
+        verify(exactly = 0) { scheduleFrameService.getServiceFrames() }
     }
 
     @Test
@@ -41,5 +46,7 @@ class HelloWorldTest {
 
         assertNotNull(returned.body)
         assertEquals(expected, returned.body, "Body did not contain expected frames")
+
+        verify { scheduleFrameService.getServiceFrames() }
     }
 }
