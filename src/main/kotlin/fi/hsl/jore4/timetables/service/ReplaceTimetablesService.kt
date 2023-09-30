@@ -24,8 +24,10 @@ class ReplaceTimetablesService(
             processSingleStagingFrameReplacements(it, targetPriority)
         }.flatten()
 
-    // This is currently not used from outside this service, only exposed for testing.
-    @Transactional(noRollbackFor = [RuntimeException::class])
+    // Currently only called from this service, public only for testing purposes.
+    // Note: since there is no noRollbackFor annotation, any fails here will fail the main transaction (from calling service method).
+    // This is intentional and currently fine. If this were to ever change, then transaction context handling would also need some improvement.
+    @Transactional
     fun processSingleStagingFrameReplacements(
         stagingVehicleScheduleFrameId: UUID,
         targetPriority: TimetablesPriority
