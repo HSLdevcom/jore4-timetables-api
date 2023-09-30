@@ -48,9 +48,33 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
         @MockK
         private val replaceTimetablesServiceMock = mockk<ReplaceTimetablesService>()
 
+        private val stagingFrameIds = listOf(
+            UUID.fromString("578895c3-ad0d-45a1-a4e5-3b01046369e5"),
+            UUID.fromString("ec474a2c-3e1e-4141-a8f6-aa09301f2ac9"),
+            UUID.fromString("9d22447c-3e81-4f4c-9356-a9b0f712a3cb")
+        )
+        private val replacedFrameIds = listOf(
+            UUID.fromString("ea9c8c74-701c-472e-bcc0-caf55ec75972"),
+            UUID.fromString("a0830628-4dde-488f-91da-ac4eb966b37a"),
+            UUID.fromString("964539d9-18ea-4066-ad6f-e8daae0b918d"),
+            UUID.fromString("d8023c8c-fdca-4686-be85-89e5bfb00591")
+        )
+
+        private lateinit var mockProcessSingleCalls: List<() -> List<UUID>>
+
         @BeforeEach
         fun setupReplaceTimetables() {
             every { replaceTimetablesServiceMock.replaceTimetables(any(), any()) } answers { callOriginal() }
+
+            // Create lambdas for each processSingleStagingFrameReplacements call, one per staging frame.
+            mockProcessSingleCalls = stagingFrameIds.map { stagingFrameId ->
+                {
+                    replaceTimetablesServiceMock.processSingleStagingFrameReplacements(
+                        stagingFrameId,
+                        TimetablesPriority.STANDARD
+                    )
+                }
+            }
         }
 
         @AfterEach
@@ -60,36 +84,13 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
 
         @Test
         fun `replaces each staging timetables and returns replaced vehicle schedule frame ids`() {
-            val stagingFrameIds = listOf(
-                UUID.fromString("578895c3-ad0d-45a1-a4e5-3b01046369e5"),
-                UUID.fromString("ec474a2c-3e1e-4141-a8f6-aa09301f2ac9"),
-                UUID.fromString("9d22447c-3e81-4f4c-9356-a9b0f712a3cb")
+            every { mockProcessSingleCalls[0]() } returns listOf(replacedFrameIds[0])
+            every { mockProcessSingleCalls[1]() } returns emptyList()
+            every { mockProcessSingleCalls[2]() } returns listOf(
+                replacedFrameIds[1],
+                replacedFrameIds[2],
+                replacedFrameIds[3]
             )
-            val replacedFrameIds = listOf(
-                UUID.fromString("ea9c8c74-701c-472e-bcc0-caf55ec75972"),
-                UUID.fromString("a0830628-4dde-488f-91da-ac4eb966b37a"),
-                UUID.fromString("964539d9-18ea-4066-ad6f-e8daae0b918d"),
-                UUID.fromString("d8023c8c-fdca-4686-be85-89e5bfb00591")
-            )
-
-            every {
-                replaceTimetablesServiceMock.processSingleStagingFrameReplacements(
-                    stagingFrameIds[0],
-                    TimetablesPriority.STANDARD
-                )
-            } returns listOf(replacedFrameIds[0])
-            every {
-                replaceTimetablesServiceMock.processSingleStagingFrameReplacements(
-                    stagingFrameIds[1],
-                    TimetablesPriority.STANDARD
-                )
-            } returns emptyList()
-            every {
-                replaceTimetablesServiceMock.processSingleStagingFrameReplacements(
-                    stagingFrameIds[2],
-                    TimetablesPriority.STANDARD
-                )
-            } returns listOf(replacedFrameIds[1], replacedFrameIds[2], replacedFrameIds[3])
 
             val result = replaceTimetablesServiceMock.replaceTimetables(
                 stagingFrameIds,
@@ -97,61 +98,23 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
             )
             assertEquals(result, replacedFrameIds)
 
-            verify(exactly = 1) {
-                replaceTimetablesServiceMock.processSingleStagingFrameReplacements(
-                    stagingFrameIds[0],
-                    TimetablesPriority.STANDARD
-                )
-            }
-            verify(exactly = 1) {
-                replaceTimetablesServiceMock.processSingleStagingFrameReplacements(
-                    stagingFrameIds[1],
-                    TimetablesPriority.STANDARD
-                )
-            }
-            verify(exactly = 1) {
-                replaceTimetablesServiceMock.processSingleStagingFrameReplacements(
-                    stagingFrameIds[2],
-                    TimetablesPriority.STANDARD
-                )
-            }
+            verify(exactly = 1) { mockProcessSingleCalls[0]() }
+            verify(exactly = 1) { mockProcessSingleCalls[1]() }
+            verify(exactly = 1) { mockProcessSingleCalls[2]() }
         }
 
         @Test
         fun `fails if any of the requested staging frames do not get handled successfully`() {
-            val stagingFrameIds = listOf(
-                UUID.fromString("578895c3-ad0d-45a1-a4e5-3b01046369e5"),
-                UUID.fromString("ec474a2c-3e1e-4141-a8f6-aa09301f2ac9"),
-                UUID.fromString("9d22447c-3e81-4f4c-9356-a9b0f712a3cb")
-            )
-            val replacedFrameIds = listOf(
-                UUID.fromString("ea9c8c74-701c-472e-bcc0-caf55ec75972"),
-                UUID.fromString("a0830628-4dde-488f-91da-ac4eb966b37a"),
-                UUID.fromString("964539d9-18ea-4066-ad6f-e8daae0b918d"),
-                UUID.fromString("d8023c8c-fdca-4686-be85-89e5bfb00591")
-            )
-
-            every {
-                replaceTimetablesServiceMock.processSingleStagingFrameReplacements(
-                    stagingFrameIds[0],
-                    TimetablesPriority.STANDARD
-                )
-            } returns listOf(replacedFrameIds[0])
-            every {
-                replaceTimetablesServiceMock.processSingleStagingFrameReplacements(
-                    stagingFrameIds[1],
-                    TimetablesPriority.STANDARD
-                )
-            } throws StagingVehicleScheduleFrameNotFoundException(
+            every { mockProcessSingleCalls[0]() } returns listOf(replacedFrameIds[0])
+            every { mockProcessSingleCalls[1]() } throws StagingVehicleScheduleFrameNotFoundException(
                 "Staging vehicle schedule frame not found",
                 stagingFrameIds[1]
             )
-            every {
-                replaceTimetablesServiceMock.processSingleStagingFrameReplacements(
-                    stagingFrameIds[2],
-                    TimetablesPriority.STANDARD
-                )
-            } returns listOf(replacedFrameIds[1], replacedFrameIds[2], replacedFrameIds[3])
+            every { mockProcessSingleCalls[2]() } returns listOf(
+                replacedFrameIds[1],
+                replacedFrameIds[2],
+                replacedFrameIds[3]
+            )
 
             assertFailsWith<StagingVehicleScheduleFrameNotFoundException> {
                 replaceTimetablesServiceMock.replaceTimetables(
@@ -160,24 +123,9 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
                 )
             }
 
-            verify(exactly = 1) {
-                replaceTimetablesServiceMock.processSingleStagingFrameReplacements(
-                    stagingFrameIds[0],
-                    TimetablesPriority.STANDARD
-                )
-            }
-            verify(exactly = 1) {
-                replaceTimetablesServiceMock.processSingleStagingFrameReplacements(
-                    stagingFrameIds[1],
-                    TimetablesPriority.STANDARD
-                )
-            }
-            verify(exactly = 0) {
-                replaceTimetablesServiceMock.processSingleStagingFrameReplacements(
-                    stagingFrameIds[2],
-                    TimetablesPriority.STANDARD
-                )
-            }
+            verify(exactly = 1) { mockProcessSingleCalls[0]() }
+            verify(exactly = 1) { mockProcessSingleCalls[1]() }
+            verify(exactly = 0) { mockProcessSingleCalls[2]() }
         }
     }
 
