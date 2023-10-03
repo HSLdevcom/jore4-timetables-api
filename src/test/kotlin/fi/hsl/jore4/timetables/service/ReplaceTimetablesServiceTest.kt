@@ -130,8 +130,8 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
     }
 
     @Nested
-    @DisplayName("processSingleStagingFrameReplacements")
-    inner class ProcessSingleStagingFrameReplacements {
+    @DisplayName("replaceTimetables")
+    inner class replaceTimetables {
         @Nested
         @DisplayName("when successfully replacing a single vehicle schedule frame")
         inner class SuccessfullyReplacingSingleVehicleScheduleFrame {
@@ -150,8 +150,8 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
                 initialReplacedFrame = fetchSingleFrameById(replacedFrameId)
                 initialStagingFrame = fetchSingleFrameById(stagingFrameId)
 
-                result = replaceTimetablesService.processSingleStagingFrameReplacements(
-                    stagingFrameId,
+                result = replaceTimetablesService.replaceTimetables(
+                    listOf(stagingFrameId),
                     TimetablesPriority.STANDARD
                 )
             }
@@ -204,8 +204,8 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
             fun `expires each replaced frame when successful`() {
                 timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
 
-                val result = replaceTimetablesService.processSingleStagingFrameReplacements(
-                    stagingFrameId,
+                val result = replaceTimetablesService.replaceTimetables(
+                    listOf(stagingFrameId),
                     TimetablesPriority.STANDARD
                 )
 
@@ -230,8 +230,8 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
             val initialStagingFrame = fetchSingleFrameById(stagingFrameId)
 
             val exception = assertFailsWith<InvalidTargetPriorityException> {
-                replaceTimetablesService.processSingleStagingFrameReplacements(
-                    stagingFrameId,
+                replaceTimetablesService.replaceTimetables(
+                    listOf(stagingFrameId),
                     TimetablesPriority.STAGING
                 )
             }
@@ -248,8 +248,8 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
             val nonexistentStagingFrameId = UUID.fromString("DEADBEEF-FEED-C0DE-F00D-ABBA1234ABBA")
 
             assertFailsWith<StagingVehicleScheduleFrameNotFoundException> {
-                replaceTimetablesService.processSingleStagingFrameReplacements(
-                    nonexistentStagingFrameId,
+                replaceTimetablesService.replaceTimetables(
+                    listOf(nonexistentStagingFrameId),
                     TimetablesPriority.STANDARD
                 )
             }
@@ -266,8 +266,8 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
             val initialNonStagingFrame = fetchSingleFrameById(nonStagingFrameId)
 
             assertFailsWith<StagingVehicleScheduleFrameNotFoundException> {
-                replaceTimetablesService.processSingleStagingFrameReplacements(
-                    nonStagingFrameId,
+                replaceTimetablesService.replaceTimetables(
+                    listOf(nonStagingFrameId),
                     TimetablesPriority.STANDARD
                 )
             }
@@ -281,8 +281,8 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
 
             val stagingFrameId = UUID.fromString("77fa8187-9a8e-4ce6-9fe2-5855f438b0e2")
 
-            val result = replaceTimetablesService.processSingleStagingFrameReplacements(
-                stagingFrameId,
+            val result = replaceTimetablesService.replaceTimetables(
+                listOf(stagingFrameId),
                 TimetablesPriority.TEMPORARY // There is an otherwise valid frame to replace, but only at Standard priority
             )
 
