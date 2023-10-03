@@ -227,6 +227,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
             timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
 
             val stagingFrameId = UUID.fromString("77fa8187-9a8e-4ce6-9fe2-5855f438b0e2")
+            val initialStagingFrame = fetchSingleFrameById(stagingFrameId)
 
             val exception = assertFailsWith<InvalidTargetPriorityException> {
                 replaceTimetablesService.processSingleStagingFrameReplacements(
@@ -236,6 +237,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
             }
 
             assertContains(exception.message.toString(), "Can not set priority STAGING as target.")
+            assertEquals(initialStagingFrame, fetchSingleFrameById(stagingFrameId))
         }
 
         @Test
@@ -261,6 +263,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
             val nonStagingFrameId = UUID.fromString(
                 testData.getNested("_vehicle_schedule_frames.current")["vehicle_schedule_frame_id"].toString()
             )
+            val initialNonStagingFrame = fetchSingleFrameById(nonStagingFrameId)
 
             assertFailsWith<StagingVehicleScheduleFrameNotFoundException> {
                 replaceTimetablesService.processSingleStagingFrameReplacements(
@@ -268,6 +271,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
                     TimetablesPriority.STANDARD
                 )
             }
+            assertEquals(initialNonStagingFrame, fetchSingleFrameById(nonStagingFrameId))
         }
 
         @Test
@@ -283,6 +287,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
             )
 
             assertEquals(listOf(), result)
+            assertEquals(TimetablesPriority.TEMPORARY.value, fetchSingleFrameById(stagingFrameId).priority)
         }
     }
 
