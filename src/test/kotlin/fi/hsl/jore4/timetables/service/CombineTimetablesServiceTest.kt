@@ -121,15 +121,15 @@ class CombineTimetablesServiceTest @Autowired constructor(
     }
 
     @Nested
-    @DisplayName("combineSingleTimetable")
-    inner class CombineSingleTimetable {
+    @DisplayName("combineTimetables with single staging frame")
+    inner class CombineTimetablesWithSingleStagingFrame {
         @Nested
         @DisplayName("when successfully combining a single new vehicle journey")
         inner class WhenSuccessfullyCombiningSingleNewVehicleJourney {
             private val stagingFrameId = UUID.fromString("aa0e95c6-34d1-4d09-8546-3789b04ea494")
             private val targetFrameId = UUID.fromString("bb2abc90-8e91-4b0b-a7e4-751a04e81ba3")
 
-            private lateinit var result: UUID
+            private lateinit var result: List<UUID>
             private lateinit var initialTargetFrame: VehicleScheduleFrame
             private lateinit var initialStagingFrame: VehicleScheduleFrame
 
@@ -141,15 +141,15 @@ class CombineTimetablesServiceTest @Autowired constructor(
                 initialTargetFrame = fetchSingleFrameById(targetFrameId)
                 initialStagingFrame = fetchSingleFrameById(stagingFrameId)
 
-                result = combineTimetablesService.combineSingleTimetable(
-                    stagingFrameId,
+                result = combineTimetablesService.combineTimetables(
+                    listOf(stagingFrameId),
                     TimetablesPriority.STANDARD
                 )
             }
 
             @Test
             fun `returns id of the target vehicle schedule frame`() {
-                assertEquals(targetFrameId, result)
+                assertEquals(listOf(targetFrameId), result)
             }
 
             @Test
@@ -181,11 +181,11 @@ class CombineTimetablesServiceTest @Autowired constructor(
             timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
             val stagingFrameId = UUID.fromString("aa0e95c6-34d1-4d09-8546-3789b04ea494")
 
-            val result = combineTimetablesService.combineSingleTimetable(
-                stagingFrameId,
+            val result = combineTimetablesService.combineTimetables(
+                listOf(stagingFrameId),
                 TimetablesPriority.STANDARD
             )
-            assertEquals(UUID.fromString("bb2abc90-8e91-4b0b-a7e4-751a04e81ba3"), result)
+            assertEquals(listOf(UUID.fromString("bb2abc90-8e91-4b0b-a7e4-751a04e81ba3")), result)
             assertNull(vehicleScheduleFrameRepository.fetchOneByVehicleScheduleFrameId(stagingFrameId))
         }
 
@@ -199,8 +199,8 @@ class CombineTimetablesServiceTest @Autowired constructor(
             val initialFrames = vehicleScheduleFrameRepository.findAll().toSet()
 
             val exception = assertFailsWith<InvalidTargetPriorityException> {
-                combineTimetablesService.combineSingleTimetable(
-                    stagingFrameId,
+                combineTimetablesService.combineTimetables(
+                    listOf(stagingFrameId),
                     TimetablesPriority.STAGING
                 )
             }
@@ -218,8 +218,8 @@ class CombineTimetablesServiceTest @Autowired constructor(
             val nonexistentStagingFrameId = UUID.fromString("DEADBEEF-FEED-C0DE-F00D-ABBA1234ABBA")
 
             assertFailsWith<StagingVehicleScheduleFrameNotFoundException> {
-                combineTimetablesService.combineSingleTimetable(
-                    nonexistentStagingFrameId,
+                combineTimetablesService.combineTimetables(
+                    listOf(nonexistentStagingFrameId),
                     TimetablesPriority.STANDARD
                 )
             }
@@ -237,8 +237,8 @@ class CombineTimetablesServiceTest @Autowired constructor(
             val initialFrames = vehicleScheduleFrameRepository.findAll().toSet()
 
             assertFailsWith<StagingVehicleScheduleFrameNotFoundException> {
-                combineTimetablesService.combineSingleTimetable(
-                    nonStagingFrameId,
+                combineTimetablesService.combineTimetables(
+                    listOf(nonStagingFrameId),
                     TimetablesPriority.STANDARD
                 )
             }
@@ -265,8 +265,8 @@ class CombineTimetablesServiceTest @Autowired constructor(
                 val initialTargetFrame = fetchSingleFrameById(targetFrameId)
 
                 val exception = assertFailsWith<TargetFrameNotFoundException> {
-                    combineTimetablesService.combineSingleTimetable(
-                        stagingFrameId,
+                    combineTimetablesService.combineTimetables(
+                        listOf(stagingFrameId),
                         TimetablesPriority.STANDARD
                     )
                 }
@@ -342,8 +342,8 @@ class CombineTimetablesServiceTest @Autowired constructor(
             val initialStagingFrame = fetchSingleFrameById(stagingFrameId)
 
             val exception = assertFailsWith<MultipleTargetFramesFoundException> {
-                combineTimetablesService.combineSingleTimetable(
-                    stagingFrameId,
+                combineTimetablesService.combineTimetables(
+                    listOf(stagingFrameId),
                     TimetablesPriority.STANDARD
                 )
             }
@@ -379,11 +379,11 @@ class CombineTimetablesServiceTest @Autowired constructor(
             // FIXME: this should fail instead. The service currently works incorrectly in this case.
             // Also, check correct exception class.
             // Might need more robust tests than just this one case (at least for valid corner cases).
-            val result = combineTimetablesService.combineSingleTimetable(
-                stagingFrameId,
+            val result = combineTimetablesService.combineTimetables(
+                listOf(stagingFrameId),
                 TimetablesPriority.STANDARD
             )
-            assertEquals(UUID.fromString("bb2abc90-8e91-4b0b-a7e4-751a04e81ba3"), result)
+            assertEquals(listOf(UUID.fromString("bb2abc90-8e91-4b0b-a7e4-751a04e81ba3")), result)
             assertNull(vehicleScheduleFrameRepository.fetchOneByVehicleScheduleFrameId(stagingFrameId))
         }
     }
