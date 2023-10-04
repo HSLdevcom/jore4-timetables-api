@@ -70,7 +70,9 @@ class VehicleScheduleFrameRepository(private val dsl: DSLContext, config: Defaul
             .on(replacedFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(replacedVehicleScheduleFrameIdField))
             .join(stagingFrame)
             .on(stagingFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(stagingVehicleScheduleFrameIdField))
-            .where(replacedFrame.PRIORITY.eq(targetPriority.value))
+            // The overlapping schedules query returns other frames as well, filter out unwanted ones.
+            .where(stagingFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(stagingVehicleScheduleFrameId))
+            .and(replacedFrame.PRIORITY.eq(targetPriority.value))
             // Must be able to update the validity time of replaced frame,
             // so it ends before staging starts.
             // Thus, also needs to start before,
