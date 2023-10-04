@@ -49,7 +49,7 @@ class CombineTimetablesServiceTest @Autowired constructor(
             @BeforeEach
             fun runCombineSingleTimetable() {
                 val testData = TimetablesDataset.createFromResource("datasets/combine.json")
-                timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+                timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
                 initialTargetFrame = fetchSingleFrameById(targetFrameId)
                 initialStagingFrame = fetchSingleFrameById(stagingFrameId)
@@ -91,7 +91,7 @@ class CombineTimetablesServiceTest @Autowired constructor(
             testData.getNested("_vehicle_schedule_frames.target._vehicle_services.monFri")["day_type_id"] =
                 "WEDNESDAY"
 
-            timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
             val stagingFrameId = UUID.fromString("aa0e95c6-34d1-4d09-8546-3789b04ea494")
 
             val result = combineTimetablesService.combineTimetables(
@@ -105,7 +105,7 @@ class CombineTimetablesServiceTest @Autowired constructor(
         @Test
         fun `fails when called with invalid target priority = staging`() {
             val testData = TimetablesDataset.createFromResource("datasets/combine.json")
-            timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
             val stagingFrameId = UUID.fromString("aa0e95c6-34d1-4d09-8546-3789b04ea494")
             val initialStagingFrame = fetchSingleFrameById(stagingFrameId)
@@ -126,7 +126,7 @@ class CombineTimetablesServiceTest @Autowired constructor(
         @Test
         fun `fails when staging timetable does not exist`() {
             val testData = TimetablesDataset.createFromResource("datasets/combine.json")
-            timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
             val nonexistentStagingFrameId = UUID.fromString("DEADBEEF-FEED-C0DE-F00D-ABBA1234ABBA")
 
@@ -141,7 +141,7 @@ class CombineTimetablesServiceTest @Autowired constructor(
         @Test
         fun `fails when staging timetable is not staging`() {
             val testData = TimetablesDataset.createFromResource("datasets/combine.json")
-            timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
             val nonStagingFrameId = UUID.fromString(
                 testData.getNested("_vehicle_schedule_frames.target")["vehicle_schedule_frame_id"].toString()
@@ -170,7 +170,7 @@ class CombineTimetablesServiceTest @Autowired constructor(
             }
 
             private fun runCombineAndAssertTargetNotFoundException() {
-                timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+                timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
                 val stagingFrameId = UUID.fromString("aa0e95c6-34d1-4d09-8546-3789b04ea494")
                 val targetFrameId = UUID.fromString("bb2abc90-8e91-4b0b-a7e4-751a04e81ba3")
@@ -251,7 +251,7 @@ class CombineTimetablesServiceTest @Autowired constructor(
             val target1FrameId = UUID.fromString("c89e23c0-bbb0-4c0e-aa68-6ec6043079c5")
             val target2FrameId = UUID.fromString("4cb38f55-b2d7-4cf4-bdaa-50db6e7c32e7")
 
-            timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
             val initialStagingFrame = fetchSingleFrameById(stagingFrameId)
 
             val exception = assertFailsWith<MultipleTargetFramesFoundException> {
@@ -286,7 +286,7 @@ class CombineTimetablesServiceTest @Autowired constructor(
                 "route123Outbound1" to targetVehicleJourneys["route123Outbound1"],
                 "route234Outbound1" to targetVehicleJourneys["route234Outbound1"]
             )
-            timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
             val stagingFrameId = UUID.fromString("aa0e95c6-34d1-4d09-8546-3789b04ea494")
 
             // FIXME: this should fail instead. The service currently works incorrectly in this case.
@@ -395,7 +395,7 @@ class CombineTimetablesServiceTest @Autowired constructor(
 
         @Test
         fun `combine each staging timetables and returns target vehicle schedule frame ids`() {
-            timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
             val result = combineTimetablesService.combineTimetables(
                 stagingFrameIds,
@@ -413,7 +413,7 @@ class CombineTimetablesServiceTest @Autowired constructor(
         fun `fails if any of the requested staging frames do not get handled successfully`() {
             // Change priority of one target -> target can't be found for matching staging frame -> fails.
             testData.getNested("_vehicle_schedule_frames.target2")["priority"] = "Temporary"
-            timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
             val initialFrames = vehicleScheduleFrameRepository.findAll().toSet()
             val initialServices = vehicleServiceRepository.findAll().toSet()
