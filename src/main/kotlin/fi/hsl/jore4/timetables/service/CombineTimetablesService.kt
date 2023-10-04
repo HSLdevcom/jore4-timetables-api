@@ -37,11 +37,7 @@ class CombineTimetablesService(
         combineSingleTimetable(stagingFrameId, targetPriority)
     }
 
-    // Currently only called from this service, public only for testing purposes.
-    // Note: since there is no noRollbackFor annotation, any fails here will fail the main transaction (from calling service method).
-    // This is intentional and currently fine. If this were to ever change, then transaction context handling would also need some improvement.
-    @Transactional
-    fun combineSingleTimetable(stagingVehicleScheduleFrameId: UUID, targetPriority: TimetablesPriority): UUID {
+    private fun combineSingleTimetable(stagingVehicleScheduleFrameId: UUID, targetPriority: TimetablesPriority): UUID {
         validateTargetPriority(targetPriority)
 
         LOGGER.info { "Combining timetables... $stagingVehicleScheduleFrameId to priority $targetPriority" }

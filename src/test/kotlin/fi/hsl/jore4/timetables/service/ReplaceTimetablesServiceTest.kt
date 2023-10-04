@@ -3,20 +3,14 @@ package fi.hsl.jore4.timetables.service
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.pojos.VehicleScheduleFrame
 import fi.hsl.jore4.timetables.TimetablesDataset
 import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
+import fi.hsl.jore4.timetables.extensions.deepClone
 import fi.hsl.jore4.timetables.extensions.getNested
 import fi.hsl.jore4.timetables.repository.VehicleScheduleFrameRepository
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
-import io.mockk.junit5.MockKExtension
-import io.mockk.mockk
-import io.mockk.verify
 import mu.KotlinLogging
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import java.time.LocalDate
@@ -37,96 +31,6 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
     private fun fetchSingleFrameById(frameId: UUID): VehicleScheduleFrame {
         return vehicleScheduleFrameRepository.fetchOneByVehicleScheduleFrameId(frameId)
             ?: throw Exception("Vehicle schedule frame $frameId not found")
-    }
-
-    // Most of the logic is implemented in replaceSingleTimetable and thus tested under its tests.
-    @Nested
-    @ExtendWith(MockKExtension::class)
-    @MockKExtension.ConfirmVerification
-    @DisplayName("replaceTimetables")
-    inner class ReplaceTimetables {
-        @MockK
-        private val replaceTimetablesServiceMock = mockk<ReplaceTimetablesService>()
-
-        private val stagingFrameIds = listOf(
-            UUID.fromString("578895c3-ad0d-45a1-a4e5-3b01046369e5"),
-            UUID.fromString("ec474a2c-3e1e-4141-a8f6-aa09301f2ac9"),
-            UUID.fromString("9d22447c-3e81-4f4c-9356-a9b0f712a3cb")
-        )
-        private val replacedFrameIds = listOf(
-            UUID.fromString("ea9c8c74-701c-472e-bcc0-caf55ec75972"),
-            UUID.fromString("a0830628-4dde-488f-91da-ac4eb966b37a"),
-            UUID.fromString("964539d9-18ea-4066-ad6f-e8daae0b918d"),
-            UUID.fromString("d8023c8c-fdca-4686-be85-89e5bfb00591")
-        )
-
-        private lateinit var mockProcessSingleCalls: List<() -> List<UUID>>
-
-        @BeforeEach
-        fun setupReplaceTimetables() {
-            every { replaceTimetablesServiceMock.replaceTimetables(any(), any()) } answers { callOriginal() }
-
-            // Create lambdas for each processSingleStagingFrameReplacements call, one per staging frame.
-            mockProcessSingleCalls = stagingFrameIds.map { stagingFrameId ->
-                {
-                    replaceTimetablesServiceMock.processSingleStagingFrameReplacements(
-                        stagingFrameId,
-                        TimetablesPriority.STANDARD
-                    )
-                }
-            }
-        }
-
-        @AfterEach
-        fun clearReplaceTimetablesVerification() {
-            verify { replaceTimetablesServiceMock.replaceTimetables(any(), any()) }
-        }
-
-        @Test
-        fun `replaces each staging timetables and returns replaced vehicle schedule frame ids`() {
-            every { mockProcessSingleCalls[0]() } returns listOf(replacedFrameIds[0])
-            every { mockProcessSingleCalls[1]() } returns emptyList()
-            every { mockProcessSingleCalls[2]() } returns listOf(
-                replacedFrameIds[1],
-                replacedFrameIds[2],
-                replacedFrameIds[3]
-            )
-
-            val result = replaceTimetablesServiceMock.replaceTimetables(
-                stagingFrameIds,
-                TimetablesPriority.STANDARD
-            )
-            assertEquals(result, replacedFrameIds)
-
-            verify(exactly = 1) { mockProcessSingleCalls[0]() }
-            verify(exactly = 1) { mockProcessSingleCalls[1]() }
-            verify(exactly = 1) { mockProcessSingleCalls[2]() }
-        }
-
-        @Test
-        fun `fails if any of the requested staging frames do not get handled successfully`() {
-            every { mockProcessSingleCalls[0]() } returns listOf(replacedFrameIds[0])
-            every { mockProcessSingleCalls[1]() } throws StagingVehicleScheduleFrameNotFoundException(
-                "Staging vehicle schedule frame not found",
-                stagingFrameIds[1]
-            )
-            every { mockProcessSingleCalls[2]() } returns listOf(
-                replacedFrameIds[1],
-                replacedFrameIds[2],
-                replacedFrameIds[3]
-            )
-
-            assertFailsWith<StagingVehicleScheduleFrameNotFoundException> {
-                replaceTimetablesServiceMock.replaceTimetables(
-                    stagingFrameIds,
-                    TimetablesPriority.STANDARD
-                )
-            }
-
-            verify(exactly = 1) { mockProcessSingleCalls[0]() }
-            verify(exactly = 1) { mockProcessSingleCalls[1]() }
-            verify(exactly = 0) { mockProcessSingleCalls[2]() }
-        }
     }
 
     @Nested
@@ -288,6 +192,135 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
 
             assertEquals(listOf(), result)
             assertEquals(TimetablesPriority.TEMPORARY.value, fetchSingleFrameById(stagingFrameId).priority)
+        }
+
+        @Nested
+        @DisplayName("with multiple staging frames")
+        inner class WithMultipleStagingFrames {
+            private val stagingFrameIds = listOf(
+                UUID.fromString("578895c3-ad0d-45a1-a4e5-3b01046369e5"),
+                UUID.fromString("ec474a2c-3e1e-4141-a8f6-aa09301f2ac9"),
+                UUID.fromString("9d22447c-3e81-4f4c-9356-a9b0f712a3cb")
+            )
+            private val replacedFrameIds = listOf(
+                UUID.fromString("ea9c8c74-701c-472e-bcc0-caf55ec75972"),
+                UUID.fromString("a0830628-4dde-488f-91da-ac4eb966b37a"),
+                UUID.fromString("d8023c8c-fdca-4686-be85-89e5bfb00591")
+            )
+
+            private lateinit var testData: TimetablesDataset
+
+            @BeforeEach
+            fun setupDataset() {
+                val baseDataset = TimetablesDataset.createFromResource("datasets/replace.json")
+                val baseStaging = baseDataset.getNested("_vehicle_schedule_frames.staging")
+                val baseCurrent = baseDataset.getNested("_vehicle_schedule_frames.current")
+
+                // Create new test data set with multiple staging-current pairs,
+                // using the default dataset as base.
+                testData = TimetablesDataset.createFromMutableMap(
+                    mutableMapOf(
+                        "_vehicle_schedule_frames" to mutableMapOf(
+                            "current1" to baseCurrent.deepClone().setFrameProperties(
+                                mutableMapOf(
+                                    "vehicle_schedule_frame_id" to replacedFrameIds[0],
+                                    "name" to "2023 talvi",
+                                    "validity_start" to "2023-01-01",
+                                    "validity_end" to "2023-02-28"
+                                )
+                            ),
+                            "staging1" to baseStaging.toMutableMap().setFrameProperties(
+                                mutableMapOf(
+                                    "vehicle_schedule_frame_id" to stagingFrameIds[0],
+                                    "name" to "2023 talvi luonnos",
+                                    "validity_start" to "2023-02-01",
+                                    "validity_end" to "2023-03-31"
+                                )
+                            ),
+                            "current2" to baseCurrent.deepClone().setFrameProperties(
+                                mutableMapOf(
+                                    "vehicle_schedule_frame_id" to replacedFrameIds[1],
+                                    "name" to "2023 kesä",
+                                    "validity_start" to "2023-04-01",
+                                    "validity_end" to "2023-05-31"
+                                )
+                            ),
+                            "staging2" to baseStaging.deepClone().setFrameProperties(
+                                mutableMapOf(
+                                    "vehicle_schedule_frame_id" to stagingFrameIds[1],
+                                    "name" to "2023 kesä luonnos",
+                                    "validity_start" to "2023-05-01",
+                                    "validity_end" to "2023-06-30"
+                                )
+                            ),
+                            "current3" to baseCurrent.deepClone().setFrameProperties(
+                                mutableMapOf(
+                                    "vehicle_schedule_frame_id" to replacedFrameIds[2],
+                                    "name" to "2023 syksy",
+                                    "validity_start" to "2023-09-01",
+                                    "validity_end" to "2023-10-31"
+                                )
+                            ),
+                            "staging3" to baseStaging.deepClone().setFrameProperties(
+                                mutableMapOf(
+                                    "vehicle_schedule_frame_id" to stagingFrameIds[2],
+                                    "name" to "2023 syksy luonnos",
+                                    "validity_start" to "2023-10-01",
+                                    "validity_end" to "2023-11-30"
+                                )
+                            )
+                        ),
+                        "_journey_pattern_refs" to baseDataset["_journey_pattern_refs"]
+                    )
+                )
+            }
+
+            private fun MutableMap<String, Any?>.setFrameProperties(
+                patch: MutableMap<String, Any?>
+            ): MutableMap<String, Any?> {
+                this.putAll(patch)
+                return this
+            }
+
+            @Test
+            fun `replaces each staging timetables and returns replaced vehicle schedule frame ids`() {
+                timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+
+                val result = replaceTimetablesService.replaceTimetables(
+                    stagingFrameIds,
+                    TimetablesPriority.STANDARD
+                )
+
+                assertEquals(result, replacedFrameIds)
+                // Each staging frame got processed: promoted to target priority.
+                assertEquals(TimetablesPriority.STANDARD.value, fetchSingleFrameById(stagingFrameIds[0]).priority)
+                assertEquals(TimetablesPriority.STANDARD.value, fetchSingleFrameById(stagingFrameIds[1]).priority)
+                assertEquals(TimetablesPriority.STANDARD.value, fetchSingleFrameById(stagingFrameIds[2]).priority)
+            }
+
+            @Test
+            fun `fails if any of the requested staging frames do not get handled successfully`() {
+                timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+
+                val initialFrames = vehicleScheduleFrameRepository.findAll().toSet()
+                val nonexistentStagingFrameId = UUID.fromString("DEADBEEF-FEED-C0DE-F00D-ABBA1234ABBA")
+
+                val exception = assertFailsWith<StagingVehicleScheduleFrameNotFoundException> {
+                    replaceTimetablesService.replaceTimetables(
+                        listOf(
+                            stagingFrameIds[0],
+                            nonexistentStagingFrameId, // This will cause the whole operation to fail.
+                            stagingFrameIds[2]
+                        ),
+                        TimetablesPriority.STANDARD
+                    )
+                }
+
+                assertEquals(nonexistentStagingFrameId, exception.stagingVehicleScheduleFrameId)
+                // Whole transaction rolled back, no changes persisted.
+                val framesAfter = vehicleScheduleFrameRepository.findAll().toSet()
+                assertEquals(initialFrames, framesAfter)
+            }
         }
     }
 
