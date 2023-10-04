@@ -14,9 +14,10 @@ private val LOGGER = KotlinLogging.logger {}
 class TimetablesDataInserterRunner(
     val databaseConfiguration: DatabaseProperties
 ) {
-    fun runTimetablesDataInserter(datasetJson: String): String {
+    fun truncateAndInsertDataset(datasetJson: String): String {
         val inserterWorkDirectory = Paths.get("jore4-hasura/test/hasura")
             .toAbsolutePath().toString()
+        // Note: this performs DB truncation internally.
         val command = "yarn --silent timetables-data-inserter:cli insert hsl ${buildDatabaseArguments()}"
 
         val process = ProcessBuilder(*command.split(" ").toTypedArray())
