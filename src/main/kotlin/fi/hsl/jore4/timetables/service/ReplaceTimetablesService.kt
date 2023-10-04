@@ -24,11 +24,7 @@ class ReplaceTimetablesService(
             processSingleStagingFrameReplacements(it, targetPriority)
         }.flatten()
 
-    // Currently only called from this service, public only for testing purposes.
-    // Note: since there is no noRollbackFor annotation, any fails here will fail the main transaction (from calling service method).
-    // This is intentional and currently fine. If this were to ever change, then transaction context handling would also need some improvement.
-    @Transactional
-    fun processSingleStagingFrameReplacements(
+    private fun processSingleStagingFrameReplacements(
         stagingVehicleScheduleFrameId: UUID,
         targetPriority: TimetablesPriority
     ): List<UUID> {

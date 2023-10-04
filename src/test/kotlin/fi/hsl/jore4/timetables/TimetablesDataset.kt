@@ -18,5 +18,11 @@ class TimetablesDataset : MutableMap<String, Any?> by mutableMapOf() {
             val jsonStream = this::class.java.classLoader.getResourceAsStream(resourcePath)
             return OBJECT_MAPPER.readValue(jsonStream, object : TypeReference<TimetablesDataset>() {})
         }
+
+        fun createFromMutableMap(data: MutableMap<String, Any?>): TimetablesDataset {
+            var timetablesDataset = TimetablesDataset()
+            timetablesDataset.putAll(data)
+            return timetablesDataset
+        }
     }
 }
