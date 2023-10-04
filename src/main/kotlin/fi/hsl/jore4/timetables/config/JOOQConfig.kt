@@ -6,18 +6,17 @@ import org.jooq.SQLDialect
 import org.jooq.impl.DataSourceConnectionProvider
 import org.jooq.impl.DefaultConfiguration
 import org.jooq.impl.DefaultDSLContext
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import javax.sql.DataSource
+import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy
 
 @Configuration
 class JOOQConfig(
     val jooqProperties: JOOQProperties
 ) {
     @Bean
-    fun connectionProvider(@Qualifier("timetablesDataSource") dataSource: DataSource): ConnectionProvider =
-        DataSourceConnectionProvider(dataSource)
+    fun connectionProvider(transactionAwareDataSourceProxy: TransactionAwareDataSourceProxy): ConnectionProvider =
+        DataSourceConnectionProvider(transactionAwareDataSourceProxy)
 
     @Bean
     fun configuration(connectionProvider: ConnectionProvider): org.jooq.Configuration {
