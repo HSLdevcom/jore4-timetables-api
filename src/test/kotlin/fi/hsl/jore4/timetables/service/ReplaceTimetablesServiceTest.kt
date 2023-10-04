@@ -49,7 +49,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
             @BeforeEach
             fun runSingleFrameReplacement() {
                 val testData = TimetablesDataset.createFromResource("datasets/replace.json")
-                timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+                timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
                 initialReplacedFrame = fetchSingleFrameById(replacedFrameId)
                 initialStagingFrame = fetchSingleFrameById(stagingFrameId)
@@ -106,7 +106,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
 
             @Test
             fun `expires each replaced frame when successful`() {
-                timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+                timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
                 val result = replaceTimetablesService.replaceTimetables(
                     listOf(stagingFrameId),
@@ -128,7 +128,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
         @Test
         fun `fails when called with invalid target priority = staging`() {
             val testData = TimetablesDataset.createFromResource("datasets/replace.json")
-            timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
             val stagingFrameId = UUID.fromString("77fa8187-9a8e-4ce6-9fe2-5855f438b0e2")
             val initialStagingFrame = fetchSingleFrameById(stagingFrameId)
@@ -147,7 +147,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
         @Test
         fun `fails when staging timetable does not exist`() {
             val testData = TimetablesDataset.createFromResource("datasets/replace.json")
-            timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
             val nonexistentStagingFrameId = UUID.fromString("DEADBEEF-FEED-C0DE-F00D-ABBA1234ABBA")
 
@@ -162,7 +162,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
         @Test
         fun `fails when staging timetable is not staging`() {
             val testData = TimetablesDataset.createFromResource("datasets/replace.json")
-            timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
             val nonStagingFrameId = UUID.fromString(
                 testData.getNested("_vehicle_schedule_frames.current")["vehicle_schedule_frame_id"].toString()
@@ -181,7 +181,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
         @Test
         fun `returns an empty list when there are no vehicle schedule frames to replace`() {
             val testData = TimetablesDataset.createFromResource("datasets/replace.json")
-            timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
             val stagingFrameId = UUID.fromString("77fa8187-9a8e-4ce6-9fe2-5855f438b0e2")
 
@@ -284,7 +284,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
 
             @Test
             fun `replaces each staging timetables and returns replaced vehicle schedule frame ids`() {
-                timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+                timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
                 val result = replaceTimetablesService.replaceTimetables(
                     stagingFrameIds,
@@ -300,7 +300,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
 
             @Test
             fun `fails if any of the requested staging frames do not get handled successfully`() {
-                timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+                timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
                 val initialFrames = vehicleScheduleFrameRepository.findAll().toSet()
                 val nonexistentStagingFrameId = UUID.fromString("DEADBEEF-FEED-C0DE-F00D-ABBA1234ABBA")
@@ -344,7 +344,7 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
         }
 
         private fun insertDatasetAndFetchFrameIdsToReplace(targetPriority: TimetablesPriority = TimetablesPriority.STANDARD): List<UUID> {
-            timetablesDataInserterRunner.runTimetablesDataInserter(testData.toJSONString())
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
             return replaceTimetablesService.fetchVehicleScheduleFramesToReplace(
                 stagingFrameId,
