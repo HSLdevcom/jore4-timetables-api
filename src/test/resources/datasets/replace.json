@@ -158,6 +158,8 @@
       "type_of_line": "stopping_bus_service",
       "observation_timestamp": "2023-07-01T00:00:00+00:00",
       "snapshot_timestamp": "2023-09-28T00:00:00+00:00",
+      "route_label": "123",
+      "route_direction": "outbound",
 
       "_stop_points": [
         {
@@ -183,6 +185,8 @@
       "type_of_line": "stopping_bus_service",
       "observation_timestamp": "2023-07-01T00:00:00+00:00",
       "snapshot_timestamp": "2023-09-28T00:00:00+00:00",
+      "route_label": "123",
+      "route_direction": "inbound",
 
       "_stop_points": [
         {
@@ -209,6 +213,8 @@
       "type_of_line": "stopping_bus_service",
       "observation_timestamp": "2023-06-01T00:00:00+00:00",
       "snapshot_timestamp": "2023-08-28T00:00:00+00:00",
+      "route_label": "234",
+      "route_direction": "outbound",
 
       "_stop_points": [
         {
@@ -230,6 +236,8 @@
       "type_of_line": "stopping_bus_service",
       "observation_timestamp": "2023-06-01T00:00:00+00:00",
       "snapshot_timestamp": "2023-08-28T00:00:00+00:00",
+      "route_label": "234",
+      "route_direction": "inbound",
 
       "_stop_points": [
         {
