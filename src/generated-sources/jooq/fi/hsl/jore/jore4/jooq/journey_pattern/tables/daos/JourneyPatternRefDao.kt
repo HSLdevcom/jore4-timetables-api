@@ -8,6 +8,7 @@ import fi.hsl.jore.jore4.jooq.AbstractSpringDAOImpl
 import fi.hsl.jore.jore4.jooq.journey_pattern.tables.JourneyPatternRef
 import fi.hsl.jore.jore4.jooq.journey_pattern.tables.records.JourneyPatternRefRecord
 
+import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
 
@@ -92,4 +93,48 @@ open class JourneyPatternRefDao(configuration: Configuration?) : AbstractSpringD
      * Fetch records that have <code>type_of_line IN (values)</code>
      */
     fun fetchByTypeOfLine(vararg values: String): List<fi.hsl.jore.jore4.jooq.journey_pattern.tables.pojos.JourneyPatternRef> = fetch(JourneyPatternRef.JOURNEY_PATTERN_REF.TYPE_OF_LINE, *values)
+
+    /**
+     * Fetch records that have <code>route_label BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    fun fetchRangeOfRouteLabel(lowerInclusive: String, upperInclusive: String): List<fi.hsl.jore.jore4.jooq.journey_pattern.tables.pojos.JourneyPatternRef> = fetchRange(JourneyPatternRef.JOURNEY_PATTERN_REF.ROUTE_LABEL, lowerInclusive, upperInclusive)
+
+    /**
+     * Fetch records that have <code>route_label IN (values)</code>
+     */
+    fun fetchByRouteLabel(vararg values: String): List<fi.hsl.jore.jore4.jooq.journey_pattern.tables.pojos.JourneyPatternRef> = fetch(JourneyPatternRef.JOURNEY_PATTERN_REF.ROUTE_LABEL, *values)
+
+    /**
+     * Fetch records that have <code>route_direction BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    fun fetchRangeOfRouteDirection(lowerInclusive: String, upperInclusive: String): List<fi.hsl.jore.jore4.jooq.journey_pattern.tables.pojos.JourneyPatternRef> = fetchRange(JourneyPatternRef.JOURNEY_PATTERN_REF.ROUTE_DIRECTION, lowerInclusive, upperInclusive)
+
+    /**
+     * Fetch records that have <code>route_direction IN (values)</code>
+     */
+    fun fetchByRouteDirection(vararg values: String): List<fi.hsl.jore.jore4.jooq.journey_pattern.tables.pojos.JourneyPatternRef> = fetch(JourneyPatternRef.JOURNEY_PATTERN_REF.ROUTE_DIRECTION, *values)
+
+    /**
+     * Fetch records that have <code>route_validity_start BETWEEN lowerInclusive
+     * AND upperInclusive</code>
+     */
+    fun fetchRangeOfRouteValidityStart(lowerInclusive: LocalDate?, upperInclusive: LocalDate?): List<fi.hsl.jore.jore4.jooq.journey_pattern.tables.pojos.JourneyPatternRef> = fetchRange(JourneyPatternRef.JOURNEY_PATTERN_REF.ROUTE_VALIDITY_START, lowerInclusive, upperInclusive)
+
+    /**
+     * Fetch records that have <code>route_validity_start IN (values)</code>
+     */
+    fun fetchByRouteValidityStart(vararg values: LocalDate): List<fi.hsl.jore.jore4.jooq.journey_pattern.tables.pojos.JourneyPatternRef> = fetch(JourneyPatternRef.JOURNEY_PATTERN_REF.ROUTE_VALIDITY_START, *values)
+
+    /**
+     * Fetch records that have <code>route_validity_end BETWEEN lowerInclusive
+     * AND upperInclusive</code>
+     */
+    fun fetchRangeOfRouteValidityEnd(lowerInclusive: LocalDate?, upperInclusive: LocalDate?): List<fi.hsl.jore.jore4.jooq.journey_pattern.tables.pojos.JourneyPatternRef> = fetchRange(JourneyPatternRef.JOURNEY_PATTERN_REF.ROUTE_VALIDITY_END, lowerInclusive, upperInclusive)
+
+    /**
+     * Fetch records that have <code>route_validity_end IN (values)</code>
+     */
+    fun fetchByRouteValidityEnd(vararg values: LocalDate): List<fi.hsl.jore.jore4.jooq.journey_pattern.tables.pojos.JourneyPatternRef> = fetch(JourneyPatternRef.JOURNEY_PATTERN_REF.ROUTE_VALIDITY_END, *values)
 }

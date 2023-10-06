@@ -6,10 +6,13 @@ package fi.hsl.jore.jore4.jooq.journey_pattern.tables
 
 import fi.hsl.jore.jore4.jooq.journey_pattern.JourneyPattern
 import fi.hsl.jore.jore4.jooq.journey_pattern.keys.JOURNEY_PATTERN_REF_PKEY
+import fi.hsl.jore.jore4.jooq.journey_pattern.keys.JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY
 import fi.hsl.jore.jore4.jooq.journey_pattern.keys.JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY
 import fi.hsl.jore.jore4.jooq.journey_pattern.tables.records.JourneyPatternRefRecord
+import fi.hsl.jore.jore4.jooq.route.tables.Direction
 import fi.hsl.jore.jore4.jooq.route.tables.TypeOfLine
 
+import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
 import java.util.function.Function
@@ -21,7 +24,7 @@ import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Records
-import org.jooq.Row5
+import org.jooq.Row9
 import org.jooq.Schema
 import org.jooq.SelectField
 import org.jooq.Table
@@ -106,6 +109,37 @@ open class JourneyPatternRef(
      */
     val TYPE_OF_LINE: TableField<JourneyPatternRefRecord, String?> = createField(DSL.name("type_of_line"), SQLDataType.CLOB.nullable(false), this, "The type of line (GTFS route type): https://developers.google.com/transit/gtfs/reference/extended-route-types")
 
+    /**
+     * The column <code>journey_pattern.journey_pattern_ref.route_label</code>.
+     * The label of the route associated with the referenced journey pattern
+     */
+    val ROUTE_LABEL: TableField<JourneyPatternRefRecord, String?> = createField(DSL.name("route_label"), SQLDataType.CLOB.nullable(false), this, "The label of the route associated with the referenced journey pattern")
+
+    /**
+     * The column
+     * <code>journey_pattern.journey_pattern_ref.route_direction</code>. The
+     * direction of the route associated with the referenced journey pattern
+     */
+    val ROUTE_DIRECTION: TableField<JourneyPatternRefRecord, String?> = createField(DSL.name("route_direction"), SQLDataType.CLOB.nullable(false), this, "The direction of the route associated with the referenced journey pattern")
+
+    /**
+     * The column
+     * <code>journey_pattern.journey_pattern_ref.route_validity_start</code>.
+     * The start date of the validity period of the route associated with the
+     * referenced journey pattern. If NULL, then the start of the validity
+     * period is unbounded (-infinity).
+     */
+    val ROUTE_VALIDITY_START: TableField<JourneyPatternRefRecord, LocalDate?> = createField(DSL.name("route_validity_start"), SQLDataType.LOCALDATE, this, "The start date of the validity period of the route associated with the referenced journey pattern. If NULL, then the start of the validity period is unbounded (-infinity).")
+
+    /**
+     * The column
+     * <code>journey_pattern.journey_pattern_ref.route_validity_end</code>. The
+     * end date of the validity period of the route associated with the
+     * referenced journey pattern. If NULL, then the end of the validity period
+     * is unbounded (infinity).
+     */
+    val ROUTE_VALIDITY_END: TableField<JourneyPatternRefRecord, LocalDate?> = createField(DSL.name("route_validity_end"), SQLDataType.LOCALDATE, this, "The end date of the validity period of the route associated with the referenced journey pattern. If NULL, then the end of the validity period is unbounded (infinity).")
+
     private constructor(alias: Name, aliased: Table<JourneyPatternRefRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<JourneyPatternRefRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
@@ -129,9 +163,10 @@ open class JourneyPatternRef(
     constructor(child: Table<out Record>, key: ForeignKey<out Record, JourneyPatternRefRecord>): this(Internal.createPathAlias(child, key), child, key, JOURNEY_PATTERN_REF, null)
     override fun getSchema(): Schema? = if (aliased()) null else JourneyPattern.JOURNEY_PATTERN
     override fun getPrimaryKey(): UniqueKey<JourneyPatternRefRecord> = JOURNEY_PATTERN_REF_PKEY
-    override fun getReferences(): List<ForeignKey<JourneyPatternRefRecord, *>> = listOf(JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY)
+    override fun getReferences(): List<ForeignKey<JourneyPatternRefRecord, *>> = listOf(JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY)
 
     private lateinit var _typeOfLine: TypeOfLine
+    private lateinit var _direction: Direction
 
     /**
      * Get the implicit join path to the <code>route.type_of_line</code> table.
@@ -145,6 +180,19 @@ open class JourneyPatternRef(
 
     val typeOfLine: TypeOfLine
         get(): TypeOfLine = typeOfLine()
+
+    /**
+     * Get the implicit join path to the <code>route.direction</code> table.
+     */
+    fun direction(): Direction {
+        if (!this::_direction.isInitialized)
+            _direction = Direction(this, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY)
+
+        return _direction;
+    }
+
+    val direction: Direction
+        get(): Direction = direction()
     override fun `as`(alias: String): JourneyPatternRef = JourneyPatternRef(DSL.name(alias), this)
     override fun `as`(alias: Name): JourneyPatternRef = JourneyPatternRef(alias, this)
     override fun `as`(alias: Table<*>): JourneyPatternRef = JourneyPatternRef(alias.getQualifiedName(), this)
@@ -165,18 +213,18 @@ open class JourneyPatternRef(
     override fun rename(name: Table<*>): JourneyPatternRef = JourneyPatternRef(name.getQualifiedName(), null)
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row5<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?> = super.fieldsRow() as Row5<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?>
+    override fun fieldsRow(): Row9<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, LocalDate?, LocalDate?> = super.fieldsRow() as Row9<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, LocalDate?, LocalDate?>
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    fun <U> mapping(from: (UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    fun <U> mapping(from: (UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, LocalDate?, LocalDate?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, LocalDate?, LocalDate?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

@@ -6,13 +6,14 @@ package fi.hsl.jore.jore4.jooq.journey_pattern.tables.records
 
 import fi.hsl.jore.jore4.jooq.journey_pattern.tables.JourneyPatternRef
 
+import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
 
 import org.jooq.Field
 import org.jooq.Record1
-import org.jooq.Record5
-import org.jooq.Row5
+import org.jooq.Record9
+import org.jooq.Row9
 import org.jooq.impl.UpdatableRecordImpl
 
 
@@ -21,7 +22,7 @@ import org.jooq.impl.UpdatableRecordImpl
  * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
  */
 @Suppress("UNCHECKED_CAST")
-open class JourneyPatternRefRecord private constructor() : UpdatableRecordImpl<JourneyPatternRefRecord>(JourneyPatternRef.JOURNEY_PATTERN_REF), Record5<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?> {
+open class JourneyPatternRefRecord private constructor() : UpdatableRecordImpl<JourneyPatternRefRecord>(JourneyPatternRef.JOURNEY_PATTERN_REF), Record9<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, LocalDate?, LocalDate?> {
 
     open var journeyPatternRefId: UUID?
         set(value): Unit = set(0, value)
@@ -43,6 +44,22 @@ open class JourneyPatternRefRecord private constructor() : UpdatableRecordImpl<J
         set(value): Unit = set(4, value)
         get(): String = get(4) as String
 
+    open var routeLabel: String
+        set(value): Unit = set(5, value)
+        get(): String = get(5) as String
+
+    open var routeDirection: String
+        set(value): Unit = set(6, value)
+        get(): String = get(6) as String
+
+    open var routeValidityStart: LocalDate?
+        set(value): Unit = set(7, value)
+        get(): LocalDate? = get(7) as LocalDate?
+
+    open var routeValidityEnd: LocalDate?
+        set(value): Unit = set(8, value)
+        get(): LocalDate? = get(8) as LocalDate?
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -50,26 +67,38 @@ open class JourneyPatternRefRecord private constructor() : UpdatableRecordImpl<J
     override fun key(): Record1<UUID?> = super.key() as Record1<UUID?>
 
     // -------------------------------------------------------------------------
-    // Record5 type implementation
+    // Record9 type implementation
     // -------------------------------------------------------------------------
 
-    override fun fieldsRow(): Row5<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?> = super.fieldsRow() as Row5<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?>
-    override fun valuesRow(): Row5<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?> = super.valuesRow() as Row5<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?>
+    override fun fieldsRow(): Row9<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, LocalDate?, LocalDate?> = super.fieldsRow() as Row9<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, LocalDate?, LocalDate?>
+    override fun valuesRow(): Row9<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, LocalDate?, LocalDate?> = super.valuesRow() as Row9<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, LocalDate?, LocalDate?>
     override fun field1(): Field<UUID?> = JourneyPatternRef.JOURNEY_PATTERN_REF.JOURNEY_PATTERN_REF_ID
     override fun field2(): Field<UUID?> = JourneyPatternRef.JOURNEY_PATTERN_REF.JOURNEY_PATTERN_ID
     override fun field3(): Field<OffsetDateTime?> = JourneyPatternRef.JOURNEY_PATTERN_REF.OBSERVATION_TIMESTAMP
     override fun field4(): Field<OffsetDateTime?> = JourneyPatternRef.JOURNEY_PATTERN_REF.SNAPSHOT_TIMESTAMP
     override fun field5(): Field<String?> = JourneyPatternRef.JOURNEY_PATTERN_REF.TYPE_OF_LINE
+    override fun field6(): Field<String?> = JourneyPatternRef.JOURNEY_PATTERN_REF.ROUTE_LABEL
+    override fun field7(): Field<String?> = JourneyPatternRef.JOURNEY_PATTERN_REF.ROUTE_DIRECTION
+    override fun field8(): Field<LocalDate?> = JourneyPatternRef.JOURNEY_PATTERN_REF.ROUTE_VALIDITY_START
+    override fun field9(): Field<LocalDate?> = JourneyPatternRef.JOURNEY_PATTERN_REF.ROUTE_VALIDITY_END
     override fun component1(): UUID? = journeyPatternRefId
     override fun component2(): UUID = journeyPatternId
     override fun component3(): OffsetDateTime = observationTimestamp
     override fun component4(): OffsetDateTime = snapshotTimestamp
     override fun component5(): String = typeOfLine
+    override fun component6(): String = routeLabel
+    override fun component7(): String = routeDirection
+    override fun component8(): LocalDate? = routeValidityStart
+    override fun component9(): LocalDate? = routeValidityEnd
     override fun value1(): UUID? = journeyPatternRefId
     override fun value2(): UUID = journeyPatternId
     override fun value3(): OffsetDateTime = observationTimestamp
     override fun value4(): OffsetDateTime = snapshotTimestamp
     override fun value5(): String = typeOfLine
+    override fun value6(): String = routeLabel
+    override fun value7(): String = routeDirection
+    override fun value8(): LocalDate? = routeValidityStart
+    override fun value9(): LocalDate? = routeValidityEnd
 
     override fun value1(value: UUID?): JourneyPatternRefRecord {
         set(0, value)
@@ -96,24 +125,52 @@ open class JourneyPatternRefRecord private constructor() : UpdatableRecordImpl<J
         return this
     }
 
-    override fun values(value1: UUID?, value2: UUID?, value3: OffsetDateTime?, value4: OffsetDateTime?, value5: String?): JourneyPatternRefRecord {
+    override fun value6(value: String?): JourneyPatternRefRecord {
+        set(5, value)
+        return this
+    }
+
+    override fun value7(value: String?): JourneyPatternRefRecord {
+        set(6, value)
+        return this
+    }
+
+    override fun value8(value: LocalDate?): JourneyPatternRefRecord {
+        set(7, value)
+        return this
+    }
+
+    override fun value9(value: LocalDate?): JourneyPatternRefRecord {
+        set(8, value)
+        return this
+    }
+
+    override fun values(value1: UUID?, value2: UUID?, value3: OffsetDateTime?, value4: OffsetDateTime?, value5: String?, value6: String?, value7: String?, value8: LocalDate?, value9: LocalDate?): JourneyPatternRefRecord {
         this.value1(value1)
         this.value2(value2)
         this.value3(value3)
         this.value4(value4)
         this.value5(value5)
+        this.value6(value6)
+        this.value7(value7)
+        this.value8(value8)
+        this.value9(value9)
         return this
     }
 
     /**
      * Create a detached, initialised JourneyPatternRefRecord
      */
-    constructor(journeyPatternRefId: UUID? = null, journeyPatternId: UUID, observationTimestamp: OffsetDateTime, snapshotTimestamp: OffsetDateTime, typeOfLine: String): this() {
+    constructor(journeyPatternRefId: UUID? = null, journeyPatternId: UUID, observationTimestamp: OffsetDateTime, snapshotTimestamp: OffsetDateTime, typeOfLine: String, routeLabel: String, routeDirection: String, routeValidityStart: LocalDate? = null, routeValidityEnd: LocalDate? = null): this() {
         this.journeyPatternRefId = journeyPatternRefId
         this.journeyPatternId = journeyPatternId
         this.observationTimestamp = observationTimestamp
         this.snapshotTimestamp = snapshotTimestamp
         this.typeOfLine = typeOfLine
+        this.routeLabel = routeLabel
+        this.routeDirection = routeDirection
+        this.routeValidityStart = routeValidityStart
+        this.routeValidityEnd = routeValidityEnd
         resetChangedOnNotNull()
     }
 
@@ -127,6 +184,10 @@ open class JourneyPatternRefRecord private constructor() : UpdatableRecordImpl<J
             this.observationTimestamp = value.observationTimestamp
             this.snapshotTimestamp = value.snapshotTimestamp
             this.typeOfLine = value.typeOfLine
+            this.routeLabel = value.routeLabel
+            this.routeDirection = value.routeDirection
+            this.routeValidityStart = value.routeValidityStart
+            this.routeValidityEnd = value.routeValidityEnd
             resetChangedOnNotNull()
         }
     }

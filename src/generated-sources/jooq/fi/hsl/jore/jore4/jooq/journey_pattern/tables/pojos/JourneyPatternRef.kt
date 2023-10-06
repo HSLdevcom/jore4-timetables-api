@@ -5,6 +5,7 @@ package fi.hsl.jore.jore4.jooq.journey_pattern.tables.pojos
 
 
 import java.io.Serializable
+import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
 
@@ -19,7 +20,11 @@ data class JourneyPatternRef(
     var journeyPatternId: UUID,
     var observationTimestamp: OffsetDateTime,
     var snapshotTimestamp: OffsetDateTime,
-    var typeOfLine: String
+    var typeOfLine: String,
+    var routeLabel: String,
+    var routeDirection: String,
+    var routeValidityStart: LocalDate? = null,
+    var routeValidityEnd: LocalDate? = null
 ): Serializable {
 
 
@@ -45,6 +50,22 @@ data class JourneyPatternRef(
             return false
         if (this.typeOfLine != o.typeOfLine)
             return false
+        if (this.routeLabel != o.routeLabel)
+            return false
+        if (this.routeDirection != o.routeDirection)
+            return false
+        if (this.routeValidityStart == null) {
+            if (o.routeValidityStart != null)
+                return false
+        }
+        else if (this.routeValidityStart != o.routeValidityStart)
+            return false
+        if (this.routeValidityEnd == null) {
+            if (o.routeValidityEnd != null)
+                return false
+        }
+        else if (this.routeValidityEnd != o.routeValidityEnd)
+            return false
         return true
     }
 
@@ -56,6 +77,10 @@ data class JourneyPatternRef(
         result = prime * result + this.observationTimestamp.hashCode()
         result = prime * result + this.snapshotTimestamp.hashCode()
         result = prime * result + this.typeOfLine.hashCode()
+        result = prime * result + this.routeLabel.hashCode()
+        result = prime * result + this.routeDirection.hashCode()
+        result = prime * result + (if (this.routeValidityStart == null) 0 else this.routeValidityStart.hashCode())
+        result = prime * result + (if (this.routeValidityEnd == null) 0 else this.routeValidityEnd.hashCode())
         return result
     }
 
@@ -67,6 +92,10 @@ data class JourneyPatternRef(
         sb.append(", ").append(observationTimestamp)
         sb.append(", ").append(snapshotTimestamp)
         sb.append(", ").append(typeOfLine)
+        sb.append(", ").append(routeLabel)
+        sb.append(", ").append(routeDirection)
+        sb.append(", ").append(routeValidityStart)
+        sb.append(", ").append(routeValidityEnd)
 
         sb.append(")")
         return sb.toString()

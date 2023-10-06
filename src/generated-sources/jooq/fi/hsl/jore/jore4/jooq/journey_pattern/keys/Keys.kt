@@ -6,8 +6,11 @@ package fi.hsl.jore.jore4.jooq.journey_pattern.keys
 
 import fi.hsl.jore.jore4.jooq.journey_pattern.tables.JourneyPatternRef
 import fi.hsl.jore.jore4.jooq.journey_pattern.tables.records.JourneyPatternRefRecord
+import fi.hsl.jore.jore4.jooq.route.keys.DIRECTION_PKEY
 import fi.hsl.jore.jore4.jooq.route.keys.TYPE_OF_LINE_PKEY
+import fi.hsl.jore.jore4.jooq.route.tables.Direction
 import fi.hsl.jore.jore4.jooq.route.tables.TypeOfLine
+import fi.hsl.jore.jore4.jooq.route.tables.records.DirectionRecord
 import fi.hsl.jore.jore4.jooq.route.tables.records.TypeOfLineRecord
 
 import org.jooq.ForeignKey
@@ -27,4 +30,5 @@ val JOURNEY_PATTERN_REF_PKEY: UniqueKey<JourneyPatternRefRecord> = Internal.crea
 // FOREIGN KEY definitions
 // -------------------------------------------------------------------------
 
+val JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY: ForeignKey<JourneyPatternRefRecord, DirectionRecord> = Internal.createForeignKey(JourneyPatternRef.JOURNEY_PATTERN_REF, DSL.name("journey_pattern_ref_route_direction_fkey"), arrayOf(JourneyPatternRef.JOURNEY_PATTERN_REF.ROUTE_DIRECTION), DIRECTION_PKEY, arrayOf(Direction.DIRECTION.DIRECTION_), true)
 val JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY: ForeignKey<JourneyPatternRefRecord, TypeOfLineRecord> = Internal.createForeignKey(JourneyPatternRef.JOURNEY_PATTERN_REF, DSL.name("journey_pattern_ref_type_of_line_fkey"), arrayOf(JourneyPatternRef.JOURNEY_PATTERN_REF.TYPE_OF_LINE), TYPE_OF_LINE_PKEY, arrayOf(TypeOfLine.TYPE_OF_LINE.TYPE_OF_LINE_), true)

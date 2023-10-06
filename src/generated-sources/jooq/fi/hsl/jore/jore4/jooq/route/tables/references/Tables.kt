@@ -4,9 +4,15 @@
 package fi.hsl.jore.jore4.jooq.route.tables.references
 
 
+import fi.hsl.jore.jore4.jooq.route.tables.Direction
 import fi.hsl.jore.jore4.jooq.route.tables.TypeOfLine
 
 
+
+/**
+ * The route directions from Transmodel
+ */
+val DIRECTION: Direction = Direction.DIRECTION
 
 /**
  * Type of line. https://www.transmodel-cen.eu/model/index.htm?goto=2:1:3:424
