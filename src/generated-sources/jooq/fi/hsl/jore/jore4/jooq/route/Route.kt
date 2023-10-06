@@ -5,6 +5,7 @@ package fi.hsl.jore.jore4.jooq.route
 
 
 import fi.hsl.jore.jore4.jooq.DefaultCatalog
+import fi.hsl.jore.jore4.jooq.route.tables.Direction
 import fi.hsl.jore.jore4.jooq.route.tables.TypeOfLine
 
 import kotlin.collections.List
@@ -28,6 +29,11 @@ open class Route : SchemaImpl("route", DefaultCatalog.DEFAULT_CATALOG) {
     }
 
     /**
+     * The route directions from Transmodel
+     */
+    val DIRECTION: Direction get() = Direction.DIRECTION
+
+    /**
      * Type of line.
      * https://www.transmodel-cen.eu/model/index.htm?goto=2:1:3:424
      */
@@ -36,6 +42,7 @@ open class Route : SchemaImpl("route", DefaultCatalog.DEFAULT_CATALOG) {
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 
     override fun getTables(): List<Table<*>> = listOf(
+        Direction.DIRECTION,
         TypeOfLine.TYPE_OF_LINE
     )
 }

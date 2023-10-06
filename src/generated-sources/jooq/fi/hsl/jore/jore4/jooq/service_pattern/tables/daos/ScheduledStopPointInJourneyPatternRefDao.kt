@@ -85,4 +85,15 @@ open class ScheduledStopPointInJourneyPatternRefDao(configuration: Configuration
      * (values)</code>
      */
     fun fetchByScheduledStopPointSequence(vararg values: Int): List<fi.hsl.jore.jore4.jooq.service_pattern.tables.pojos.ScheduledStopPointInJourneyPatternRef> = fetch(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF.SCHEDULED_STOP_POINT_SEQUENCE, *values.toTypedArray())
+
+    /**
+     * Fetch records that have <code>timing_place_label BETWEEN lowerInclusive
+     * AND upperInclusive</code>
+     */
+    fun fetchRangeOfTimingPlaceLabel(lowerInclusive: String?, upperInclusive: String?): List<fi.hsl.jore.jore4.jooq.service_pattern.tables.pojos.ScheduledStopPointInJourneyPatternRef> = fetchRange(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF.TIMING_PLACE_LABEL, lowerInclusive, upperInclusive)
+
+    /**
+     * Fetch records that have <code>timing_place_label IN (values)</code>
+     */
+    fun fetchByTimingPlaceLabel(vararg values: String): List<fi.hsl.jore.jore4.jooq.service_pattern.tables.pojos.ScheduledStopPointInJourneyPatternRef> = fetch(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF.TIMING_PLACE_LABEL, *values)
 }

@@ -17,7 +17,8 @@ data class ScheduledStopPointInJourneyPatternRef(
     var scheduledStopPointInJourneyPatternRefId: UUID? = null,
     var journeyPatternRefId: UUID,
     var scheduledStopPointLabel: String,
-    var scheduledStopPointSequence: Int
+    var scheduledStopPointSequence: Int,
+    var timingPlaceLabel: String? = null
 ): Serializable {
 
 
@@ -41,6 +42,12 @@ data class ScheduledStopPointInJourneyPatternRef(
             return false
         if (this.scheduledStopPointSequence != o.scheduledStopPointSequence)
             return false
+        if (this.timingPlaceLabel == null) {
+            if (o.timingPlaceLabel != null)
+                return false
+        }
+        else if (this.timingPlaceLabel != o.timingPlaceLabel)
+            return false
         return true
     }
 
@@ -51,6 +58,7 @@ data class ScheduledStopPointInJourneyPatternRef(
         result = prime * result + this.journeyPatternRefId.hashCode()
         result = prime * result + this.scheduledStopPointLabel.hashCode()
         result = prime * result + this.scheduledStopPointSequence.hashCode()
+        result = prime * result + (if (this.timingPlaceLabel == null) 0 else this.timingPlaceLabel.hashCode())
         return result
     }
 
@@ -61,6 +69,7 @@ data class ScheduledStopPointInJourneyPatternRef(
         sb.append(", ").append(journeyPatternRefId)
         sb.append(", ").append(scheduledStopPointLabel)
         sb.append(", ").append(scheduledStopPointSequence)
+        sb.append(", ").append(timingPlaceLabel)
 
         sb.append(")")
         return sb.toString()

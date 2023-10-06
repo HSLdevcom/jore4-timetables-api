@@ -10,8 +10,8 @@ import java.util.UUID
 
 import org.jooq.Field
 import org.jooq.Record1
-import org.jooq.Record4
-import org.jooq.Row4
+import org.jooq.Record5
+import org.jooq.Row5
 import org.jooq.impl.UpdatableRecordImpl
 
 
@@ -20,7 +20,7 @@ import org.jooq.impl.UpdatableRecordImpl
  * https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
  */
 @Suppress("UNCHECKED_CAST")
-open class ScheduledStopPointInJourneyPatternRefRecord private constructor() : UpdatableRecordImpl<ScheduledStopPointInJourneyPatternRefRecord>(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF), Record4<UUID?, UUID?, String?, Int?> {
+open class ScheduledStopPointInJourneyPatternRefRecord private constructor() : UpdatableRecordImpl<ScheduledStopPointInJourneyPatternRefRecord>(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF), Record5<UUID?, UUID?, String?, Int?, String?> {
 
     open var scheduledStopPointInJourneyPatternRefId: UUID?
         set(value): Unit = set(0, value)
@@ -38,6 +38,10 @@ open class ScheduledStopPointInJourneyPatternRefRecord private constructor() : U
         set(value): Unit = set(3, value)
         get(): Int = get(3) as Int
 
+    open var timingPlaceLabel: String?
+        set(value): Unit = set(4, value)
+        get(): String? = get(4) as String?
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -45,23 +49,26 @@ open class ScheduledStopPointInJourneyPatternRefRecord private constructor() : U
     override fun key(): Record1<UUID?> = super.key() as Record1<UUID?>
 
     // -------------------------------------------------------------------------
-    // Record4 type implementation
+    // Record5 type implementation
     // -------------------------------------------------------------------------
 
-    override fun fieldsRow(): Row4<UUID?, UUID?, String?, Int?> = super.fieldsRow() as Row4<UUID?, UUID?, String?, Int?>
-    override fun valuesRow(): Row4<UUID?, UUID?, String?, Int?> = super.valuesRow() as Row4<UUID?, UUID?, String?, Int?>
+    override fun fieldsRow(): Row5<UUID?, UUID?, String?, Int?, String?> = super.fieldsRow() as Row5<UUID?, UUID?, String?, Int?, String?>
+    override fun valuesRow(): Row5<UUID?, UUID?, String?, Int?, String?> = super.valuesRow() as Row5<UUID?, UUID?, String?, Int?, String?>
     override fun field1(): Field<UUID?> = ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_ID
     override fun field2(): Field<UUID?> = ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF.JOURNEY_PATTERN_REF_ID
     override fun field3(): Field<String?> = ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF.SCHEDULED_STOP_POINT_LABEL
     override fun field4(): Field<Int?> = ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF.SCHEDULED_STOP_POINT_SEQUENCE
+    override fun field5(): Field<String?> = ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF.TIMING_PLACE_LABEL
     override fun component1(): UUID? = scheduledStopPointInJourneyPatternRefId
     override fun component2(): UUID = journeyPatternRefId
     override fun component3(): String = scheduledStopPointLabel
     override fun component4(): Int = scheduledStopPointSequence
+    override fun component5(): String? = timingPlaceLabel
     override fun value1(): UUID? = scheduledStopPointInJourneyPatternRefId
     override fun value2(): UUID = journeyPatternRefId
     override fun value3(): String = scheduledStopPointLabel
     override fun value4(): Int = scheduledStopPointSequence
+    override fun value5(): String? = timingPlaceLabel
 
     override fun value1(value: UUID?): ScheduledStopPointInJourneyPatternRefRecord {
         set(0, value)
@@ -83,11 +90,17 @@ open class ScheduledStopPointInJourneyPatternRefRecord private constructor() : U
         return this
     }
 
-    override fun values(value1: UUID?, value2: UUID?, value3: String?, value4: Int?): ScheduledStopPointInJourneyPatternRefRecord {
+    override fun value5(value: String?): ScheduledStopPointInJourneyPatternRefRecord {
+        set(4, value)
+        return this
+    }
+
+    override fun values(value1: UUID?, value2: UUID?, value3: String?, value4: Int?, value5: String?): ScheduledStopPointInJourneyPatternRefRecord {
         this.value1(value1)
         this.value2(value2)
         this.value3(value3)
         this.value4(value4)
+        this.value5(value5)
         return this
     }
 
@@ -95,11 +108,12 @@ open class ScheduledStopPointInJourneyPatternRefRecord private constructor() : U
      * Create a detached, initialised
      * ScheduledStopPointInJourneyPatternRefRecord
      */
-    constructor(scheduledStopPointInJourneyPatternRefId: UUID? = null, journeyPatternRefId: UUID, scheduledStopPointLabel: String, scheduledStopPointSequence: Int): this() {
+    constructor(scheduledStopPointInJourneyPatternRefId: UUID? = null, journeyPatternRefId: UUID, scheduledStopPointLabel: String, scheduledStopPointSequence: Int, timingPlaceLabel: String? = null): this() {
         this.scheduledStopPointInJourneyPatternRefId = scheduledStopPointInJourneyPatternRefId
         this.journeyPatternRefId = journeyPatternRefId
         this.scheduledStopPointLabel = scheduledStopPointLabel
         this.scheduledStopPointSequence = scheduledStopPointSequence
+        this.timingPlaceLabel = timingPlaceLabel
         resetChangedOnNotNull()
     }
 
@@ -113,6 +127,7 @@ open class ScheduledStopPointInJourneyPatternRefRecord private constructor() : U
             this.journeyPatternRefId = value.journeyPatternRefId
             this.scheduledStopPointLabel = value.scheduledStopPointLabel
             this.scheduledStopPointSequence = value.scheduledStopPointSequence
+            this.timingPlaceLabel = value.timingPlaceLabel
             resetChangedOnNotNull()
         }
     }
