@@ -20,7 +20,7 @@ import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Records
-import org.jooq.Row4
+import org.jooq.Row5
 import org.jooq.Schema
 import org.jooq.SelectField
 import org.jooq.Table
@@ -95,6 +95,14 @@ open class ScheduledStopPointInJourneyPatternRef(
      */
     val SCHEDULED_STOP_POINT_SEQUENCE: TableField<ScheduledStopPointInJourneyPatternRefRecord, Int?> = createField(DSL.name("scheduled_stop_point_sequence"), SQLDataType.INTEGER.nullable(false), this, "The order of the SCHEDULED STOP POINT within the JOURNEY PATTERN.")
 
+    /**
+     * The column
+     * <code>service_pattern.scheduled_stop_point_in_journey_pattern_ref.timing_place_label</code>.
+     * The label of the timing place associated with the referenced scheduled
+     * stop point in journey pattern
+     */
+    val TIMING_PLACE_LABEL: TableField<ScheduledStopPointInJourneyPatternRefRecord, String?> = createField(DSL.name("timing_place_label"), SQLDataType.CLOB, this, "The label of the timing place associated with the referenced scheduled stop point in journey pattern")
+
     private constructor(alias: Name, aliased: Table<ScheduledStopPointInJourneyPatternRefRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<ScheduledStopPointInJourneyPatternRefRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
@@ -159,18 +167,18 @@ open class ScheduledStopPointInJourneyPatternRef(
     override fun rename(name: Table<*>): ScheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef(name.getQualifiedName(), null)
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row4<UUID?, UUID?, String?, Int?> = super.fieldsRow() as Row4<UUID?, UUID?, String?, Int?>
+    override fun fieldsRow(): Row5<UUID?, UUID?, String?, Int?, String?> = super.fieldsRow() as Row5<UUID?, UUID?, String?, Int?, String?>
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    fun <U> mapping(from: (UUID?, UUID?, String?, Int?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    fun <U> mapping(from: (UUID?, UUID?, String?, Int?, String?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, String?, Int?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, String?, Int?, String?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }
