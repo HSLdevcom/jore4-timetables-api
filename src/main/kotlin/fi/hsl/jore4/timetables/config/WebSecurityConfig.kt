@@ -26,14 +26,14 @@ class WebSecurityConfig {
                         "/actuator/health",
                         "/error",
                         "/hello",
-                        "/hello/test"
+                        "/hello/test",
+                        "/timetables/to-replace"
                     )
                     .permitAll()
                     .requestMatchers(
                         HttpMethod.POST,
                         "/timetables/*"
-                    )
-                    .permitAll()
+                    ).permitAll()
                     .anyRequest().denyAll()
             }
             .build()
