@@ -15,11 +15,12 @@ import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.lang.RuntimeException
 import java.util.UUID
 
 private val LOGGER = KotlinLogging.logger {}
@@ -77,6 +78,35 @@ class TimetablesController(
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(ReplaceTimetablesResponseBody(replacedVehicleScheduleFrameIds = replaceResult))
+    }
+
+    data class ToReplaceTimetablesResponseBody(
+        val toReplaceVehicleScheduleFrameIds: List<UUID>
+    )
+
+    class TargetPriorityParsingException(message: String, val targetPriority: Int) : RuntimeException(message)
+
+    @GetMapping("to-replace")
+    fun getFrameIdsToBeReplaced(
+        @RequestParam
+        targetPriority: Int,
+        @RequestParam
+        stagingVehicleScheduleFrameId: UUID
+    ): ResponseEntity<ToReplaceTimetablesResponseBody> {
+        LOGGER.info { "ToReplace api, stagingVehicleScheduleFrameId: $stagingVehicleScheduleFrameId, targetPriority: $targetPriority" }
+
+        val targetPriorityEnumResult = runCatching { TimetablesPriority.fromInt(targetPriority) }
+        if (targetPriorityEnumResult.isFailure) {
+            throw TargetPriorityParsingException("Failed to parse target priority", targetPriority)
+        }
+
+        val vehicleScheduleFrameIds = replaceTimetablesService.fetchVehicleScheduleFramesToReplace(
+            stagingVehicleScheduleFrameId,
+            targetPriorityEnumResult.getOrThrow()
+        ).mapNotNull { it.vehicleScheduleFrameId }
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ToReplaceTimetablesResponseBody(toReplaceVehicleScheduleFrameIds = vehicleScheduleFrameIds))
     }
 
     @ExceptionHandler(RuntimeException::class)
@@ -152,6 +182,23 @@ class TimetablesController(
             httpStatus.value(),
             ex.stagingVehicleScheduleFrameId,
             ex.targetVehicleScheduleFrameIds
+        )
+        val hasuraErrorResponse = HasuraErrorResponse(ex.message, hasuraErrorExtensions)
+
+        return ResponseEntity(hasuraErrorResponse, httpStatus)
+    }
+
+    class TargetPriorityParsingExtensions(
+        override val code: Int,
+        val targetPriority: Int
+    ) : HasuraErrorExtensions(code)
+
+    @ExceptionHandler(TargetPriorityParsingException::class)
+    fun handleIncompatibleTargetPriorityException(ex: TargetPriorityParsingException): ResponseEntity<HasuraErrorResponse> {
+        val httpStatus = HttpStatus.BAD_REQUEST
+        val hasuraErrorExtensions = TargetPriorityParsingExtensions(
+            httpStatus.value(),
+            ex.targetPriority
         )
         val hasuraErrorResponse = HasuraErrorResponse(ex.message, hasuraErrorExtensions)
 
