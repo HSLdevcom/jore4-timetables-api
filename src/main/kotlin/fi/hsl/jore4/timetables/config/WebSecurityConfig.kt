@@ -32,6 +32,10 @@ class WebSecurityConfig {
                     .requestMatchers(
                         HttpMethod.POST,
                         "/timetables/*"
+                    ).permitAll()
+                    .requestMatchers(
+                        HttpMethod.GET,
+                        "/timetables/*"
                     )
                     .permitAll()
                     .anyRequest().denyAll()

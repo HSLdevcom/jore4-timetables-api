@@ -9,17 +9,19 @@ import fi.hsl.jore4.timetables.service.MultipleTargetFramesFoundException
 import fi.hsl.jore4.timetables.service.ReplaceTimetablesService
 import fi.hsl.jore4.timetables.service.StagingVehicleScheduleFrameNotFoundException
 import fi.hsl.jore4.timetables.service.TargetFrameNotFoundException
+import fi.hsl.jore4.timetables.service.TargetPriorityParsingException
 import jakarta.validation.Valid
 import jakarta.validation.constraints.AssertTrue
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.lang.RuntimeException
 import java.util.UUID
 
 private val LOGGER = KotlinLogging.logger {}
@@ -77,6 +79,28 @@ class TimetablesController(
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(ReplaceTimetablesResponseBody(replacedVehicleScheduleFrameIds = replaceResult))
+    }
+
+    data class ToReplaceTimetablesResponseBody(
+        val toReplaceVehicleScheduleFrameIds: List<UUID>
+    )
+
+    @GetMapping("toReplace")
+    fun replaced(
+        @Valid @RequestParam
+        targetPriority: Int,
+        @Valid @RequestParam
+        stagingVehicleScheduleFrameId: UUID
+    ): ResponseEntity<ToReplaceTimetablesResponseBody> {
+        LOGGER.info { "ToReplace api, stagingVehicleScheduleFrameId: $stagingVehicleScheduleFrameId, targetPriority: $targetPriority" }
+
+        val ids = replaceTimetablesService.fetchVehicleScheduleFrameIdsToReplace(
+            stagingVehicleScheduleFrameId,
+            targetPriority
+        )
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ToReplaceTimetablesResponseBody(toReplaceVehicleScheduleFrameIds = ids))
     }
 
     @ExceptionHandler(RuntimeException::class)
@@ -152,6 +176,23 @@ class TimetablesController(
             httpStatus.value(),
             ex.stagingVehicleScheduleFrameId,
             ex.targetVehicleScheduleFrameIds
+        )
+        val hasuraErrorResponse = HasuraErrorResponse(ex.message, hasuraErrorExtensions)
+
+        return ResponseEntity(hasuraErrorResponse, httpStatus)
+    }
+
+    class TargetPriorityParsingExtensions(
+        override val code: Int,
+        val targetPriority: Int
+    ) : HasuraErrorExtensions(code)
+
+    @ExceptionHandler(TargetPriorityParsingException::class)
+    fun handleIncompatibleTargetPriorityException(ex: TargetPriorityParsingException): ResponseEntity<HasuraErrorResponse> {
+        val httpStatus = HttpStatus.BAD_REQUEST
+        val hasuraErrorExtensions = TargetPriorityParsingExtensions(
+            httpStatus.value(),
+            ex.targetPriority
         )
         val hasuraErrorResponse = HasuraErrorResponse(ex.message, hasuraErrorExtensions)
 

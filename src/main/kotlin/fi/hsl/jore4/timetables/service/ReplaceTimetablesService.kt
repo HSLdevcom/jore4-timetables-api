@@ -14,6 +14,8 @@ class InvalidTargetPriorityException(message: String, val targetPriority: Timeta
 
 class StagingVehicleScheduleFrameNotFoundException(message: String, val stagingVehicleScheduleFrameId: UUID) : RuntimeException(message)
 
+class TargetPriorityParsingException(message: String, val targetPriority: Int) : RuntimeException(message)
+
 @Service
 class ReplaceTimetablesService(
     private val vehicleScheduleFrameRepository: VehicleScheduleFrameRepository
@@ -63,6 +65,22 @@ class ReplaceTimetablesService(
             stagingVehicleScheduleFrameId,
             targetPriority
         )
+    }
+
+    @Transactional(readOnly = true)
+    fun fetchVehicleScheduleFrameIdsToReplace(
+        stagingVehicleScheduleFrameId: UUID,
+        targetPriority: Int
+    ): List<UUID> {
+        if (runCatching { TimetablesPriority.fromInt(targetPriority) }.isFailure) {
+            throw TargetPriorityParsingException("Failed to parse target priority", targetPriority)
+        }
+
+        return fetchVehicleScheduleFramesToReplace(
+            stagingVehicleScheduleFrameId,
+            TimetablesPriority.fromInt(targetPriority)
+        )
+            .map { frame -> frame.vehicleScheduleFrameId!! }
     }
 
     private fun fetchStagingVehicleScheduleFrame(stagingVehicleScheduleFrameId: UUID): VehicleScheduleFrame {
