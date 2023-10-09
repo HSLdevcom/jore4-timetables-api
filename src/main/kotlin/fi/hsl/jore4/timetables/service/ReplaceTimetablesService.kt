@@ -14,6 +14,8 @@ class InvalidTargetPriorityException(message: String, val targetPriority: Timeta
 
 class StagingVehicleScheduleFrameNotFoundException(message: String, val stagingVehicleScheduleFrameId: UUID) : RuntimeException(message)
 
+class TargetPriorityParsingException(message: String, val targetPriority: Int) : RuntimeException(message)
+
 @Service
 class ReplaceTimetablesService(
     private val vehicleScheduleFrameRepository: VehicleScheduleFrameRepository
