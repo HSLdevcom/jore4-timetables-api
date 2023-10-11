@@ -205,7 +205,8 @@
       "_stop_points": [
         {
           "scheduled_stop_point_sequence": 1,
-          "scheduled_stop_point_label": "H2201"
+          "scheduled_stop_point_label": "H2201",
+          "timing_place_label": "TP001"
         },
         {
           "scheduled_stop_point_sequence": 2,
@@ -217,7 +218,8 @@
         },
         {
           "scheduled_stop_point_sequence": 4,
-          "scheduled_stop_point_label": "H2204"
+          "scheduled_stop_point_label": "H2204",
+          "timing_place_label": "TP002"
         }
       ]
     },
@@ -232,7 +234,8 @@
       "_stop_points": [
         {
           "scheduled_stop_point_sequence": 1,
-          "scheduled_stop_point_label": "H2204"
+          "scheduled_stop_point_label": "H2204",
+          "timing_place_label": "TP002"
         },
         {
           "scheduled_stop_point_sequence": 2,
@@ -244,7 +247,8 @@
         },
         {
           "scheduled_stop_point_sequence": 4,
-          "scheduled_stop_point_label": "H2201"
+          "scheduled_stop_point_label": "H2201",
+          "timing_place_label": "TP001"
         }
       ]
     },
@@ -260,7 +264,8 @@
       "_stop_points": [
         {
           "scheduled_stop_point_sequence": 1,
-          "scheduled_stop_point_label": "K2201"
+          "scheduled_stop_point_label": "K2201",
+          "timing_place_label": "TP003"
         },
         {
           "scheduled_stop_point_sequence": 2,
@@ -268,7 +273,8 @@
         },
         {
           "scheduled_stop_point_sequence": 3,
-          "scheduled_stop_point_label": "K2203"
+          "scheduled_stop_point_label": "K2203",
+          "timing_place_label": "TP004"
         }
       ]
     },
@@ -283,7 +289,8 @@
       "_stop_points": [
         {
           "scheduled_stop_point_sequence": 1,
-          "scheduled_stop_point_label": "K2203"
+          "scheduled_stop_point_label": "K2203",
+          "timing_place_label": "TP004"
         },
         {
           "scheduled_stop_point_sequence": 2,
@@ -291,7 +298,8 @@
         },
         {
           "scheduled_stop_point_sequence": 3,
-          "scheduled_stop_point_label": "K2201"
+          "scheduled_stop_point_label": "K2201",
+          "timing_place_label": "TP003"
         }
       ]
     }
