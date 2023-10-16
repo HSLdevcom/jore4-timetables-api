@@ -2,6 +2,12 @@ package fi.hsl.jore4.timetables.api
 
 import fi.hsl.jore4.timetables.api.util.HasuraErrorExtensions
 import fi.hsl.jore4.timetables.api.util.HasuraErrorResponse
+import fi.hsl.jore4.timetables.api.util.InvalidTargetPriorityExtensions
+import fi.hsl.jore4.timetables.api.util.MultipleTargetFramesFoundExtensions
+import fi.hsl.jore4.timetables.api.util.PlainStatusExtensions
+import fi.hsl.jore4.timetables.api.util.StagingVehicleScheduleFrameNotFoundExtensions
+import fi.hsl.jore4.timetables.api.util.TargetPriorityParsingExtensions
+import fi.hsl.jore4.timetables.api.util.TargetVehicleScheduleFrameNotFoundExtensions
 import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
 import fi.hsl.jore4.timetables.service.CombineTimetablesService
 import fi.hsl.jore4.timetables.service.InvalidTargetPriorityException
@@ -111,97 +117,51 @@ class TimetablesController(
 
     @ExceptionHandler(RuntimeException::class)
     fun handleRuntimeException(ex: RuntimeException): ResponseEntity<HasuraErrorResponse> {
-        LOGGER.error { "Exception during request:$ex" }
-        LOGGER.error(ex.stackTraceToString())
+        val hasuraExtensions: HasuraErrorExtensions = when (ex) {
+            is InvalidTargetPriorityException -> {
+                InvalidTargetPriorityExtensions(HttpStatus.BAD_REQUEST, ex.targetPriority)
+            }
 
-        val httpStatus = HttpStatus.CONFLICT // Hasura only wants errors on 4xx range.
-        val hasuraErrorExtensions = HasuraErrorExtensions(httpStatus.value())
-        val hasuraErrorResponse = HasuraErrorResponse(ex.message, hasuraErrorExtensions)
+            is StagingVehicleScheduleFrameNotFoundException -> {
+                StagingVehicleScheduleFrameNotFoundExtensions(HttpStatus.NOT_FOUND, ex.stagingVehicleScheduleFrameId)
+            }
 
-        return ResponseEntity(hasuraErrorResponse, httpStatus)
-    }
+            is TargetFrameNotFoundException -> {
+                TargetVehicleScheduleFrameNotFoundExtensions(HttpStatus.NOT_FOUND, ex.stagingVehicleScheduleFrameId)
+            }
 
-    class InvalidTargetPriorityExtensions(
-        override val code: Int,
-        val targetPriority: TimetablesPriority
-    ) : HasuraErrorExtensions(code)
+            is MultipleTargetFramesFoundException -> {
+                MultipleTargetFramesFoundExtensions(
+                    HttpStatus.CONFLICT,
+                    ex.stagingVehicleScheduleFrameId,
+                    ex.targetVehicleScheduleFrameIds
+                )
+            }
 
-    @ExceptionHandler(InvalidTargetPriorityException::class)
-    fun handleInvalidTargetPriorityException(ex: InvalidTargetPriorityException): ResponseEntity<HasuraErrorResponse> {
-        val httpStatus = HttpStatus.BAD_REQUEST
-        val hasuraErrorExtensions = InvalidTargetPriorityExtensions(httpStatus.value(), ex.targetPriority)
-        val hasuraErrorResponse = HasuraErrorResponse(ex.message, hasuraErrorExtensions)
+            is TargetPriorityParsingException -> {
+                TargetPriorityParsingExtensions(HttpStatus.BAD_REQUEST, ex.targetPriority)
+            }
 
-        return ResponseEntity(hasuraErrorResponse, httpStatus)
-    }
+            else -> {
+                LOGGER.error { "Exception during request:$ex" }
+                LOGGER.error(ex.stackTraceToString())
 
-    class StagingVehicleScheduleFrameNotFoundExtensions(
-        override val code: Int,
-        val stagingVehicleScheduleFrameId: UUID
-    ) : HasuraErrorExtensions(code)
+                PlainStatusExtensions(HttpStatus.CONFLICT)
+            }
+        }
 
-    @ExceptionHandler(StagingVehicleScheduleFrameNotFoundException::class)
-    fun handleStagingVehicleScheduleFrameNotFoundException(ex: StagingVehicleScheduleFrameNotFoundException): ResponseEntity<HasuraErrorResponse> {
-        val httpStatus = HttpStatus.NOT_FOUND
-        val hasuraErrorExtensions = StagingVehicleScheduleFrameNotFoundExtensions(
-            httpStatus.value(),
-            ex.stagingVehicleScheduleFrameId
-        )
-        val hasuraErrorResponse = HasuraErrorResponse(ex.message, hasuraErrorExtensions)
+        val httpStatus: HttpStatus = hasuraExtensions.run {
+            if (code !in 400..499) {
+                LOGGER.warn { "Violating Hasura error response contract by returning code not like 4xx: $code" }
+            }
 
-        return ResponseEntity(hasuraErrorResponse, httpStatus)
-    }
+            HttpStatus.resolve(code) ?: run {
+                // This block should never be entered (and never will when using valid HTTP status codes).
+                LOGGER.warn { "Could not resolve HttpStatus from code $code" }
+                HttpStatus.BAD_REQUEST // default in case not resolved
+            }
+        }
 
-    class TargetVehicleScheduleFrameNotFoundExtensions(
-        override val code: Int,
-        val stagingVehicleScheduleFrameId: UUID
-    ) : HasuraErrorExtensions(code)
-
-    @ExceptionHandler(TargetFrameNotFoundException::class)
-    fun handleTargetFrameNotFoundException(ex: TargetFrameNotFoundException): ResponseEntity<HasuraErrorResponse> {
-        val httpStatus = HttpStatus.NOT_FOUND
-        val hasuraErrorExtensions = TargetVehicleScheduleFrameNotFoundExtensions(
-            httpStatus.value(),
-            ex.stagingVehicleScheduleFrameId
-        )
-        val hasuraErrorResponse = HasuraErrorResponse(ex.message, hasuraErrorExtensions)
-
-        return ResponseEntity(hasuraErrorResponse, httpStatus)
-    }
-
-    class MultipleTargetFramesFoundExtensions(
-        override val code: Int,
-        val stagingVehicleScheduleFrameId: UUID,
-        val targetVehicleScheduleFrameIds: List<UUID>
-    ) : HasuraErrorExtensions(code)
-
-    @ExceptionHandler(MultipleTargetFramesFoundException::class)
-    fun handleTargetFrameNotFoundException(ex: MultipleTargetFramesFoundException): ResponseEntity<HasuraErrorResponse> {
-        val httpStatus = HttpStatus.CONFLICT
-        val hasuraErrorExtensions = MultipleTargetFramesFoundExtensions(
-            httpStatus.value(),
-            ex.stagingVehicleScheduleFrameId,
-            ex.targetVehicleScheduleFrameIds
-        )
-        val hasuraErrorResponse = HasuraErrorResponse(ex.message, hasuraErrorExtensions)
-
-        return ResponseEntity(hasuraErrorResponse, httpStatus)
-    }
-
-    class TargetPriorityParsingExtensions(
-        override val code: Int,
-        val targetPriority: Int
-    ) : HasuraErrorExtensions(code)
-
-    @ExceptionHandler(TargetPriorityParsingException::class)
-    fun handleIncompatibleTargetPriorityException(ex: TargetPriorityParsingException): ResponseEntity<HasuraErrorResponse> {
-        val httpStatus = HttpStatus.BAD_REQUEST
-        val hasuraErrorExtensions = TargetPriorityParsingExtensions(
-            httpStatus.value(),
-            ex.targetPriority
-        )
-        val hasuraErrorResponse = HasuraErrorResponse(ex.message, hasuraErrorExtensions)
-
-        return ResponseEntity(hasuraErrorResponse, httpStatus)
+        return ResponseEntity(HasuraErrorResponse(ex.message, hasuraExtensions), httpStatus)
     }
 }
