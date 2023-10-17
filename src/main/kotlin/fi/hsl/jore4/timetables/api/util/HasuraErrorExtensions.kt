@@ -1,6 +1,11 @@
 package fi.hsl.jore4.timetables.api.util
 
+import fi.hsl.jore4.timetables.api.TimetablesController.TargetPriorityParsingException
 import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
+import fi.hsl.jore4.timetables.service.InvalidTargetPriorityException
+import fi.hsl.jore4.timetables.service.MultipleTargetFramesFoundException
+import fi.hsl.jore4.timetables.service.StagingVehicleScheduleFrameNotFoundException
+import fi.hsl.jore4.timetables.service.TargetFrameNotFoundException
 import org.springframework.http.HttpStatus
 import java.util.UUID
 
@@ -20,7 +25,12 @@ data class InvalidTargetPriorityExtensions(
     val targetPriority: TimetablesPriority
 ) : HasuraErrorExtensions {
 
-    constructor(httpStatus: HttpStatus, targetPriority: TimetablesPriority) : this(httpStatus.value(), targetPriority)
+    companion object {
+        fun from(ex: InvalidTargetPriorityException) = InvalidTargetPriorityExtensions(
+            HttpStatus.BAD_REQUEST.value(),
+            ex.targetPriority
+        )
+    }
 }
 
 data class StagingVehicleScheduleFrameNotFoundExtensions(
@@ -28,10 +38,12 @@ data class StagingVehicleScheduleFrameNotFoundExtensions(
     val stagingVehicleScheduleFrameId: UUID
 ) : HasuraErrorExtensions {
 
-    constructor(httpStatus: HttpStatus, stagingVehicleScheduleFrameId: UUID) : this(
-        httpStatus.value(),
-        stagingVehicleScheduleFrameId
-    )
+    companion object {
+        fun from(ex: StagingVehicleScheduleFrameNotFoundException) = StagingVehicleScheduleFrameNotFoundExtensions(
+            HttpStatus.NOT_FOUND.value(),
+            ex.stagingVehicleScheduleFrameId
+        )
+    }
 }
 
 data class TargetVehicleScheduleFrameNotFoundExtensions(
@@ -39,10 +51,12 @@ data class TargetVehicleScheduleFrameNotFoundExtensions(
     val stagingVehicleScheduleFrameId: UUID
 ) : HasuraErrorExtensions {
 
-    constructor(httpStatus: HttpStatus, stagingVehicleScheduleFrameId: UUID) : this(
-        httpStatus.value(),
-        stagingVehicleScheduleFrameId
-    )
+    companion object {
+        fun from(ex: TargetFrameNotFoundException) = TargetVehicleScheduleFrameNotFoundExtensions(
+            HttpStatus.NOT_FOUND.value(),
+            ex.stagingVehicleScheduleFrameId
+        )
+    }
 }
 
 data class MultipleTargetFramesFoundExtensions(
@@ -51,15 +65,13 @@ data class MultipleTargetFramesFoundExtensions(
     val targetVehicleScheduleFrameIds: List<UUID>
 ) : HasuraErrorExtensions {
 
-    constructor(
-        httpStatus: HttpStatus,
-        stagingVehicleScheduleFrameId: UUID,
-        targetVehicleScheduleFrameIds: List<UUID>
-    ) : this(
-        httpStatus.value(),
-        stagingVehicleScheduleFrameId,
-        targetVehicleScheduleFrameIds
-    )
+    companion object {
+        fun from(ex: MultipleTargetFramesFoundException) = MultipleTargetFramesFoundExtensions(
+            HttpStatus.CONFLICT.value(),
+            ex.stagingVehicleScheduleFrameId,
+            ex.targetVehicleScheduleFrameIds
+        )
+    }
 }
 
 data class TargetPriorityParsingExtensions(
@@ -67,5 +79,10 @@ data class TargetPriorityParsingExtensions(
     val targetPriority: Int
 ) : HasuraErrorExtensions {
 
-    constructor(httpStatus: HttpStatus, targetPriority: Int) : this(httpStatus.value(), targetPriority)
+    companion object {
+        fun from(ex: TargetPriorityParsingException) = TargetPriorityParsingExtensions(
+            HttpStatus.BAD_REQUEST.value(),
+            ex.targetPriority
+        )
+    }
 }
