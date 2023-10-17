@@ -118,29 +118,31 @@ class TimetablesController(
     @ExceptionHandler(RuntimeException::class)
     fun handleRuntimeException(ex: RuntimeException): ResponseEntity<HasuraErrorResponse> {
         val hasuraExtensions: HasuraErrorExtensions = when (ex) {
-            is InvalidTargetPriorityException -> {
-                InvalidTargetPriorityExtensions(HttpStatus.BAD_REQUEST, ex.targetPriority)
-            }
+            is InvalidTargetPriorityException -> InvalidTargetPriorityExtensions(
+                HttpStatus.BAD_REQUEST,
+                ex.targetPriority
+            )
 
-            is StagingVehicleScheduleFrameNotFoundException -> {
-                StagingVehicleScheduleFrameNotFoundExtensions(HttpStatus.NOT_FOUND, ex.stagingVehicleScheduleFrameId)
-            }
+            is StagingVehicleScheduleFrameNotFoundException -> StagingVehicleScheduleFrameNotFoundExtensions(
+                HttpStatus.NOT_FOUND,
+                ex.stagingVehicleScheduleFrameId
+            )
 
-            is TargetFrameNotFoundException -> {
-                TargetVehicleScheduleFrameNotFoundExtensions(HttpStatus.NOT_FOUND, ex.stagingVehicleScheduleFrameId)
-            }
+            is TargetFrameNotFoundException -> TargetVehicleScheduleFrameNotFoundExtensions(
+                HttpStatus.NOT_FOUND,
+                ex.stagingVehicleScheduleFrameId
+            )
 
-            is MultipleTargetFramesFoundException -> {
-                MultipleTargetFramesFoundExtensions(
-                    HttpStatus.CONFLICT,
-                    ex.stagingVehicleScheduleFrameId,
-                    ex.targetVehicleScheduleFrameIds
-                )
-            }
+            is MultipleTargetFramesFoundException -> MultipleTargetFramesFoundExtensions(
+                HttpStatus.CONFLICT,
+                ex.stagingVehicleScheduleFrameId,
+                ex.targetVehicleScheduleFrameIds
+            )
 
-            is TargetPriorityParsingException -> {
-                TargetPriorityParsingExtensions(HttpStatus.BAD_REQUEST, ex.targetPriority)
-            }
+            is TargetPriorityParsingException -> TargetPriorityParsingExtensions(
+                HttpStatus.BAD_REQUEST,
+                ex.targetPriority
+            )
 
             else -> {
                 LOGGER.error { "Exception during request:$ex" }
