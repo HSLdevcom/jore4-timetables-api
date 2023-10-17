@@ -4,30 +4,63 @@ import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
 import org.springframework.http.HttpStatus
 import java.util.UUID
 
-sealed class HasuraErrorExtensions(httpStatus: HttpStatus) {
+sealed interface HasuraErrorExtensions {
+
     // code must be 4xx
-    val code: Int = httpStatus.value()
+    val code: Int
 }
 
-class PlainStatusExtensions(httpStatus: HttpStatus) : HasuraErrorExtensions(httpStatus)
+data class PlainStatusExtensions(override val code: Int) : HasuraErrorExtensions {
 
-class InvalidTargetPriorityExtensions(
-    httpStatus: HttpStatus,
+    constructor(httpStatus: HttpStatus) : this(httpStatus.value())
+}
+
+data class InvalidTargetPriorityExtensions(
+    override val code: Int,
     val targetPriority: TimetablesPriority
-) : HasuraErrorExtensions(httpStatus)
+) : HasuraErrorExtensions {
 
-class StagingVehicleScheduleFrameNotFoundExtensions(
-    httpStatus: HttpStatus,
+    constructor(httpStatus: HttpStatus, targetPriority: TimetablesPriority) : this(
+        httpStatus.value(),
+        targetPriority
+    )
+}
+
+data class StagingVehicleScheduleFrameNotFoundExtensions(
+    override val code: Int,
     val stagingVehicleScheduleFrameId: UUID
-) : HasuraErrorExtensions(httpStatus)
+) : HasuraErrorExtensions {
 
-class TargetVehicleScheduleFrameNotFoundExtensions(
-    httpStatus: HttpStatus,
+    constructor(httpStatus: HttpStatus, stagingVehicleScheduleFrameId: UUID) : this(
+        httpStatus.value(),
+        stagingVehicleScheduleFrameId
+    )
+}
+
+data class TargetVehicleScheduleFrameNotFoundExtensions(
+    override val code: Int,
     val stagingVehicleScheduleFrameId: UUID
-) : HasuraErrorExtensions(httpStatus)
+) : HasuraErrorExtensions {
 
-class MultipleTargetFramesFoundExtensions(
-    httpStatus: HttpStatus,
+    constructor(httpStatus: HttpStatus, stagingVehicleScheduleFrameId: UUID) : this(
+        httpStatus.value(),
+        stagingVehicleScheduleFrameId
+    )
+}
+
+data class MultipleTargetFramesFoundExtensions(
+    override val code: Int,
     val stagingVehicleScheduleFrameId: UUID,
     val targetVehicleScheduleFrameIds: List<UUID>
-) : HasuraErrorExtensions(httpStatus)
+) : HasuraErrorExtensions {
+
+    constructor(
+        httpStatus: HttpStatus,
+        stagingVehicleScheduleFrameId: UUID,
+        targetVehicleScheduleFrameIds: List<UUID>
+    ) : this(
+        httpStatus.value(),
+        stagingVehicleScheduleFrameId,
+        targetVehicleScheduleFrameIds
+    )
+}
