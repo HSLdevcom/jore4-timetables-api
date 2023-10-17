@@ -118,31 +118,15 @@ class TimetablesController(
     @ExceptionHandler(RuntimeException::class)
     fun handleRuntimeException(ex: RuntimeException): ResponseEntity<HasuraErrorResponse> {
         val hasuraExtensions: HasuraErrorExtensions = when (ex) {
-            is InvalidTargetPriorityException -> InvalidTargetPriorityExtensions(
-                HttpStatus.BAD_REQUEST,
-                ex.targetPriority
-            )
+            is InvalidTargetPriorityException -> InvalidTargetPriorityExtensions.from(ex)
 
-            is StagingVehicleScheduleFrameNotFoundException -> StagingVehicleScheduleFrameNotFoundExtensions(
-                HttpStatus.NOT_FOUND,
-                ex.stagingVehicleScheduleFrameId
-            )
+            is StagingVehicleScheduleFrameNotFoundException -> StagingVehicleScheduleFrameNotFoundExtensions.from(ex)
 
-            is TargetFrameNotFoundException -> TargetVehicleScheduleFrameNotFoundExtensions(
-                HttpStatus.NOT_FOUND,
-                ex.stagingVehicleScheduleFrameId
-            )
+            is TargetFrameNotFoundException -> TargetVehicleScheduleFrameNotFoundExtensions.from(ex)
 
-            is MultipleTargetFramesFoundException -> MultipleTargetFramesFoundExtensions(
-                HttpStatus.CONFLICT,
-                ex.stagingVehicleScheduleFrameId,
-                ex.targetVehicleScheduleFrameIds
-            )
+            is MultipleTargetFramesFoundException -> MultipleTargetFramesFoundExtensions.from(ex)
 
-            is TargetPriorityParsingException -> TargetPriorityParsingExtensions(
-                HttpStatus.BAD_REQUEST,
-                ex.targetPriority
-            )
+            is TargetPriorityParsingException -> TargetPriorityParsingExtensions.from(ex)
 
             else -> {
                 LOGGER.error { "Exception during request:$ex" }
