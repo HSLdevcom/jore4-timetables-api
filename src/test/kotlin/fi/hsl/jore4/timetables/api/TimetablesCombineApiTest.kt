@@ -74,7 +74,7 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                 MockMvcResultMatchers.content().json(
                     """
                     {
-                      "combinedIntoVehicleScheduleFrameIds": ${MAPPER.writeValueAsString(defaultTargetFrameIds)}
+                      "combinedIntoVehicleScheduleFrameIds": $defaultTargetFrameIds
                     }
                     """.trimIndent(),
                     true

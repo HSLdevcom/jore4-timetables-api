@@ -77,7 +77,7 @@ class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                 content().json(
                     """
                     {
-                      "replacedVehicleScheduleFrameIds": ${OBJECT_MAPPER.writeValueAsString(defaultReplacedFrameIds)}
+                      "replacedVehicleScheduleFrameIds": $defaultReplacedFrameIds
                     }
                     """.trimIndent(),
                     true
