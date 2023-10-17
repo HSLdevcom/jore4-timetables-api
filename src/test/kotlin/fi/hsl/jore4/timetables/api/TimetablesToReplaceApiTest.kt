@@ -78,7 +78,8 @@ class TimetablesToReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                     {
                       "toReplaceVehicleScheduleFrameIds": $defaultToReplaceIds
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
+                    true
                 )
             )
 
@@ -109,7 +110,8 @@ class TimetablesToReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                         "targetPriority": $invalidTargetPriorityInput
                       }
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
+                    true
                 )
             )
         verify(exactly = 0) {

@@ -79,7 +79,8 @@ class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                     {
                       "replacedVehicleScheduleFrameIds": ${OBJECT_MAPPER.writeValueAsString(defaultReplacedFrameIds)}
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
+                    true
                 )
             )
 
@@ -112,7 +113,8 @@ class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                         "code": 409
                       }
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
+                    true
                 )
             )
 
@@ -161,7 +163,8 @@ class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                         "stagingVehicleScheduleFrameId": "$missingStagingFrameId"
                       }
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
+                    true
                 )
             )
 
@@ -197,7 +200,8 @@ class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                         "targetPriority": $invalidTargetPriority
                       }
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
+                    true
                 )
             )
 
