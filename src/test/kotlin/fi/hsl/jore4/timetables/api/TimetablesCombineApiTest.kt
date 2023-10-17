@@ -76,7 +76,8 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                     {
                       "combinedIntoVehicleScheduleFrameIds": ${MAPPER.writeValueAsString(defaultTargetFrameIds)}
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
+                    true
                 )
             )
 
@@ -106,7 +107,8 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                         "code": 409
                       }
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
+                    true
                 )
             )
 
@@ -152,7 +154,8 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                         "stagingVehicleScheduleFrameId": "$missingStagingFrameId"
                       }
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
+                    true
                 )
             )
 
@@ -185,7 +188,8 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                         "targetPriority": $invalidTargetPriority
                       }
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
+                    true
                 )
             )
 
@@ -217,7 +221,8 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                         "stagingVehicleScheduleFrameId": ${defaultStagingFrameIds[0]}
                       }
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
+                    true
                 )
             )
 
@@ -250,7 +255,8 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                         "targetVehicleScheduleFrameIds": $defaultTargetFrameIds
                       }
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
+                    true
                 )
             )
 
