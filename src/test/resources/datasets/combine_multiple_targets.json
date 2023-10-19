@@ -12,8 +12,8 @@
           "_blocks": {
             "block": {
               "_vehicle_journeys": {
-                "route123Outbound1": {
-                  "_journey_pattern_ref_name": "route123Outbound",
+                "route133Outbound1": {
+                  "_journey_pattern_ref_name": "route133Outbound",
                   "_passing_times": [
                     {
                       "_scheduled_stop_point_label": "H2201",
@@ -37,8 +37,8 @@
                     }
                   ]
                 },
-                "route123Inbound1": {
-                  "_journey_pattern_ref_name": "route123Inbound",
+                "route133Inbound1": {
+                  "_journey_pattern_ref_name": "route133Inbound",
                   "_passing_times": [
                     {
                       "_scheduled_stop_point_label": "H2204",
@@ -62,8 +62,8 @@
                     }
                   ]
                 },
-                "route234Outbound1": {
-                  "_journey_pattern_ref_name": "route234Outbound",
+                "route241Outbound1": {
+                  "_journey_pattern_ref_name": "route241Outbound",
                   "_passing_times": [
                     {
                       "_scheduled_stop_point_label": "K2201",
@@ -100,8 +100,8 @@
           "_blocks": {
             "block": {
               "_vehicle_journeys": {
-                "route123Outbound1": {
-                  "_journey_pattern_ref_name": "route123Outbound",
+                "route133Outbound1": {
+                  "_journey_pattern_ref_name": "route133Outbound",
                   "_passing_times": [
                     {
                       "_scheduled_stop_point_label": "H2201",
@@ -143,8 +143,8 @@
           "_blocks": {
             "block": {
               "_vehicle_journeys": {
-                "route234Outbound1": {
-                  "_journey_pattern_ref_name": "route234Outbound",
+                "route241Outbound1": {
+                  "_journey_pattern_ref_name": "route241Outbound",
                   "_passing_times": [
                     {
                       "_scheduled_stop_point_label": "K2201",
@@ -163,8 +163,8 @@
                     }
                   ]
                 },
-                "route234Inbound1": {
-                  "_journey_pattern_ref_name": "route234Inbound",
+                "route241VInbound1": {
+                  "_journey_pattern_ref_name": "route241VInbound",
                   "_passing_times": [
                     {
                       "_scheduled_stop_point_label": "K2203",
@@ -191,7 +191,7 @@
     }
   },
   "_journey_pattern_refs": {
-    "route123Outbound": {
+    "route133Outbound": {
       "journey_pattern_id": "4b070731-700d-4c4c-8e30-cd177fa80ada",
       "type_of_line": "stopping_bus_service",
       "observation_timestamp": "2023-07-01T00:00:00+00:00",
@@ -220,7 +220,7 @@
         }
       ]
     },
-    "route123Inbound": {
+    "route133Inbound": {
       "journey_pattern_id": "0d05d12f-cf7b-47f8-961c-edb89b789e1d",
       "type_of_line": "stopping_bus_service",
       "observation_timestamp": "2023-07-01T00:00:00+00:00",
@@ -250,7 +250,7 @@
       ]
     },
 
-    "route234Outbound": {
+    "route241Outbound": {
       "journey_pattern_id": "c04e7d84-0241-4355-9860-5eab55041434",
       "type_of_line": "stopping_bus_service",
       "observation_timestamp": "2023-06-01T00:00:00+00:00",
@@ -275,7 +275,7 @@
         }
       ]
     },
-    "route234Inbound": {
+    "route241VInbound": {
       "journey_pattern_id": "a2490f53-cd16-488e-ad7c-0cdeae541b39",
       "type_of_line": "stopping_bus_service",
       "observation_timestamp": "2023-06-01T00:00:00+00:00",
