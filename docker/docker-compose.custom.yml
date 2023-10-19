@@ -15,10 +15,11 @@ services:
       - "host.docker.internal:host-gateway"
     environment:
       SECRET_STORE_BASE_PATH: "/mnt/secrets-store"
-      JORE4_DB_HOSTNAME: "jore4-testdb"
     secrets:
       - source: timetablesapi-jore4-db-database
         target: /mnt/secrets-store/jore4-db-database
+      - source: timetablesapi-jore4-db-hostname
+        target: /mnt/secrets-store/jore4-db-hostname
       - source: timetablesapi-jore4-db-password
         target: /mnt/secrets-store/jore4-db-password
       - source: timetablesapi-jore4-db-username
