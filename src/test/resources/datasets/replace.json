@@ -154,7 +154,7 @@
   },
   "_journey_pattern_refs": {
     "route123Outbound": {
-      "journey_pattern_id": "250c7d57-24f9-4bdf-ae0d-ca0ff54987ec",
+      "journey_pattern_id": "4b070731-700d-4c4c-8e30-cd177fa80ada",
       "type_of_line": "stopping_bus_service",
       "observation_timestamp": "2023-07-01T00:00:00+00:00",
       "snapshot_timestamp": "2023-09-28T00:00:00+00:00",
@@ -183,7 +183,7 @@
       ]
     },
     "route123Inbound": {
-      "journey_pattern_id": "21ce14d7-93a1-41bc-8cef-5e239af4ad60",
+      "journey_pattern_id": "0d05d12f-cf7b-47f8-961c-edb89b789e1d",
       "type_of_line": "stopping_bus_service",
       "observation_timestamp": "2023-07-01T00:00:00+00:00",
       "snapshot_timestamp": "2023-09-28T00:00:00+00:00",
@@ -213,7 +213,7 @@
     },
 
     "route234Outbound": {
-      "journey_pattern_id": "f91198e9-b67d-4f40-84e0-7860261c584a",
+      "journey_pattern_id": "c04e7d84-0241-4355-9860-5eab55041434",
       "type_of_line": "stopping_bus_service",
       "observation_timestamp": "2023-06-01T00:00:00+00:00",
       "snapshot_timestamp": "2023-08-28T00:00:00+00:00",
@@ -238,7 +238,7 @@
       ]
     },
     "route234Inbound": {
-      "journey_pattern_id": "375f22b1-bd28-4174-8f56-aa7dbc3ee2fb",
+      "journey_pattern_id": "a2490f53-cd16-488e-ad7c-0cdeae541b39",
       "type_of_line": "stopping_bus_service",
       "observation_timestamp": "2023-06-01T00:00:00+00:00",
       "snapshot_timestamp": "2023-08-28T00:00:00+00:00",
