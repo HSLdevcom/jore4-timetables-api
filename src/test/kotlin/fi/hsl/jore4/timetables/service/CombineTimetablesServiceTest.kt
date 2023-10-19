@@ -205,10 +205,10 @@ class CombineTimetablesServiceTest @Autowired constructor(
                 val targetVehicleJourneys = targetBlock.getNested("_vehicle_journeys")
 
                 stagingBlock["_vehicle_journeys"] = mutableMapOf(
-                    "route123Outbound1" to stagingVehicleJourneys["route123Outbound1"]
+                    "route133Outbound1" to stagingVehicleJourneys["route133Outbound1"]
                 )
                 targetBlock["_vehicle_journeys"] = mutableMapOf(
-                    "route234Outbound1" to targetVehicleJourneys["route234Outbound1"]
+                    "route241Outbound1" to targetVehicleJourneys["route241Outbound1"]
                 )
 
                 runCombineAndAssertTargetNotFoundException()
@@ -279,14 +279,14 @@ class CombineTimetablesServiceTest @Autowired constructor(
             val targetVehicleJourneys = targetBlock.getNested("_vehicle_journeys")
 
             stagingBlock["_vehicle_journeys"] = mutableMapOf(
-                "route123Outbound1" to stagingVehicleJourneys["route123Outbound1"]
+                "route133Outbound1" to stagingVehicleJourneys["route133Outbound1"]
             )
             targetBlock["_vehicle_journeys"] = mutableMapOf(
                 // Identical vehicle journey as the one about to come from staging -> fail.
-                "route123Outbound1" to stagingVehicleJourneys["route123Outbound1"],
+                "route133Outbound1" to stagingVehicleJourneys["route133Outbound1"],
                 // Some other routes that don't interfere.
-                "route123Outbound1" to targetVehicleJourneys["route123Outbound1"],
-                "route234Outbound1" to targetVehicleJourneys["route234Outbound1"]
+                "route133Outbound1" to targetVehicleJourneys["route133Outbound1"],
+                "route241Outbound1" to targetVehicleJourneys["route241Outbound1"]
             )
             timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
             val stagingFrameId = UUID.fromString("aa0e95c6-34d1-4d09-8546-3789b04ea494")

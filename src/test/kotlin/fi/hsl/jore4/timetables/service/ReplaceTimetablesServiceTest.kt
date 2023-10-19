@@ -366,9 +366,9 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
                 @Test
                 fun `when staging and replaced both have the same single route`() {
                     val stagingFrameJourneys =
-                        mutableMapOf("route123Outbound" to partialVehicleJourneys["route123Outbound1"])
+                        mutableMapOf("route133Outbound" to partialVehicleJourneys["route133Outbound1"])
                     val replacedFrameJourneys =
-                        mutableMapOf("route123Outbound" to partialVehicleJourneys["route123Outbound2"])
+                        mutableMapOf("route133Outbound" to partialVehicleJourneys["route133Outbound2"])
                     setTestDataJourneys(
                         stagingFrameJourneys = stagingFrameJourneys,
                         replacedFrameJourneys = replacedFrameJourneys
@@ -381,14 +381,14 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
                 @Test
                 fun `when staging and replaced frame have all routes in common`() {
                     val stagingFrameJourneys = mutableMapOf(
-                        "route123Outbound" to partialVehicleJourneys["route123Outbound1"],
-                        "route123Inbound" to partialVehicleJourneys["route123Inbound1"],
-                        "route234Outbound" to partialVehicleJourneys["route234Outbound1"]
+                        "route133Outbound" to partialVehicleJourneys["route133Outbound1"],
+                        "route133Inbound" to partialVehicleJourneys["route133Inbound1"],
+                        "route241Outbound" to partialVehicleJourneys["route241Outbound1"]
                     )
                     val replacedFrameJourneys = mutableMapOf(
-                        "route123Outbound" to partialVehicleJourneys["route123Outbound2"],
-                        "route123Inbound" to partialVehicleJourneys["route123Inbound2"],
-                        "route234Outbound" to partialVehicleJourneys["route234Outbound2"]
+                        "route133Outbound" to partialVehicleJourneys["route133Outbound2"],
+                        "route133Inbound" to partialVehicleJourneys["route133Inbound2"],
+                        "route241Outbound" to partialVehicleJourneys["route241Outbound2"]
                     )
                     setTestDataJourneys(
                         stagingFrameJourneys = stagingFrameJourneys,
@@ -402,13 +402,13 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
                 @Test
                 fun `when staging and replaced frame have some routes in common, but staging has additional ones`() {
                     val stagingFrameJourneys = mutableMapOf(
-                        "route123Outbound" to partialVehicleJourneys["route123Outbound1"],
-                        "route123Inbound" to partialVehicleJourneys["route123Inbound1"],
-                        "route234Outbound" to partialVehicleJourneys["route234Outbound1"]
+                        "route133Outbound" to partialVehicleJourneys["route133Outbound1"],
+                        "route133Inbound" to partialVehicleJourneys["route133Inbound1"],
+                        "route241Outbound" to partialVehicleJourneys["route241Outbound1"]
                     )
                     val replacedFrameJourneys = mutableMapOf(
-                        "route123Outbound" to partialVehicleJourneys["route123Outbound2"],
-                        "route123Inbound" to partialVehicleJourneys["route123Inbound2"]
+                        "route133Outbound" to partialVehicleJourneys["route133Outbound2"],
+                        "route133Inbound" to partialVehicleJourneys["route133Inbound2"]
                     )
                     setTestDataJourneys(
                         stagingFrameJourneys = stagingFrameJourneys,
@@ -422,12 +422,12 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
                 @Test
                 fun `when staging and replaced frame have some routes in common, but replaced has additional ones`() {
                     val stagingFrameJourneys = mutableMapOf(
-                        "route234Outbound" to partialVehicleJourneys["route234Outbound1"]
+                        "route241Outbound" to partialVehicleJourneys["route241Outbound1"]
                     )
                     val replacedFrameJourneys = mutableMapOf(
-                        "route123Outbound" to partialVehicleJourneys["route123Outbound2"],
-                        "route123Inbound" to partialVehicleJourneys["route123Inbound2"],
-                        "route234Outbound" to partialVehicleJourneys["route234Outbound2"]
+                        "route133Outbound" to partialVehicleJourneys["route133Outbound2"],
+                        "route133Inbound" to partialVehicleJourneys["route133Inbound2"],
+                        "route241Outbound" to partialVehicleJourneys["route241Outbound2"]
                     )
                     setTestDataJourneys(
                         stagingFrameJourneys = stagingFrameJourneys,
@@ -667,12 +667,12 @@ class ReplaceTimetablesServiceTest @Autowired constructor(
         @Test
         fun `does not return a frame with no shared routes`() {
             val stagingFrameJourneys = mutableMapOf(
-                "route123Outbound" to partialVehicleJourneys["route123Outbound1"],
-                "route123Inbound" to partialVehicleJourneys["route123Inbound1"]
+                "route133Outbound" to partialVehicleJourneys["route133Outbound1"],
+                "route133Inbound" to partialVehicleJourneys["route133Inbound1"]
             )
             val replacedFrameJourneys = mutableMapOf(
-                "route234Outbound" to partialVehicleJourneys["route234Outbound2"],
-                "route234Inbound" to partialVehicleJourneys["route234Inbound2"]
+                "route241Outbound" to partialVehicleJourneys["route241Outbound2"],
+                "route241VInbound" to partialVehicleJourneys["route241VInbound2"]
             )
             setTestDataJourneys(
                 stagingFrameJourneys = stagingFrameJourneys,

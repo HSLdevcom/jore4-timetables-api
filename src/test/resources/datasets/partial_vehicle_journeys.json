@@ -1,6 +1,6 @@
 {
-  "route123Outbound1": {
-    "_journey_pattern_ref_name": "route123Outbound",
+  "route133Outbound1": {
+    "_journey_pattern_ref_name": "route133Outbound",
     "_passing_times": [
       {
         "_scheduled_stop_point_label": "H2201",
@@ -24,8 +24,8 @@
       }
     ]
   },
-  "route123Outbound2": {
-    "_journey_pattern_ref_name": "route123Outbound",
+  "route133Outbound2": {
+    "_journey_pattern_ref_name": "route133Outbound",
     "_passing_times": [
       {
         "_scheduled_stop_point_label": "H2201",
@@ -49,8 +49,8 @@
       }
     ]
   },
-  "route123Inbound1": {
-    "_journey_pattern_ref_name": "route123Inbound",
+  "route133Inbound1": {
+    "_journey_pattern_ref_name": "route133Inbound",
     "_passing_times": [
       {
         "_scheduled_stop_point_label": "H2204",
@@ -74,8 +74,8 @@
       }
     ]
   },
-  "route123Inbound2": {
-    "_journey_pattern_ref_name": "route123Inbound",
+  "route133Inbound2": {
+    "_journey_pattern_ref_name": "route133Inbound",
     "_passing_times": [
       {
         "_scheduled_stop_point_label": "H2204",
@@ -99,8 +99,8 @@
       }
     ]
   },
-  "route234Outbound1": {
-    "_journey_pattern_ref_name": "route234Outbound",
+  "route241Outbound1": {
+    "_journey_pattern_ref_name": "route241Outbound",
     "_passing_times": [
       {
         "_scheduled_stop_point_label": "K2201",
@@ -119,8 +119,8 @@
       }
     ]
   },
-  "route234Outbound2": {
-    "_journey_pattern_ref_name": "route234Outbound",
+  "route241Outbound2": {
+    "_journey_pattern_ref_name": "route241Outbound",
     "_passing_times": [
       {
         "_scheduled_stop_point_label": "K2201",
@@ -139,8 +139,8 @@
       }
     ]
   },
-  "route234Inbound1": {
-    "_journey_pattern_ref_name": "route234Inbound",
+  "route241VInbound1": {
+    "_journey_pattern_ref_name": "route241VInbound",
     "_passing_times": [
       {
         "_scheduled_stop_point_label": "K2203",
@@ -159,8 +159,8 @@
       }
     ]
   },
-  "route234Inbound2": {
-    "_journey_pattern_ref_name": "route234Inbound",
+  "route241VInbound2": {
+    "_journey_pattern_ref_name": "route241VInbound",
     "_passing_times": [
       {
         "_scheduled_stop_point_label": "K2203",
