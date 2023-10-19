@@ -1,19 +1,17 @@
 package fi.hsl.jore4.timetables.service
 
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.pojos.VehicleScheduleFrame
+import fi.hsl.jore4.timetables.IntTest
 import fi.hsl.jore4.timetables.TimetablesDataset
 import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
 import fi.hsl.jore4.timetables.extensions.deepClone
 import fi.hsl.jore4.timetables.extensions.getNested
 import fi.hsl.jore4.timetables.repository.VehicleScheduleFrameRepository
-import mu.KotlinLogging
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDate
 import java.util.UUID
 import kotlin.test.assertContains
@@ -21,10 +19,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 
-private val LOGGER = KotlinLogging.logger {}
-
-@SpringBootTest
-@ActiveProfiles("test")
+@IntTest
 class ReplaceTimetablesServiceTest @Autowired constructor(
     val replaceTimetablesService: ReplaceTimetablesService,
     var timetablesDataInserterRunner: TimetablesDataInserterRunner,
