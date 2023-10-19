@@ -1,16 +1,13 @@
 package fi.hsl.jore4.timetables.service
 
-import fi.hsl.jore4.timetables.config.DatabaseProperties
 import fi.hsl.jore4.timetables.config.DataInserterDatabaseProperties
-import mu.KotlinLogging
+import fi.hsl.jore4.timetables.config.DatabaseProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service
 import java.io.File
 import java.net.URI
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
-
-private val LOGGER = KotlinLogging.logger {}
 
 @Service
 @EnableConfigurationProperties(DataInserterDatabaseProperties::class)
