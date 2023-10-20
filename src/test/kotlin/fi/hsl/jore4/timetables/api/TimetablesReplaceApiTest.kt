@@ -27,6 +27,7 @@ import java.util.UUID
 private val LOGGER = KotlinLogging.logger {}
 
 @ExtendWith(MockKExtension::class)
+@MockKExtension.ConfirmVerification
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test")

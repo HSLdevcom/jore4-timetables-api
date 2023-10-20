@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
+@MockKExtension.ConfirmVerification
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test")
