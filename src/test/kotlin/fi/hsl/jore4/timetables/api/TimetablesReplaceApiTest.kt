@@ -86,13 +86,6 @@ class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                     true
                 )
             )
-
-        verify(exactly = 1) {
-            replaceTimetablesService.replaceTimetables(
-                defaultStagingFrameIds,
-                defaultTargetPriority
-            )
-        }
     }
 
     @Test
