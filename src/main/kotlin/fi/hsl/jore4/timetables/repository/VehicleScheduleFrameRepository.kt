@@ -95,23 +95,69 @@ class VehicleScheduleFrameRepository(private val dsl: DSLContext, config: Defaul
         stagingVehicleScheduleFrame: VehicleScheduleFrame,
         targetPriority: TimetablesPriority
     ): List<VehicleScheduleFrame> {
+        val stagingVehicleScheduleFrameId = stagingVehicleScheduleFrame.vehicleScheduleFrameId
+        val getOverlappingSchedules = GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES
+        val overlappingSchedulesCTE = DSL.name("overlapping_schedules")
+
+        val stagingFrameIdName: Name = DSL.name("stagingVehicleScheduleFrameId")
+        val targetFrameIdName: Name = DSL.name("targetVehicleScheduleFrameId")
+        val stagingVehicleScheduleFrameIdField = DSL.field(stagingFrameIdName, UUID::class.java)
+        val targetVehicleScheduleFrameIdField =
+            DSL.field(targetFrameIdName, UUID::class.java)
+
+        val stagingFrame = VEHICLE_SCHEDULE_FRAME.`as`("staging")
+        val targetFrame = VEHICLE_SCHEDULE_FRAME.`as`("target")
+
+        val framesOverlappedByStagingQuery = dsl
+            .with(
+                overlappingSchedulesCTE
+                    .fields(
+                        stagingFrameIdName,
+                        targetFrameIdName
+                    )
+                    .`as`(
+                        dsl
+                            .select(
+                                getOverlappingSchedules.CURRENT_VEHICLE_SCHEDULE_FRAME_ID.`as`(
+                                    stagingVehicleScheduleFrameIdField.name
+                                ),
+                                getOverlappingSchedules.OTHER_VEHICLE_SCHEDULE_FRAME_ID.`as`(
+                                    targetVehicleScheduleFrameIdField.name
+                                )
+                            )
+                            .from(
+                                getOverlappingSchedules(
+                                    arrayOf(stagingVehicleScheduleFrameId),
+                                    arrayOf(),
+                                    true
+                                )
+                            )
+                    )
+            )
+            .select(
+                stagingVehicleScheduleFrameIdField,
+                targetVehicleScheduleFrameIdField
+            )
+            .from(targetFrame)
+            .join(overlappingSchedulesCTE)
+            .on(targetFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(targetVehicleScheduleFrameIdField))
+            .join(stagingFrame)
+            .on(stagingFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(stagingVehicleScheduleFrameIdField))
+            // The overlapping schedules query returns other frames as well, filter out unwanted ones.
+            .where(stagingFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(stagingVehicleScheduleFrameId))
+            .and(targetFrame.PRIORITY.eq(targetPriority.value))
+
         return dsl
             .select()
-            .from(VEHICLE_SCHEDULE_FRAME)
-            .where(VEHICLE_SCHEDULE_FRAME.PRIORITY.eq(targetPriority.value))
+            // Returns a row for each day type id.
+            // We are not interested in those here, just the overlapping frame ids.
+            .distinctOn(targetVehicleScheduleFrameIdField)
+            .from(framesOverlappedByStagingQuery)
+            .join(VEHICLE_SCHEDULE_FRAME)
+            .on(VEHICLE_SCHEDULE_FRAME.VEHICLE_SCHEDULE_FRAME_ID.eq(targetVehicleScheduleFrameIdField))
             // The validity times must be exactly the same.
-            .and(VEHICLE_SCHEDULE_FRAME.VALIDITY_START.eq(stagingVehicleScheduleFrame.validityStart))
+            .where(VEHICLE_SCHEDULE_FRAME.VALIDITY_START.eq(stagingVehicleScheduleFrame.validityStart))
             .and(VEHICLE_SCHEDULE_FRAME.VALIDITY_END.eq(stagingVehicleScheduleFrame.validityEnd))
-            // And should have some routes (journey patterns) in common.
-            .andExists(
-                DSL.selectOne().from(
-                    getOverlappingSchedules(
-                        arrayOf(stagingVehicleScheduleFrame.vehicleScheduleFrameId),
-                        arrayOf(),
-                        true
-                    )
-                )
-            )
             .fetchInto(VehicleScheduleFrame::class.java)
     }
 }
