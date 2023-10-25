@@ -103,6 +103,37 @@ class CombineTimetablesServiceTest @Autowired constructor(
         }
 
         @Test
+        fun `combines the timetable when in addition to actual target there also exists other frames with identical validity but different days of week`() {
+            val testData = TimetablesDataset.createFromResource("datasets/combine.json")
+            testData.getNested("_vehicle_schedule_frames.staging._vehicle_services.monFri")["day_type_id"] =
+                "MONDAY_FRIDAY"
+            testData.getNested("_vehicle_schedule_frames.target._vehicle_services.monFri")["day_type_id"] =
+                "WEDNESDAY"
+
+            // Add another frame with identical validity range (should match combined) but different days of week (-> should not match).
+            val saturdayFrameId = UUID.fromString("ccc9f432-f1f1-4baa-935b-39590a8d9380")
+            val saturdayTarget = testData.getNested("_vehicle_schedule_frames.target").deepClone()
+                .setFrameProperties(
+                    mutableMapOf(
+                        "vehicle_schedule_frame_id" to saturdayFrameId,
+                        "name" to "2023 tammikuu lauantai"
+                    )
+                )
+            saturdayTarget.getNested("_vehicle_services.monFri")["day_type_id"] = "SATURDAY"
+            testData.getNested("_vehicle_schedule_frames")["saturdayTarget"] = saturdayTarget
+
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
+            val stagingFrameId = UUID.fromString("aa0e95c6-34d1-4d09-8546-3789b04ea494")
+
+            val result = combineTimetablesService.combineTimetables(
+                listOf(stagingFrameId),
+                TimetablesPriority.STANDARD
+            )
+            assertEquals(listOf(UUID.fromString("bb2abc90-8e91-4b0b-a7e4-751a04e81ba3")), result)
+            assertNull(vehicleScheduleFrameRepository.fetchOneByVehicleScheduleFrameId(stagingFrameId))
+        }
+
+        @Test
         fun `fails when called with invalid target priority = staging`() {
             val testData = TimetablesDataset.createFromResource("datasets/combine.json")
             timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
@@ -384,17 +415,6 @@ class CombineTimetablesServiceTest @Autowired constructor(
             )
         }
 
-        private fun MutableMap<String, Any?>.setFrameProperties(
-            patch: MutableMap<String, Any?>,
-            serviceId: UUID = UUID.randomUUID()
-        ): MutableMap<String, Any?> {
-            this.putAll(patch)
-            // Service id is hard coded in the dataset (for asserts),
-            // need to reset since these will be cloned.
-            this.getNested("_vehicle_services.monFri")["vehicle_service_id"] = serviceId
-            return this
-        }
-
         @Test
         fun `combine each staging timetables and returns target vehicle schedule frame ids`() {
             timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
@@ -434,5 +454,16 @@ class CombineTimetablesServiceTest @Autowired constructor(
             assertEquals(initialFrames, framesAfter)
             assertEquals(initialServices, servicesAfter)
         }
+    }
+
+    private fun MutableMap<String, Any?>.setFrameProperties(
+        patch: MutableMap<String, Any?>,
+        serviceId: UUID = UUID.randomUUID()
+    ): MutableMap<String, Any?> {
+        this.putAll(patch)
+        // Service id is hard coded in the dataset (for asserts),
+        // need to reset since these will be cloned.
+        this.getNested("_vehicle_services.monFri")["vehicle_service_id"] = serviceId
+        return this
     }
 }
