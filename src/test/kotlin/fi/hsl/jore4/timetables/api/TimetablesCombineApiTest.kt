@@ -108,7 +108,8 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                     {
                       "message": "something unexpected happened",
                       "extensions": {
-                        "code": 409
+                        "code": 409,
+                        "type": "UnknownError"
                       }
                     }
                     """.trimIndent(),
@@ -145,6 +146,7 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                       "message": "JDBC Commit Failed",
                       "extensions": {
                         "code": 409,
+                        "type": "TransactionSystemError",
                         "sqlErrorMessage": "$sqlErrorMessage"
                       }
                     }
@@ -192,6 +194,7 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                       "message": "$errorMessage",
                       "extensions": {
                         "code": 404,
+                        "type": "StagingVehicleScheduleFrameNotFoundError",
                         "stagingVehicleScheduleFrameId": "$missingStagingFrameId"
                       }
                     }
@@ -226,6 +229,7 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                       "message": "$errorMessage",
                       "extensions": {
                         "code": 400,
+                        "type": "InvalidTargetPriorityError",
                         "targetPriority": $invalidTargetPriority
                       }
                     }
@@ -259,6 +263,7 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                       "message": "$errorMessage",
                       "extensions": {
                         "code": 404,
+                        "type": "TargetVehicleScheduleFrameNotFoundError",
                         "stagingVehicleScheduleFrameId": ${defaultStagingFrameIds[0]}
                       }
                     }
@@ -292,6 +297,7 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                       "message": "$errorMessage",
                       "extensions": {
                         "code": 409,
+                        "type": "MultipleTargetFramesFoundError",
                         "stagingVehicleScheduleFrameId": ${defaultStagingFrameIds[0]},
                         "targetVehicleScheduleFrameIds": $defaultTargetFrameIds
                       }

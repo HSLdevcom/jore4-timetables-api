@@ -109,6 +109,7 @@ class TimetablesToReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                       "message": "$errorMessage",
                       "extensions": {
                         "code": 400,
+                        "type": "TargetPriorityParsingError",
                         "targetPriority": $invalidTargetPriorityInput
                       }
                     }

@@ -113,7 +113,8 @@ class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                     {
                       "message": "something unexpected happened",
                       "extensions": {
-                        "code": 409
+                        "code": 409,
+                        "type": "UnknownError"
                       }
                     }
                     """.trimIndent(),
@@ -153,6 +154,7 @@ class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                       "message": "JDBC Commit Failed",
                       "extensions": {
                         "code": 409,
+                        "type": "TransactionSystemError",
                         "sqlErrorMessage": "$sqlErrorMessage"
                       }
                     }
@@ -200,6 +202,7 @@ class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                       "message": "$errorMessage",
                       "extensions": {
                         "code": 404,
+                        "type": "StagingVehicleScheduleFrameNotFoundError",
                         "stagingVehicleScheduleFrameId": "$missingStagingFrameId"
                       }
                     }
@@ -237,6 +240,7 @@ class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                       "message": "$errorMessage",
                       "extensions": {
                         "code": 400,
+                        "type": "InvalidTargetPriorityError",
                         "targetPriority": $invalidTargetPriority
                       }
                     }
