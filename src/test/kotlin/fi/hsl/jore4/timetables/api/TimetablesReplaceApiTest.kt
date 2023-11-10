@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.transaction.TransactionSystemException
 import java.util.UUID
 
 private val LOGGER = KotlinLogging.logger {}
@@ -125,6 +126,43 @@ class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                 defaultStagingFrameIds,
                 defaultTargetPriority
             )
+        }
+    }
+
+    @Test
+    fun `throws a 409 when service transaction fails to commit`() {
+        val sqlErrorMessage = "ERROR: conflicting schedules detected: vehicle schedule frame Where: PL/pgSQL function vehicle_schedule.validate_queued_schedules_uniqueness()"
+
+        every {
+            replaceTimetablesService.replaceTimetables(
+                defaultStagingFrameIds,
+                defaultTargetPriority
+            )
+        } throws TransactionSystemException(
+            "JDBC Commit Failed",
+            Exception(sqlErrorMessage)
+        )
+
+        executeReplaceTimetablesRequest()
+            .andExpect(status().isConflict)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                content().json(
+                    """
+                    {
+                      "message": "JDBC Commit Failed",
+                      "extensions": {
+                        "code": 409,
+                        "sqlErrorMessage": "$sqlErrorMessage"
+                      }
+                    }
+                    """.trimIndent(),
+                    true
+                )
+            )
+
+        verify(exactly = 1) {
+            replaceTimetablesService.replaceTimetables(defaultStagingFrameIds, defaultTargetPriority)
         }
     }
 

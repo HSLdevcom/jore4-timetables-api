@@ -8,6 +8,7 @@ import fi.hsl.jore4.timetables.api.util.PlainStatusExtensions
 import fi.hsl.jore4.timetables.api.util.StagingVehicleScheduleFrameNotFoundExtensions
 import fi.hsl.jore4.timetables.api.util.TargetPriorityParsingExtensions
 import fi.hsl.jore4.timetables.api.util.TargetVehicleScheduleFrameNotFoundExtensions
+import fi.hsl.jore4.timetables.api.util.TransactionSystemExtensions
 import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
 import fi.hsl.jore4.timetables.service.CombineTimetablesService
 import fi.hsl.jore4.timetables.service.InvalidTargetPriorityException
@@ -20,6 +21,7 @@ import jakarta.validation.constraints.AssertTrue
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.TransactionSystemException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -127,6 +129,9 @@ class TimetablesController(
             is MultipleTargetFramesFoundException -> MultipleTargetFramesFoundExtensions.from(ex)
 
             is TargetPriorityParsingException -> TargetPriorityParsingExtensions.from(ex)
+
+            // Occurs on Commit / Rollback errors.
+            is TransactionSystemException -> TransactionSystemExtensions.from(ex)
 
             else -> {
                 LOGGER.error { "Exception during request:$ex" }
