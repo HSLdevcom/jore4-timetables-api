@@ -7,6 +7,7 @@ import fi.hsl.jore4.timetables.service.MultipleTargetFramesFoundException
 import fi.hsl.jore4.timetables.service.StagingVehicleScheduleFrameNotFoundException
 import fi.hsl.jore4.timetables.service.TargetFrameNotFoundException
 import org.springframework.http.HttpStatus
+import org.springframework.transaction.TransactionSystemException
 import java.util.UUID
 
 sealed interface HasuraErrorExtensions {
@@ -83,6 +84,19 @@ data class TargetPriorityParsingExtensions(
         fun from(ex: TargetPriorityParsingException) = TargetPriorityParsingExtensions(
             HttpStatus.BAD_REQUEST.value(),
             ex.targetPriority
+        )
+    }
+}
+
+data class TransactionSystemExtensions(
+    override val code: Int,
+    val sqlErrorMessage: String
+) : HasuraErrorExtensions {
+
+    companion object {
+        fun from(ex: TransactionSystemException) = TransactionSystemExtensions(
+            HttpStatus.CONFLICT.value(),
+            ex.cause?.message ?: "unknown error on transaction commit or rollback"
         )
     }
 }
