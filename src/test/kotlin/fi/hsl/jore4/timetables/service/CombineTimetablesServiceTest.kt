@@ -8,17 +8,21 @@ import fi.hsl.jore4.timetables.extensions.deepClone
 import fi.hsl.jore4.timetables.extensions.getNested
 import fi.hsl.jore4.timetables.repository.VehicleScheduleFrameRepository
 import fi.hsl.jore4.timetables.repository.VehicleServiceRepository
+import mu.KotlinLogging
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.TransactionSystemException
 import java.util.UUID
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+
+private val LOGGER = KotlinLogging.logger {}
 
 @IntTest
 class CombineTimetablesServiceTest @Autowired constructor(
@@ -331,6 +335,40 @@ class CombineTimetablesServiceTest @Autowired constructor(
             )
             assertEquals(listOf(UUID.fromString("bb2abc90-8e91-4b0b-a7e4-751a04e81ba3")), result)
             assertNull(vehicleScheduleFrameRepository.fetchOneByVehicleScheduleFrameId(stagingFrameId))
+        }
+
+        @Test
+        fun `fails when combining would result in invalid data`() {
+            // There are not too many cases that can produce a commit fail here,
+            // since the frames have already been (mostly) validated when created as staging.
+            // Setup for one such case here:
+            // Change target2 validity times to differ from staging -> not detected as target.
+            // But since we have another target ("target" in dataset), we can still combine.
+            // However, since the staging frame  overlaps with target2 (timetables active for same routes on same days),
+            // the commit will fail on DB constraints.
+            // There might be more realistic cases to reproduce similar error with, I think,
+            // but this is easiest with current datasets.
+            val testData = TimetablesDataset.createFromResource("datasets/combine_multiple_targets.json")
+            testData.getNested("_vehicle_schedule_frames.target2")["validity_start"] = "2022-07-15"
+            testData.getNested("_vehicle_schedule_frames.target2")["validity_end"] = "2023-05-15"
+
+            timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
+
+            val stagingFrameId = UUID.fromString("e8d07c0d-575f-4cbe-bddb-ead5b2943638")
+            val exception = assertFailsWith<TransactionSystemException> {
+                combineTimetablesService.combineTimetables(
+                    listOf(stagingFrameId),
+                    TimetablesPriority.STANDARD
+                )
+            }
+
+            // Check that the error messages are somewhat in the format we expect. TransactionSystemExtensions depends on these.
+            assertEquals(exception.message, "JDBC commit failed")
+            val causeMessage = exception?.cause?.message
+            assertNotNull(causeMessage)
+            assertContains(causeMessage, "ERROR: conflicting schedules detected: vehicle schedule frame")
+            assertContains(causeMessage, "Where: PL/pgSQL function vehicle_schedule.validate_queued_schedules_uniqueness()")
+            assertContains(causeMessage, "SQL statement \"SELECT vehicle_schedule.validate_queued_schedules_uniqueness()")
         }
     }
 
