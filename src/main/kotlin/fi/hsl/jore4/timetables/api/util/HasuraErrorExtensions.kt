@@ -116,8 +116,27 @@ data class TransactionSystemExtensions(
     companion object {
         fun from(ex: TransactionSystemException) = TransactionSystemExtensions(
             HttpStatus.CONFLICT.value(),
-            HasuraErrorType.TransactionSystemError,
+            resolveHasuraErrorType(ex),
             ex.cause?.message ?: "unknown error on transaction commit or rollback"
         )
+
+        private fun resolveHasuraErrorType(ex: TransactionSystemException): HasuraErrorType {
+            val errorMessage = ex.cause?.message ?: "" // Should always be defined though.
+
+            // Attempt to detect from the error message (because there's no other data really) which error case triggered the failure.
+            // Mainly using either the triggering validation function name or some known part of the error message for this.
+            val errorTypesWithMatchingSubstrings = listOf(
+                HasuraErrorType.PassingTimeStopPointMatchingOrderError to "passing times and their matching stop points must be in same order",
+                HasuraErrorType.PassingTimeFirstArrivalTimeError to "first passing time must not have arrival_time set",
+                HasuraErrorType.PassingTimeLastDepartureTimeError to "last passing time must not have departure_time set",
+                HasuraErrorType.PassingTimeNullError to "all passing time that are not first or last in the sequence must have both departure and arrival time defined",
+                HasuraErrorType.PassingTimesMixedJourneyPatternRefsError to "inconsistent journey_pattern_ref within vehicle journey, all timetabled_passing_times must reference same journey_pattern_ref as the vehicle_journey",
+                HasuraErrorType.ConflictingSchedulesError to "validate_queued_schedules_uniqueness",
+                HasuraErrorType.SequentialIntegrityError to "validate_service_sequential_integrity"
+            )
+
+            return errorTypesWithMatchingSubstrings.find { it.second in errorMessage }?.first
+                ?: HasuraErrorType.TransactionSystemError
+        }
     }
 }
