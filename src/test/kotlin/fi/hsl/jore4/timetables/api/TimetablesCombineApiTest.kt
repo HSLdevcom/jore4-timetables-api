@@ -124,6 +124,11 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
 
     @Test
     fun `throws a 409 when service transaction fails to commit`() {
+        // Note: there are many kinds of transaction system errors (see `TransactionSystemException`).
+        // Just using `ConflictingSchedulesError` here as an example instead of plain `TransactionSystemError`
+        // to get better test coverage by involving error type detection.
+        // Other transaction system errors are handled similarly,
+        // type detection for each error case is tested in more detail in a separate suite.
         val sqlErrorMessage = "ERROR: conflicting schedules detected: vehicle schedule frame Where: PL/pgSQL function vehicle_schedule.validate_queued_schedules_uniqueness()"
 
         every {
@@ -146,7 +151,7 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                       "message": "JDBC Commit Failed",
                       "extensions": {
                         "code": 409,
-                        "type": "TransactionSystemError",
+                        "type": "ConflictingSchedulesError",
                         "sqlErrorMessage": "$sqlErrorMessage"
                       }
                     }
