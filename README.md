@@ -39,7 +39,6 @@ When the submodule is updated, to get the newest version of inserter you need to
 
 ## API structure
 
-- `GET /hello` Hello world example interface returns http 200
 - `POST /timetables/replace`: Import staging timetables to target priority
   by replacing matching currently active vehicle schedule frames.
   Example request body:
