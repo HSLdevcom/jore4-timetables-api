@@ -25,8 +25,6 @@ class WebSecurityConfig {
                         HttpMethod.GET,
                         "/actuator/health",
                         "/error",
-                        "/hello",
-                        "/hello/test",
                         "/timetables/to-replace"
                     )
                     .permitAll()
