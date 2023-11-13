@@ -116,8 +116,23 @@ data class TransactionSystemExtensions(
     companion object {
         fun from(ex: TransactionSystemException) = TransactionSystemExtensions(
             HttpStatus.CONFLICT.value(),
-            HasuraErrorType.TransactionSystemError,
+            resolveHasuraErrorType(ex),
             ex.cause?.message ?: "unknown error on transaction commit or rollback"
         )
+
+        private fun resolveHasuraErrorType(ex: TransactionSystemException): HasuraErrorType {
+            val errorMessage = ex.cause?.message ?: "" // Should always be defined though.
+            val errorMatchingConditions = listOf(
+                HasuraErrorType.PassingTimeStopPointMatchingOrderError to { errorMessage.contains("passing times and their matching stop points must be in same order") },
+                HasuraErrorType.PassingTimeFirstArrivalTimeError to { errorMessage.contains("first passing time must not have arrival_time set") },
+                HasuraErrorType.PassingTimeLastDepartureTimeError to { errorMessage.contains("last passing time must not have departure_time set") },
+                HasuraErrorType.PassingTimeNullError to { errorMessage.contains("all passing time that are not first or last in the sequence must have both departure and arrival time defined") },
+                HasuraErrorType.PassingTimesMixedJourneyPatternRefsError to { errorMessage.contains("inconsistent journey_pattern_ref within vehicle journey, all timetabled_passing_times must reference same journey_pattern_ref as the vehicle_journey") },
+                HasuraErrorType.ConflictingSchedulesError to { errorMessage.contains("validate_queued_schedules_uniqueness") },
+                HasuraErrorType.SequentialIntegrityError to { errorMessage.contains("validate_service_sequential_integrity") }
+            )
+
+            return errorMatchingConditions.find { it.second() }?.first ?: HasuraErrorType.TransactionSystemError
+        }
     }
 }

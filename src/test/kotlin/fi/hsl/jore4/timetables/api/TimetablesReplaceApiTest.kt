@@ -154,7 +154,7 @@ class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                       "message": "JDBC Commit Failed",
                       "extensions": {
                         "code": 409,
-                        "type": "TransactionSystemError",
+                        "type": "ConflictingSchedulesError",
                         "sqlErrorMessage": "$sqlErrorMessage"
                       }
                     }
