@@ -4,8 +4,7 @@
 package fi.hsl.jore.jore4.jooq.passing_times.routines.references
 
 
-import fi.hsl.jore.jore4.jooq.passing_times.routines.CreateValidatePassingTimesSequenceQueueTempTables
-import fi.hsl.jore.jore4.jooq.passing_times.routines.PassingTimesSequenceAlreadyValidated
+import fi.hsl.jore.jore4.jooq.passing_times.routines.ValidatePassingTimeSequences
 import fi.hsl.jore.jore4.jooq.passing_times.tables.GetPassingTimeOrderValidityData
 import fi.hsl.jore.jore4.jooq.passing_times.tables.records.GetPassingTimeOrderValidityDataRecord
 
@@ -18,37 +17,14 @@ import org.jooq.Result
 
 
 /**
- * Call
- * <code>passing_times.create_validate_passing_times_sequence_queue_temp_tables</code>
+ * Call <code>passing_times.validate_passing_time_sequences</code>
  */
-fun createValidatePassingTimesSequenceQueueTempTables(
+fun validatePassingTimeSequences(
       configuration: Configuration
 ): Unit {
-    val p = CreateValidatePassingTimesSequenceQueueTempTables()
+    val p = ValidatePassingTimeSequences()
 
     p.execute(configuration)
-}
-
-/**
- * Call <code>passing_times.passing_times_sequence_already_validated</code>
- */
-fun passingTimesSequenceAlreadyValidated(
-      configuration: Configuration
-): Boolean? {
-    val f = PassingTimesSequenceAlreadyValidated()
-
-    f.execute(configuration)
-    return f.returnValue
-}
-
-/**
- * Get <code>passing_times.passing_times_sequence_already_validated</code> as a
- * field.
- */
-fun passingTimesSequenceAlreadyValidated(): Field<Boolean?> {
-    val f = PassingTimesSequenceAlreadyValidated()
-
-    return f.asField()
 }
 
 /**

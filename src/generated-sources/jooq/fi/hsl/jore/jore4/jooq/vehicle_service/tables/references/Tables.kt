@@ -8,8 +8,10 @@ import fi.hsl.jore.jore4.jooq.return_value.tables.records.TimetableVersionRecord
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.Block
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetableVersionsByJourneyPatternIds
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetablesAndSubstituteOperatingDays
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServiceTimingData
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.JourneyPatternsInVehicleService
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.records.GetVehicleServiceTimingDataRecord
 
 import java.time.LocalDate
 import java.util.UUID
@@ -133,6 +135,39 @@ fun GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS(
     journeyPatternIds,
     startDate,
     endDate
+)
+
+/**
+ * The table <code>vehicle_service.get_vehicle_service_timing_data</code>.
+ */
+val GET_VEHICLE_SERVICE_TIMING_DATA: GetVehicleServiceTimingData = GetVehicleServiceTimingData.GET_VEHICLE_SERVICE_TIMING_DATA
+
+/**
+ * Call <code>vehicle_service.get_vehicle_service_timing_data</code>.
+ */
+fun GET_VEHICLE_SERVICE_TIMING_DATA(
+      configuration: Configuration
+    , vehicleServiceIds: Array<UUID?>?
+): Result<GetVehicleServiceTimingDataRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServiceTimingData.GET_VEHICLE_SERVICE_TIMING_DATA.call(
+      vehicleServiceIds
+)).fetch()
+
+/**
+ * Get <code>vehicle_service.get_vehicle_service_timing_data</code> as a table.
+ */
+fun GET_VEHICLE_SERVICE_TIMING_DATA(
+      vehicleServiceIds: Array<UUID?>?
+): GetVehicleServiceTimingData = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServiceTimingData.GET_VEHICLE_SERVICE_TIMING_DATA.call(
+    vehicleServiceIds
+)
+
+/**
+ * Get <code>vehicle_service.get_vehicle_service_timing_data</code> as a table.
+ */
+fun GET_VEHICLE_SERVICE_TIMING_DATA(
+      vehicleServiceIds: Field<Array<UUID?>?>
+): GetVehicleServiceTimingData = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServiceTimingData.GET_VEHICLE_SERVICE_TIMING_DATA.call(
+    vehicleServiceIds
 )
 
 /**
