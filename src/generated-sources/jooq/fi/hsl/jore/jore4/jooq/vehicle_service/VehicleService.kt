@@ -9,7 +9,9 @@ import fi.hsl.jore.jore4.jooq.return_value.tables.records.TimetableVersionRecord
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.Block
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetableVersionsByJourneyPatternIds
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetTimetablesAndSubstituteOperatingDays
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServiceTimingData
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.JourneyPatternsInVehicleService
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.records.GetVehicleServiceTimingDataRecord
 
 import java.time.LocalDate
 import java.util.UUID
@@ -155,6 +157,41 @@ open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT
     )
 
     /**
+     * The table <code>vehicle_service.get_vehicle_service_timing_data</code>.
+     */
+    val GET_VEHICLE_SERVICE_TIMING_DATA: GetVehicleServiceTimingData get() = GetVehicleServiceTimingData.GET_VEHICLE_SERVICE_TIMING_DATA
+
+    /**
+     * Call <code>vehicle_service.get_vehicle_service_timing_data</code>.
+     */
+    fun GET_VEHICLE_SERVICE_TIMING_DATA(
+          configuration: Configuration
+        , vehicleServiceIds: Array<UUID?>?
+    ): Result<GetVehicleServiceTimingDataRecord> = configuration.dsl().selectFrom(fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServiceTimingData.GET_VEHICLE_SERVICE_TIMING_DATA.call(
+          vehicleServiceIds
+    )).fetch()
+
+    /**
+     * Get <code>vehicle_service.get_vehicle_service_timing_data</code> as a
+     * table.
+     */
+    fun GET_VEHICLE_SERVICE_TIMING_DATA(
+          vehicleServiceIds: Array<UUID?>?
+    ): GetVehicleServiceTimingData = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServiceTimingData.GET_VEHICLE_SERVICE_TIMING_DATA.call(
+        vehicleServiceIds
+    )
+
+    /**
+     * Get <code>vehicle_service.get_vehicle_service_timing_data</code> as a
+     * table.
+     */
+    fun GET_VEHICLE_SERVICE_TIMING_DATA(
+          vehicleServiceIds: Field<Array<UUID?>?>
+    ): GetVehicleServiceTimingData = fi.hsl.jore.jore4.jooq.vehicle_service.tables.GetVehicleServiceTimingData.GET_VEHICLE_SERVICE_TIMING_DATA.call(
+        vehicleServiceIds
+    )
+
+    /**
      * A denormalized table containing relationships between vehicle_services
      * and journey_patterns (via journey_pattern_ref.journey_pattern_id).
      *  Without this table this relationship could be found via vehicle_service
@@ -177,6 +214,7 @@ open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT
         Block.BLOCK,
         GetTimetableVersionsByJourneyPatternIds.GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS,
         GetTimetablesAndSubstituteOperatingDays.GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS,
+        GetVehicleServiceTimingData.GET_VEHICLE_SERVICE_TIMING_DATA,
         JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE,
         fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService.VEHICLE_SERVICE_
     )
