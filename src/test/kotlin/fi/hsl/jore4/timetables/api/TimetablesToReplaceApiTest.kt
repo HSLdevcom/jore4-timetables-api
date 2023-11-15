@@ -17,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDate
 import java.util.UUID
@@ -73,9 +73,9 @@ class TimetablesToReplaceApiTest(@Autowired val mockMvc: MockMvc) {
 
         executeToReplaceTimetablesRequest(stagingVehicleScheduleFrameId, targetPriority)
             .andExpect(status().isOk)
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
-                MockMvcResultMatchers.content().json(
+                content().json(
                     """
                     {
                       "toReplaceVehicleScheduleFrameIds": $defaultToReplaceIds
@@ -101,9 +101,9 @@ class TimetablesToReplaceApiTest(@Autowired val mockMvc: MockMvc) {
 
         executeToReplaceTimetablesRequest(stagingVehicleScheduleFrameId, invalidTargetPriorityInput)
             .andExpect(status().isBadRequest)
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
-                MockMvcResultMatchers.content().json(
+                content().json(
                     """
                     {
                       "message": "$errorMessage",
