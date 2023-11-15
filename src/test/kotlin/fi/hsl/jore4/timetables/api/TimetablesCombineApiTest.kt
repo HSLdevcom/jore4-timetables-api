@@ -21,7 +21,8 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
@@ -70,10 +71,10 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
         } answers { defaultTargetFrameIds }
 
         executeCombineTimetablesRequest()
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
-                MockMvcResultMatchers.content().json(
+                content().json(
                     """
                     {
                       "combinedIntoVehicleScheduleFrameIds": $defaultTargetFrameIds
@@ -98,10 +99,10 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
         } throws RuntimeException("something unexpected happened")
 
         executeCombineTimetablesRequest()
-            .andExpect(MockMvcResultMatchers.status().isConflict)
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isConflict)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
-                MockMvcResultMatchers.content().json(
+                content().json(
                     """
                     {
                       "message": "something unexpected happened",
@@ -126,8 +127,8 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
 
         // TODO: this could maybe use better handling.
         executeCombineTimetablesRequest(targetPriority = invalidTargetPriority)
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
-            .andExpect(MockMvcResultMatchers.content().string(""))
+            .andExpect(status().isBadRequest)
+            .andExpect(content().string(""))
 
         verify(exactly = 0) { combineTimetablesService.combineTimetables(any(), any()) }
     }
@@ -144,10 +145,10 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
         } throws StagingVehicleScheduleFrameNotFoundException(errorMessage, missingStagingFrameId)
 
         executeCombineTimetablesRequest()
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
-                MockMvcResultMatchers.content().json(
+                content().json(
                     """
                     {
                       "message": "$errorMessage",
@@ -178,10 +179,10 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
         } throws InvalidTargetPriorityException(errorMessage, invalidTargetPriority)
 
         executeCombineTimetablesRequest(targetPriority = invalidTargetPriority.value)
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
-                MockMvcResultMatchers.content().json(
+                content().json(
                     """
                     {
                       "message": "$errorMessage",
@@ -211,10 +212,10 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
         } throws TargetFrameNotFoundException(errorMessage, defaultStagingFrameIds[0])
 
         executeCombineTimetablesRequest()
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
-                MockMvcResultMatchers.content().json(
+                content().json(
                     """
                     {
                       "message": "$errorMessage",
@@ -244,10 +245,10 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
         } throws MultipleTargetFramesFoundException(errorMessage, defaultStagingFrameIds[0], defaultTargetFrameIds)
 
         executeCombineTimetablesRequest()
-            .andExpect(MockMvcResultMatchers.status().isConflict)
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isConflict)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
-                MockMvcResultMatchers.content().json(
+                content().json(
                     """
                     {
                       "message": "$errorMessage",
