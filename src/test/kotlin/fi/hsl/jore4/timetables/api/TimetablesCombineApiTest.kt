@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
 @ActiveProfiles("test")
 class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {

@@ -27,7 +27,7 @@ import java.util.UUID
 private val LOGGER = KotlinLogging.logger {}
 
 @ExtendWith(MockKExtension::class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
 @ActiveProfiles("test")
 class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
