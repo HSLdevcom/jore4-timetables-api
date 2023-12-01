@@ -29,8 +29,7 @@ class VehicleScheduleFrameRepository(private val dsl: DSLContext, config: Defaul
         val stagingFrameIdName: Name = DSL.name("stagingVehicleScheduleFrameId")
         val replacedFrameIdName: Name = DSL.name("replacedVehicleScheduleFrameId")
         val stagingVehicleScheduleFrameIdField = DSL.field(stagingFrameIdName, UUID::class.java)
-        val replacedVehicleScheduleFrameIdField =
-            DSL.field(replacedFrameIdName, UUID::class.java)
+        val replacedVehicleScheduleFrameIdField = DSL.field(replacedFrameIdName, UUID::class.java)
 
         val stagingFrame = VEHICLE_SCHEDULE_FRAME.`as`("staging")
         val replacedFrame = VEHICLE_SCHEDULE_FRAME.`as`("replaced")
@@ -102,8 +101,7 @@ class VehicleScheduleFrameRepository(private val dsl: DSLContext, config: Defaul
         val stagingFrameIdName: Name = DSL.name("stagingVehicleScheduleFrameId")
         val targetFrameIdName: Name = DSL.name("targetVehicleScheduleFrameId")
         val stagingVehicleScheduleFrameIdField = DSL.field(stagingFrameIdName, UUID::class.java)
-        val targetVehicleScheduleFrameIdField =
-            DSL.field(targetFrameIdName, UUID::class.java)
+        val targetVehicleScheduleFrameIdField = DSL.field(targetFrameIdName, UUID::class.java)
 
         val stagingFrame = VEHICLE_SCHEDULE_FRAME.`as`("staging")
         val targetFrame = VEHICLE_SCHEDULE_FRAME.`as`("target")
