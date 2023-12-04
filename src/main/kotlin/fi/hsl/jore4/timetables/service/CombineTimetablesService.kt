@@ -61,9 +61,6 @@ class CombineTimetablesService(
             )
         }
 
-        // TODO: ensure that there are no identical journeys in staging and target.
-        // DB triggers do not ensure this.
-
         LOGGER.info("Moving staging vehicle services to target...")
         moveStagingVehicleServicesToTarget(
             stagingFrame = stagingVehicleScheduleFrame,

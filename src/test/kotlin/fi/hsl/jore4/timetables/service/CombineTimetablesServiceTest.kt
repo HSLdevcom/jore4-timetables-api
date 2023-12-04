@@ -303,7 +303,7 @@ class CombineTimetablesServiceTest @Autowired constructor(
         }
 
         @Test
-        fun `fails when target frame already contains the staging vehicle journey`() {
+        fun `combines a vehicle journey that already exists in the target frame`() {
             val testData = TimetablesDataset.createFromResource("datasets/combine.json")
 
             val stagingBlock = testData
@@ -326,9 +326,6 @@ class CombineTimetablesServiceTest @Autowired constructor(
             timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
             val stagingFrameId = UUID.fromString("aa0e95c6-34d1-4d09-8546-3789b04ea494")
 
-            // FIXME: this should fail instead. The service currently works incorrectly in this case.
-            // Also, check correct exception class.
-            // Might need more robust tests than just this one case (at least for valid corner cases).
             val result = combineTimetablesService.combineTimetables(
                 listOf(stagingFrameId),
                 TimetablesPriority.STANDARD
