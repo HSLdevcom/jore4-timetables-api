@@ -92,6 +92,10 @@ class TimetablesController(
         val toReplaceVehicleScheduleFrameIds: List<UUID>
     )
 
+    data class ToCombineTimetablesResponseBody(
+        val toCombineTargetVehicleScheduleFrameId: UUID
+    )
+
     class TargetPriorityParsingException(message: String, val targetPriority: Int) : RuntimeException(message)
 
     @GetMapping("to-replace")
@@ -115,6 +119,34 @@ class TimetablesController(
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(ToReplaceTimetablesResponseBody(toReplaceVehicleScheduleFrameIds = vehicleScheduleFrameIds))
+    }
+
+    @GetMapping("to-combine")
+    fun getTargetFrameIdsForCombine(
+        @RequestParam
+        targetPriority: Int,
+        @RequestParam
+        stagingVehicleScheduleFrameId: UUID
+    ): ResponseEntity<ToCombineTimetablesResponseBody> {
+        LOGGER.info { "ToCombine api, stagingVehicleScheduleFrameId: $stagingVehicleScheduleFrameId, targetPriority: $targetPriority" }
+
+        val targetPriorityEnumResult = runCatching { TimetablesPriority.fromInt(targetPriority) }
+        if (targetPriorityEnumResult.isFailure) {
+            throw TargetPriorityParsingException("Failed to parse target priority", targetPriority)
+        }
+
+        val targetVehicleScheduleFrame = combineTimetablesService.fetchTargetVehicleScheduleFrame(
+            stagingVehicleScheduleFrameId,
+            targetPriorityEnumResult.getOrThrow()
+        )
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(
+                ToCombineTimetablesResponseBody(
+                    // ID of an existing row, can never be null.
+                    toCombineTargetVehicleScheduleFrameId = targetVehicleScheduleFrame.vehicleScheduleFrameId!!
+                )
+            )
     }
 
     @ExceptionHandler(RuntimeException::class)
