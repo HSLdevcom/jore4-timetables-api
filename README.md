@@ -107,6 +107,18 @@ When the submodule is updated, to get the newest version of inserter you need to
     ]
   }
   ```
+- `GET /timetables/to-combine`: Fetch the vehicle schedule frame ID slated to be the target for combine,
+  considering the combine action with the staging vehicle schedule frame ID and target priority.
+  - Request params:
+    - `stagingVehicleScheduleFrameId` The ID of the staging vehicle schedule frame. Example: `"50f939b0-aac3-453a-b2f5-24c0cdf8ad21"`
+    - `targetPriority` The priority to which the staging timetables will be promoted. Example: `10`
+
+  Example response body:
+  ```JSON
+  {
+    "toCombineTargetVehicleScheduleFrameId": "d3d0aea6-db3f-4421-b4eb-39cffe8835a8"
+  }
+  ```
 ## Technical Documentation
 
 jore4-timetables-api is a Spring Boot application written in Kotlin, which implements a REST API for accessing the timetables database and creating more complicated updates in one transaction than is possible with the graphQL interface.

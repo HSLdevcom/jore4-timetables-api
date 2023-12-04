@@ -58,6 +58,15 @@ class CombineTimetablesService(
         return targetVehicleScheduleFrame.vehicleScheduleFrameId!! // ID of an existing row, can never be null.
     }
 
+    @Transactional(readOnly = true)
+    fun fetchTargetVehicleScheduleFrame(
+        stagingVehicleScheduleFrameId: UUID,
+        targetPriority: TimetablesPriority
+    ): VehicleScheduleFrame {
+        val stagingVehicleScheduleFrame = fetchStagingVehicleScheduleFrame(stagingVehicleScheduleFrameId)
+        return fetchTargetVehicleScheduleFrame(stagingVehicleScheduleFrame, targetPriority)
+    }
+
     private fun fetchTargetVehicleScheduleFrame(
         stagingVehicleScheduleFrame: VehicleScheduleFrame,
         targetPriority: TimetablesPriority
