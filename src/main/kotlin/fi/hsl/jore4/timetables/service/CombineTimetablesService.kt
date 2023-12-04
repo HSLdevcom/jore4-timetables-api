@@ -44,6 +44,27 @@ class CombineTimetablesService(
 
         val stagingVehicleScheduleFrame = fetchStagingVehicleScheduleFrame(stagingVehicleScheduleFrameId)
 
+        val targetVehicleScheduleFrame = fetchTargetVehicleScheduleFrame(stagingVehicleScheduleFrame, targetPriority)
+
+        LOGGER.info("Moving staging vehicle services to target...")
+        moveStagingVehicleServicesToTarget(
+            stagingFrame = stagingVehicleScheduleFrame,
+            targetFrame = targetVehicleScheduleFrame
+        )
+
+        LOGGER.info("Deleting the empty staging frame...")
+        deleteStagingVehicleScheduleFrame(stagingVehicleScheduleFrameId)
+
+        return targetVehicleScheduleFrame.vehicleScheduleFrameId!! // ID of an existing row, can never be null.
+    }
+
+    private fun fetchTargetVehicleScheduleFrame(
+        stagingVehicleScheduleFrame: VehicleScheduleFrame,
+        targetPriority: TimetablesPriority
+    ): VehicleScheduleFrame {
+        // ID of an existing row, can never be null.
+        val stagingVehicleScheduleFrameId = stagingVehicleScheduleFrame.vehicleScheduleFrameId!!
+
         val targetVehicleScheduleFrames = vehicleScheduleFrameRepository
             .fetchTargetVehicleScheduleFrames(stagingVehicleScheduleFrame, targetPriority)
         LOGGER.info { "Found ${targetVehicleScheduleFrames.size} target vehicle schedule frames." }
@@ -61,16 +82,7 @@ class CombineTimetablesService(
             )
         }
 
-        LOGGER.info("Moving staging vehicle services to target...")
-        moveStagingVehicleServicesToTarget(
-            stagingFrame = stagingVehicleScheduleFrame,
-            targetFrame = targetVehicleScheduleFrame
-        )
-
-        LOGGER.info("Deleting the empty staging frame...")
-        deleteStagingVehicleScheduleFrame(stagingVehicleScheduleFrameId)
-
-        return targetVehicleScheduleFrame.vehicleScheduleFrameId!! // ID of an existing row, can never be null.
+        return targetVehicleScheduleFrame
     }
 
     private fun fetchStagingVehicleScheduleFrame(stagingVehicleScheduleFrameId: UUID): VehicleScheduleFrame {
