@@ -23,7 +23,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
 @ActiveProfiles("test")
 class TimetablesToReplaceApiTest(@Autowired val mockMvc: MockMvc) {
