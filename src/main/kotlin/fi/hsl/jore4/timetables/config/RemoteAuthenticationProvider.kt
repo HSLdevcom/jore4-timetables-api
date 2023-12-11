@@ -15,7 +15,9 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
 @Configuration
-class RemoteAuthenticationProvider : AuthenticationProvider {
+class RemoteAuthenticationProvider(
+    val authenticationProperties: AuthenticationProperties
+) : AuthenticationProvider {
 
     companion object {
         val logger = KotlinLogging.logger {}
@@ -47,7 +49,7 @@ class RemoteAuthenticationProvider : AuthenticationProvider {
 
     private fun authenticateWithHasuraWebhook(authentication: Authentication?): HttpResponse<String> {
         val authRequest = HttpRequest.newBuilder().run {
-            uri(URI("http://jore4-auth:8080/public/v1/hasura/webhook"))
+            uri(URI(authenticationProperties.url))
             headers("cookie", "SESSION=${authentication?.principal}", ROLE_HEADER, authentication?.credentials.toString(), "Accept", "application/json")
             header("cookie", "SESSION=${authentication?.principal}")
             header(ROLE_HEADER, authentication?.credentials.toString())

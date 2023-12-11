@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import fi.hsl.jore4.timetables.config.AuthenticationProperties
 import fi.hsl.jore4.timetables.config.DatabaseProperties
 import fi.hsl.jore4.timetables.config.JOOQProperties
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -21,7 +22,7 @@ fun main(args: Array<String>) {
  * Spring boot application definition.
  */
 @SpringBootApplication
-@EnableConfigurationProperties(DatabaseProperties::class, JOOQProperties::class)
+@EnableConfigurationProperties(AuthenticationProperties::class, DatabaseProperties::class, JOOQProperties::class)
 class TimetablesApiApplication {
 
     @Bean
