@@ -108,6 +108,33 @@ When the submodule is updated, to get the newest version of inserter you need to
     ]
   }
   ```
+
+## Authentication
+
+Authentication is done via the existing Hasura webhook in the Jore4 Auth -service. The client holds a Spring session
+cookie which is used to verify their identity. Each request accessing a protected endpoint must also have a role header
+which includes which role they are requesting.
+
+Example request:
+
+```
+GET http://jore4-auth:8080/public/v1/hasura/webhook
+
+headers {
+  cookie: "SESSION=1234567890abcdefghijklmnopqrstuvwxyz"
+  x-hasura-role: "admin"
+}
+```
+
+Will return either `HTTP 401 Unauthorized` or a response with `HTTP 200` and
+```
+headers {
+  x-hasura-role: "granted role here"
+  x-hasura-id: "ID of user"
+}
+```
+Which can be used in the security context to grant access to protected endpoints and log user actions using the ID.
+
 ## Technical Documentation
 
 jore4-timetables-api is a Spring Boot application written in Kotlin, which implements a REST API for accessing the timetables database and creating more complicated updates in one transaction than is possible with the graphQL interface.
