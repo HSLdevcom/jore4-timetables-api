@@ -45,7 +45,7 @@ class TimetablesController(
 
     ) {
         @AssertTrue(message = "false")
-        fun isTargetPriorityValid(): Boolean = runCatching { TimetablesPriority.fromInt(targetPriority) }.isSuccess
+        fun isTargetPriorityValid(): Boolean = TimetablesPriority.fromInt(targetPriority) != null
     }
 
     data class CombineTimetablesResponseBody(
@@ -60,7 +60,7 @@ class TimetablesController(
         LOGGER.debug { "Combine api, request: $requestBody" }
         val combineResult = combineTimetablesService.combineTimetables(
             requestBody.stagingVehicleScheduleFrameIds,
-            TimetablesPriority.fromInt(requestBody.targetPriority)
+            parseTargetPriority(requestBody.targetPriority)
         )
 
         return ResponseEntity
@@ -80,7 +80,7 @@ class TimetablesController(
         LOGGER.debug { "Replace api, request: $requestBody" }
         val replaceResult = replaceTimetablesService.replaceTimetables(
             requestBody.stagingVehicleScheduleFrameIds,
-            TimetablesPriority.fromInt(requestBody.targetPriority)
+            parseTargetPriority(requestBody.targetPriority)
         )
 
         return ResponseEntity
@@ -107,14 +107,9 @@ class TimetablesController(
     ): ResponseEntity<ToReplaceTimetablesResponseBody> {
         LOGGER.info { "ToReplace api, stagingVehicleScheduleFrameId: $stagingVehicleScheduleFrameId, targetPriority: $targetPriority" }
 
-        val targetPriorityEnumResult = runCatching { TimetablesPriority.fromInt(targetPriority) }
-        if (targetPriorityEnumResult.isFailure) {
-            throw TargetPriorityParsingException("Failed to parse target priority", targetPriority)
-        }
-
         val vehicleScheduleFrameIds = replaceTimetablesService.fetchVehicleScheduleFramesToReplace(
             stagingVehicleScheduleFrameId,
-            targetPriorityEnumResult.getOrThrow()
+            parseTargetPriority(targetPriority)
         ).mapNotNull { it.vehicleScheduleFrameId }
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -130,14 +125,9 @@ class TimetablesController(
     ): ResponseEntity<ToCombineTimetablesResponseBody> {
         LOGGER.info { "ToCombine api, stagingVehicleScheduleFrameId: $stagingVehicleScheduleFrameId, targetPriority: $targetPriority" }
 
-        val targetPriorityEnumResult = runCatching { TimetablesPriority.fromInt(targetPriority) }
-        if (targetPriorityEnumResult.isFailure) {
-            throw TargetPriorityParsingException("Failed to parse target priority", targetPriority)
-        }
-
         val targetVehicleScheduleFrame = combineTimetablesService.fetchTargetVehicleScheduleFrame(
             stagingVehicleScheduleFrameId,
-            targetPriorityEnumResult.getOrThrow()
+            parseTargetPriority(targetPriority)
         )
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -186,5 +176,10 @@ class TimetablesController(
         }
 
         return ResponseEntity(JoreErrorResponse(ex.message, errorExtensions), httpStatus)
+    }
+
+    companion object {
+        private fun parseTargetPriority(targetPriority: Int) = TimetablesPriority.fromInt(targetPriority)
+            ?: throw TargetPriorityParsingException("Failed to parse target priority", targetPriority)
     }
 }
