@@ -6,9 +6,8 @@ import kotlin.test.assertEquals
 
 class TransactionSystemExtensionsTest {
 
-    private fun createTransactionSystemExceptionWithCause(message: String): TransactionSystemException {
-        return TransactionSystemException("test exception", Exception(message))
-    }
+    private fun createTransactionSystemExceptionWithCause(message: String) =
+        TransactionSystemException("test exception", Exception(message))
 
     @Test
     fun `resolves PassingTimeStopPointMatchingOrderError`() {
