@@ -20,7 +20,7 @@ class TransactionSystemExtensionsTest {
                 """.trimIndent()
             )
         )
-        assertEquals(exception.type, HasuraErrorType.PassingTimeStopPointMatchingOrderError)
+        assertEquals(exception.type, TimetablesApiErrorType.PassingTimeStopPointMatchingOrderError)
     }
 
     @Test
@@ -33,7 +33,7 @@ class TransactionSystemExtensionsTest {
                 """.trimIndent()
             )
         )
-        assertEquals(exception.type, HasuraErrorType.PassingTimeFirstArrivalTimeError)
+        assertEquals(exception.type, TimetablesApiErrorType.PassingTimeFirstArrivalTimeError)
     }
 
     @Test
@@ -46,7 +46,7 @@ class TransactionSystemExtensionsTest {
                 """.trimIndent()
             )
         )
-        assertEquals(exception.type, HasuraErrorType.PassingTimeLastDepartureTimeError)
+        assertEquals(exception.type, TimetablesApiErrorType.PassingTimeLastDepartureTimeError)
     }
 
     @Test
@@ -59,7 +59,7 @@ class TransactionSystemExtensionsTest {
                 """.trimIndent()
             )
         )
-        assertEquals(exception.type, HasuraErrorType.PassingTimeNullError)
+        assertEquals(exception.type, TimetablesApiErrorType.PassingTimeNullError)
     }
 
     @Test
@@ -72,7 +72,7 @@ class TransactionSystemExtensionsTest {
                 """.trimIndent()
             )
         )
-        assertEquals(exception.type, HasuraErrorType.PassingTimesMixedJourneyPatternRefsError)
+        assertEquals(exception.type, TimetablesApiErrorType.PassingTimesMixedJourneyPatternRefsError)
     }
 
     @Test
@@ -85,7 +85,7 @@ class TransactionSystemExtensionsTest {
                 """.trimIndent()
             )
         )
-        assertEquals(exception.type, HasuraErrorType.ConflictingSchedulesError)
+        assertEquals(exception.type, TimetablesApiErrorType.ConflictingSchedulesError)
     }
 
     @Test
@@ -98,7 +98,7 @@ class TransactionSystemExtensionsTest {
                 """.trimIndent()
             )
         )
-        assertEquals(exception.type, HasuraErrorType.SequentialIntegrityError)
+        assertEquals(exception.type, TimetablesApiErrorType.SequentialIntegrityError)
     }
 
     @Test
@@ -111,6 +111,6 @@ class TransactionSystemExtensionsTest {
                 """.trimIndent()
             )
         )
-        assertEquals(exception.type, HasuraErrorType.TransactionSystemError)
+        assertEquals(exception.type, TimetablesApiErrorType.TransactionSystemError)
     }
 }

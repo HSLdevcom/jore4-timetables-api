@@ -1,6 +1,6 @@
 package fi.hsl.jore4.timetables.api.util
 
-enum class HasuraErrorType {
+enum class TimetablesApiErrorType {
     UnknownError,
     ConflictingSchedulesError,
     InvalidTargetPriorityError,
