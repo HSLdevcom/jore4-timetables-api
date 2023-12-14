@@ -62,16 +62,16 @@ class TimetablesToReplaceApiTest(@Autowired val mockMvc: MockMvc) {
     @Test
     fun `returns 200 and correct response when called successfully`() {
         val stagingVehicleScheduleFrameId = UUID.fromString("9e758776-2af1-49c7-8bd0-c0805b833b20")
-        val targetPriority = 10
+        val targetPriority = TimetablesPriority.STANDARD
 
         every {
             replaceTimetablesService.fetchVehicleScheduleFramesToReplace(
                 stagingVehicleScheduleFrameId,
-                TimetablesPriority.fromInt(targetPriority)
+                targetPriority
             )
         } answers { defaultVehicleScheduleFrames }
 
-        executeToReplaceTimetablesRequest(stagingVehicleScheduleFrameId, targetPriority)
+        executeToReplaceTimetablesRequest(stagingVehicleScheduleFrameId, targetPriority.value)
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
@@ -88,7 +88,7 @@ class TimetablesToReplaceApiTest(@Autowired val mockMvc: MockMvc) {
         verify(exactly = 1) {
             replaceTimetablesService.fetchVehicleScheduleFramesToReplace(
                 stagingVehicleScheduleFrameId,
-                TimetablesPriority.fromInt(targetPriority)
+                targetPriority
             )
         }
     }
