@@ -9,8 +9,8 @@ enum class TimetablesPriority(val value: Int) {
     STAGING(40);
 
     companion object {
-        fun fromInt(value: Int): TimetablesPriority {
-            return values().first { it.value == value }
+        fun fromInt(value: Int): TimetablesPriority? {
+            return values().firstOrNull { it.value == value }
         }
     }
 }
