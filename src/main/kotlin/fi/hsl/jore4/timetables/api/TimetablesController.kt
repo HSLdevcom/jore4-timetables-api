@@ -1,8 +1,8 @@
 package fi.hsl.jore4.timetables.api
 
-import fi.hsl.jore4.timetables.api.util.HasuraErrorExtensions
-import fi.hsl.jore4.timetables.api.util.HasuraErrorResponse
 import fi.hsl.jore4.timetables.api.util.InvalidTargetPriorityExtensions
+import fi.hsl.jore4.timetables.api.util.JoreErrorExtensions
+import fi.hsl.jore4.timetables.api.util.JoreErrorResponse
 import fi.hsl.jore4.timetables.api.util.MultipleTargetFramesFoundExtensions
 import fi.hsl.jore4.timetables.api.util.PlainStatusExtensions
 import fi.hsl.jore4.timetables.api.util.StagingVehicleScheduleFrameNotFoundExtensions
@@ -118,8 +118,8 @@ class TimetablesController(
     }
 
     @ExceptionHandler(RuntimeException::class)
-    fun handleRuntimeException(ex: RuntimeException): ResponseEntity<HasuraErrorResponse> {
-        val hasuraExtensions: HasuraErrorExtensions = when (ex) {
+    fun handleRuntimeException(ex: RuntimeException): ResponseEntity<JoreErrorResponse> {
+        val errorExtensions: JoreErrorExtensions = when (ex) {
             is InvalidTargetPriorityException -> InvalidTargetPriorityExtensions.from(ex)
 
             is StagingVehicleScheduleFrameNotFoundException -> StagingVehicleScheduleFrameNotFoundExtensions.from(ex)
@@ -141,7 +141,7 @@ class TimetablesController(
             }
         }
 
-        val httpStatus: HttpStatus = hasuraExtensions.run {
+        val httpStatus: HttpStatus = errorExtensions.run {
             if (code !in 400..499) {
                 LOGGER.warn { "Violating Hasura error response contract by returning code not like 4xx: $code" }
             }
@@ -153,6 +153,6 @@ class TimetablesController(
             }
         }
 
-        return ResponseEntity(HasuraErrorResponse(ex.message, hasuraExtensions), httpStatus)
+        return ResponseEntity(JoreErrorResponse(ex.message, errorExtensions), httpStatus)
     }
 }

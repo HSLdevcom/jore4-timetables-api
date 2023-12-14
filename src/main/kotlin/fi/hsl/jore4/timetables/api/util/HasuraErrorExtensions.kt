@@ -11,18 +11,20 @@ import org.springframework.transaction.TransactionSystemException
 import java.util.UUID
 
 sealed interface HasuraErrorExtensions {
-
     // code must be 4xx
     val code: Int
+}
 
-    // Not required by Hasura, but we want to always pass one.
+sealed interface JoreErrorExtensions : HasuraErrorExtensions {
+    // Not required by Hasura,  but we always want to provide one
+    // so that the UI can present nice detailed error messages.
     val type: HasuraErrorType
 }
 
 data class PlainStatusExtensions(
     override val code: Int,
     override val type: HasuraErrorType
-) : HasuraErrorExtensions {
+) : JoreErrorExtensions {
 
     constructor(httpStatus: HttpStatus) : this(
         httpStatus.value(),
@@ -34,7 +36,7 @@ data class InvalidTargetPriorityExtensions(
     override val code: Int,
     override val type: HasuraErrorType,
     val targetPriority: TimetablesPriority
-) : HasuraErrorExtensions {
+) : JoreErrorExtensions {
 
     companion object {
         fun from(ex: InvalidTargetPriorityException) = InvalidTargetPriorityExtensions(
@@ -49,7 +51,7 @@ data class StagingVehicleScheduleFrameNotFoundExtensions(
     override val code: Int,
     override val type: HasuraErrorType,
     val stagingVehicleScheduleFrameId: UUID
-) : HasuraErrorExtensions {
+) : JoreErrorExtensions {
 
     companion object {
         fun from(ex: StagingVehicleScheduleFrameNotFoundException) = StagingVehicleScheduleFrameNotFoundExtensions(
@@ -64,7 +66,7 @@ data class TargetVehicleScheduleFrameNotFoundExtensions(
     override val code: Int,
     override val type: HasuraErrorType,
     val stagingVehicleScheduleFrameId: UUID
-) : HasuraErrorExtensions {
+) : JoreErrorExtensions {
 
     companion object {
         fun from(ex: TargetFrameNotFoundException) = TargetVehicleScheduleFrameNotFoundExtensions(
@@ -80,7 +82,7 @@ data class MultipleTargetFramesFoundExtensions(
     override val type: HasuraErrorType,
     val stagingVehicleScheduleFrameId: UUID,
     val targetVehicleScheduleFrameIds: List<UUID>
-) : HasuraErrorExtensions {
+) : JoreErrorExtensions {
 
     companion object {
         fun from(ex: MultipleTargetFramesFoundException) = MultipleTargetFramesFoundExtensions(
@@ -96,7 +98,7 @@ data class TargetPriorityParsingExtensions(
     override val code: Int,
     override val type: HasuraErrorType,
     val targetPriority: Int
-) : HasuraErrorExtensions {
+) : JoreErrorExtensions {
 
     companion object {
         fun from(ex: TargetPriorityParsingException) = TargetPriorityParsingExtensions(
@@ -111,7 +113,7 @@ data class TransactionSystemExtensions(
     override val code: Int,
     override val type: HasuraErrorType,
     val sqlErrorMessage: String
-) : HasuraErrorExtensions {
+) : JoreErrorExtensions {
 
     companion object {
         fun from(ex: TransactionSystemException) = TransactionSystemExtensions(
