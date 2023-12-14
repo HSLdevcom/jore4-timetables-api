@@ -352,20 +352,20 @@ class CombineTimetablesServiceTest @Autowired constructor(
             timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
             val stagingFrameId = UUID.fromString("e8d07c0d-575f-4cbe-bddb-ead5b2943638")
-            val exception = assertFailsWith<TransactionSystemException> {
+            assertFailsWith<TransactionSystemException> {
                 combineTimetablesService.combineTimetables(
                     listOf(stagingFrameId),
                     TimetablesPriority.STANDARD
                 )
+            }.also { exception ->
+                // Check that the error messages are somewhat in the format we expect. TransactionSystemExtensions depends on these.
+                assertEquals(exception.message, "JDBC commit failed")
+                val causeMessage = exception?.cause?.message
+                assertNotNull(causeMessage)
+                assertContains(causeMessage, "ERROR: conflicting schedules detected: vehicle schedule frame")
+                assertContains(causeMessage, "Where: PL/pgSQL function vehicle_schedule.validate_queued_schedules_uniqueness()")
+                assertContains(causeMessage, "SQL statement \"SELECT vehicle_schedule.validate_queued_schedules_uniqueness()")
             }
-
-            // Check that the error messages are somewhat in the format we expect. TransactionSystemExtensions depends on these.
-            assertEquals(exception.message, "JDBC commit failed")
-            val causeMessage = exception?.cause?.message
-            assertNotNull(causeMessage)
-            assertContains(causeMessage, "ERROR: conflicting schedules detected: vehicle schedule frame")
-            assertContains(causeMessage, "Where: PL/pgSQL function vehicle_schedule.validate_queued_schedules_uniqueness()")
-            assertContains(causeMessage, "SQL statement \"SELECT vehicle_schedule.validate_queued_schedules_uniqueness()")
         }
     }
 
