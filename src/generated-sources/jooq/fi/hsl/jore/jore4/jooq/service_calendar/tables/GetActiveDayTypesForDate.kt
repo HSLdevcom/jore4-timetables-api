@@ -9,17 +9,15 @@ import fi.hsl.jore.jore4.jooq.service_calendar.tables.records.DayTypeRecord
 
 import java.time.LocalDate
 import java.util.UUID
-import java.util.function.Function
 
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.JSONB
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row3
 import org.jooq.Schema
-import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -34,19 +32,23 @@ import org.jooq.impl.TableImpl
 @Suppress("UNCHECKED_CAST")
 open class GetActiveDayTypesForDate(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, DayTypeRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, DayTypeRecord>?,
+    parentPath: InverseForeignKey<out Record, DayTypeRecord>?,
     aliased: Table<DayTypeRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<DayTypeRecord>(
     alias,
     ServiceCalendar.SERVICE_CALENDAR,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment(""),
-    TableOptions.function()
+    TableOptions.function(),
+    where,
 ) {
     companion object {
 
@@ -80,10 +82,10 @@ open class GetActiveDayTypesForDate(
      */
     val NAME_I18N: TableField<DayTypeRecord, JSONB?> = createField(DSL.name("name_i18n"), SQLDataType.JSONB.nullable(false), this, "")
 
-    private constructor(alias: Name, aliased: Table<DayTypeRecord>?): this(alias, null, null, aliased, arrayOf(
+    private constructor(alias: Name, aliased: Table<DayTypeRecord>?): this(alias, null, null, null, aliased, arrayOf(
         DSL.value(null, SQLDataType.LOCALDATE)
-    ))
-    private constructor(alias: Name, aliased: Table<DayTypeRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    ), null)
+    private constructor(alias: Name, aliased: Table<DayTypeRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
 
     /**
      * Create an aliased
@@ -107,7 +109,7 @@ open class GetActiveDayTypesForDate(
     override fun getSchema(): Schema? = if (aliased()) null else ServiceCalendar.SERVICE_CALENDAR
     override fun `as`(alias: String): GetActiveDayTypesForDate = GetActiveDayTypesForDate(DSL.name(alias), this, parameters)
     override fun `as`(alias: Name): GetActiveDayTypesForDate = GetActiveDayTypesForDate(alias, this, parameters)
-    override fun `as`(alias: Table<*>): GetActiveDayTypesForDate = GetActiveDayTypesForDate(alias.getQualifiedName(), this, parameters)
+    override fun `as`(alias: Table<*>): GetActiveDayTypesForDate = GetActiveDayTypesForDate(alias.qualifiedName, this, parameters)
 
     /**
      * Rename this table
@@ -122,12 +124,7 @@ open class GetActiveDayTypesForDate(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): GetActiveDayTypesForDate = GetActiveDayTypesForDate(name.getQualifiedName(), null, parameters)
-
-    // -------------------------------------------------------------------------
-    // Row3 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row3<UUID?, String?, JSONB?> = super.fieldsRow() as Row3<UUID?, String?, JSONB?>
+    override fun rename(name: Table<*>): GetActiveDayTypesForDate = GetActiveDayTypesForDate(name.qualifiedName, null, parameters)
 
     /**
      * Call this table-valued function
@@ -146,15 +143,4 @@ open class GetActiveDayTypesForDate(
     ): GetActiveDayTypesForDate = GetActiveDayTypesForDate(DSL.name("get_active_day_types_for_date"), null, arrayOf(
         observationDate
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
-
-    /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
-     */
-    fun <U> mapping(from: (UUID?, String?, JSONB?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
-
-    /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
-     */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, String?, JSONB?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

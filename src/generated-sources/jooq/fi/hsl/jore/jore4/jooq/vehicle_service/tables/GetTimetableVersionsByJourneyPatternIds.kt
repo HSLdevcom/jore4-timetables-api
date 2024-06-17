@@ -9,16 +9,14 @@ import fi.hsl.jore.jore4.jooq.vehicle_service.VehicleService
 
 import java.time.LocalDate
 import java.util.UUID
-import java.util.function.Function
 
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row7
 import org.jooq.Schema
-import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -33,19 +31,23 @@ import org.jooq.impl.TableImpl
 @Suppress("UNCHECKED_CAST")
 open class GetTimetableVersionsByJourneyPatternIds(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, TimetableVersionRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, TimetableVersionRecord>?,
+    parentPath: InverseForeignKey<out Record, TimetableVersionRecord>?,
     aliased: Table<TimetableVersionRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<TimetableVersionRecord>(
     alias,
     VehicleService.VEHICLE_SERVICE,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment(""),
-    TableOptions.function()
+    TableOptions.function(),
+    where,
 ) {
     companion object {
 
@@ -103,13 +105,13 @@ open class GetTimetableVersionsByJourneyPatternIds(
      */
     val DAY_TYPE_ID: TableField<TimetableVersionRecord, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "")
 
-    private constructor(alias: Name, aliased: Table<TimetableVersionRecord>?): this(alias, null, null, aliased, arrayOf(
+    private constructor(alias: Name, aliased: Table<TimetableVersionRecord>?): this(alias, null, null, null, aliased, arrayOf(
         DSL.value(null, SQLDataType.UUID.array()),
         DSL.value(null, SQLDataType.LOCALDATE),
         DSL.value(null, SQLDataType.LOCALDATE),
         DSL.value(null, SQLDataType.LOCALDATE)
-    ))
-    private constructor(alias: Name, aliased: Table<TimetableVersionRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    ), null)
+    private constructor(alias: Name, aliased: Table<TimetableVersionRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
 
     /**
      * Create an aliased
@@ -134,7 +136,7 @@ open class GetTimetableVersionsByJourneyPatternIds(
     override fun getSchema(): Schema? = if (aliased()) null else VehicleService.VEHICLE_SERVICE
     override fun `as`(alias: String): GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds(DSL.name(alias), this, parameters)
     override fun `as`(alias: Name): GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds(alias, this, parameters)
-    override fun `as`(alias: Table<*>): GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds(alias.getQualifiedName(), this, parameters)
+    override fun `as`(alias: Table<*>): GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds(alias.qualifiedName, this, parameters)
 
     /**
      * Rename this table
@@ -149,12 +151,7 @@ open class GetTimetableVersionsByJourneyPatternIds(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds(name.getQualifiedName(), null, parameters)
-
-    // -------------------------------------------------------------------------
-    // Row7 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row7<UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?> = super.fieldsRow() as Row7<UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?>
+    override fun rename(name: Table<*>): GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds(name.qualifiedName, null, parameters)
 
     /**
      * Call this table-valued function
@@ -185,15 +182,4 @@ open class GetTimetableVersionsByJourneyPatternIds(
         endDate,
         observationDate
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
-
-    /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
-     */
-    fun <U> mapping(from: (UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
-
-    /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
-     */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

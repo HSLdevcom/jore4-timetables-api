@@ -4,28 +4,34 @@
 package fi.hsl.jore.jore4.jooq.service_calendar.tables
 
 
-import fi.hsl.jore.jore4.jooq.route.tables.TypeOfLine
+import fi.hsl.jore.jore4.jooq.route.tables.TypeOfLine.TypeOfLinePath
 import fi.hsl.jore.jore4.jooq.service_calendar.ServiceCalendar
 import fi.hsl.jore.jore4.jooq.service_calendar.keys.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_PKEY
 import fi.hsl.jore.jore4.jooq.service_calendar.keys.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_SUBSTITUTE_PERIOD_FKEY
 import fi.hsl.jore.jore4.jooq.service_calendar.keys.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.SubstituteOperatingPeriod.SubstituteOperatingPeriodPath
 import fi.hsl.jore.jore4.jooq.service_calendar.tables.records.SubstituteOperatingDayByLineTypeRecord
 
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
-import java.util.function.Function
 
+import kotlin.collections.Collection
 import kotlin.collections.List
 
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.Path
+import org.jooq.PlainSQL
+import org.jooq.QueryPart
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row9
+import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.SelectField
+import org.jooq.Select
+import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -45,19 +51,23 @@ import org.jooq.types.YearToSecond
 @Suppress("UNCHECKED_CAST")
 open class SubstituteOperatingDayByLineType(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, SubstituteOperatingDayByLineTypeRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, SubstituteOperatingDayByLineTypeRecord>?,
+    parentPath: InverseForeignKey<out Record, SubstituteOperatingDayByLineTypeRecord>?,
     aliased: Table<SubstituteOperatingDayByLineTypeRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<SubstituteOperatingDayByLineTypeRecord>(
     alias,
     ServiceCalendar.SERVICE_CALENDAR,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment("Models substitute public transit as (1) a reference day or (2) indicating that public transit does not occur on certain date. Substitute operating days are always bound to a type of line."),
-    TableOptions.table()
+    TableOptions.table(),
+    where,
 ) {
     companion object {
 
@@ -146,8 +156,9 @@ open class SubstituteOperatingDayByLineType(
      */
     val CREATED_AT: TableField<SubstituteOperatingDayByLineTypeRecord, OffsetDateTime?> = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "")
 
-    private constructor(alias: Name, aliased: Table<SubstituteOperatingDayByLineTypeRecord>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<SubstituteOperatingDayByLineTypeRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<SubstituteOperatingDayByLineTypeRecord>?): this(alias, null, null, null, aliased, null, null)
+    private constructor(alias: Name, aliased: Table<SubstituteOperatingDayByLineTypeRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
+    private constructor(alias: Name, aliased: Table<SubstituteOperatingDayByLineTypeRecord>?, where: Condition?): this(alias, null, null, null, aliased, null, where)
 
     /**
      * Create an aliased
@@ -170,43 +181,55 @@ open class SubstituteOperatingDayByLineType(
      */
     constructor(): this(DSL.name("substitute_operating_day_by_line_type"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, SubstituteOperatingDayByLineTypeRecord>): this(Internal.createPathAlias(child, key), child, key, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE, null)
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, SubstituteOperatingDayByLineTypeRecord>?, parentPath: InverseForeignKey<out Record, SubstituteOperatingDayByLineTypeRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class SubstituteOperatingDayByLineTypePath : SubstituteOperatingDayByLineType, Path<SubstituteOperatingDayByLineTypeRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, SubstituteOperatingDayByLineTypeRecord>?, parentPath: InverseForeignKey<out Record, SubstituteOperatingDayByLineTypeRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<SubstituteOperatingDayByLineTypeRecord>): super(alias, aliased)
+        override fun `as`(alias: String): SubstituteOperatingDayByLineTypePath = SubstituteOperatingDayByLineTypePath(DSL.name(alias), this)
+        override fun `as`(alias: Name): SubstituteOperatingDayByLineTypePath = SubstituteOperatingDayByLineTypePath(alias, this)
+        override fun `as`(alias: Table<*>): SubstituteOperatingDayByLineTypePath = SubstituteOperatingDayByLineTypePath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else ServiceCalendar.SERVICE_CALENDAR
     override fun getPrimaryKey(): UniqueKey<SubstituteOperatingDayByLineTypeRecord> = SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_PKEY
     override fun getReferences(): List<ForeignKey<SubstituteOperatingDayByLineTypeRecord, *>> = listOf(SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_SUBSTITUTE_PERIOD_FKEY)
 
-    private lateinit var _typeOfLine: TypeOfLine
-    private lateinit var _substituteOperatingPeriod: SubstituteOperatingPeriod
+    private lateinit var _typeOfLine: TypeOfLinePath
 
     /**
      * Get the implicit join path to the <code>route.type_of_line</code> table.
      */
-    fun typeOfLine(): TypeOfLine {
+    fun typeOfLine(): TypeOfLinePath {
         if (!this::_typeOfLine.isInitialized)
-            _typeOfLine = TypeOfLine(this, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY)
+            _typeOfLine = TypeOfLinePath(this, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY, null)
 
         return _typeOfLine;
     }
 
-    val typeOfLine: TypeOfLine
-        get(): TypeOfLine = typeOfLine()
+    val typeOfLine: TypeOfLinePath
+        get(): TypeOfLinePath = typeOfLine()
+
+    private lateinit var _substituteOperatingPeriod: SubstituteOperatingPeriodPath
 
     /**
      * Get the implicit join path to the
      * <code>service_calendar.substitute_operating_period</code> table.
      */
-    fun substituteOperatingPeriod(): SubstituteOperatingPeriod {
+    fun substituteOperatingPeriod(): SubstituteOperatingPeriodPath {
         if (!this::_substituteOperatingPeriod.isInitialized)
-            _substituteOperatingPeriod = SubstituteOperatingPeriod(this, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_SUBSTITUTE_PERIOD_FKEY)
+            _substituteOperatingPeriod = SubstituteOperatingPeriodPath(this, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_SUBSTITUTE_PERIOD_FKEY, null)
 
         return _substituteOperatingPeriod;
     }
 
-    val substituteOperatingPeriod: SubstituteOperatingPeriod
-        get(): SubstituteOperatingPeriod = substituteOperatingPeriod()
+    val substituteOperatingPeriod: SubstituteOperatingPeriodPath
+        get(): SubstituteOperatingPeriodPath = substituteOperatingPeriod()
     override fun `as`(alias: String): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(DSL.name(alias), this)
     override fun `as`(alias: Name): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(alias, this)
-    override fun `as`(alias: Table<*>): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(alias.getQualifiedName(), this)
+    override fun `as`(alias: Table<*>): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(alias.qualifiedName, this)
 
     /**
      * Rename this table
@@ -221,21 +244,55 @@ open class SubstituteOperatingDayByLineType(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(name.getQualifiedName(), null)
-
-    // -------------------------------------------------------------------------
-    // Row9 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row9<UUID?, String?, LocalDate?, Int?, YearToSecond?, YearToSecond?, String?, UUID?, OffsetDateTime?> = super.fieldsRow() as Row9<UUID?, String?, LocalDate?, Int?, YearToSecond?, YearToSecond?, String?, UUID?, OffsetDateTime?>
+    override fun rename(name: Table<*>): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(name.qualifiedName, null)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(from: (UUID?, String?, LocalDate?, Int?, YearToSecond?, YearToSecond?, String?, UUID?, OffsetDateTime?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    override fun where(condition: Condition?): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(qualifiedName, if (aliased()) this else null, condition)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, String?, LocalDate?, Int?, YearToSecond?, YearToSecond?, String?, UUID?, OffsetDateTime?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    override fun where(conditions: Collection<Condition>): SubstituteOperatingDayByLineType = where(DSL.and(conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(vararg conditions: Condition?): SubstituteOperatingDayByLineType = where(DSL.and(*conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(condition: Field<Boolean?>?): SubstituteOperatingDayByLineType = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(condition: SQL): SubstituteOperatingDayByLineType = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String): SubstituteOperatingDayByLineType = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg binds: Any?): SubstituteOperatingDayByLineType = where(DSL.condition(condition, *binds))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg parts: QueryPart): SubstituteOperatingDayByLineType = where(DSL.condition(condition, *parts))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereExists(select: Select<*>): SubstituteOperatingDayByLineType = where(DSL.exists(select))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereNotExists(select: Select<*>): SubstituteOperatingDayByLineType = where(DSL.notExists(select))
 }

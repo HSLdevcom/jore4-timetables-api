@@ -8,10 +8,7 @@ import fi.hsl.jore.jore4.jooq.passing_times.tables.TimetabledPassingTime
 
 import java.util.UUID
 
-import org.jooq.Field
 import org.jooq.Record1
-import org.jooq.Record5
-import org.jooq.Row5
 import org.jooq.impl.UpdatableRecordImpl
 import org.jooq.types.YearToSecond
 
@@ -23,7 +20,7 @@ import org.jooq.types.YearToSecond
  * https://www.transmodel-cen.eu/model/index.htm?goto=3:4:946 
  */
 @Suppress("UNCHECKED_CAST")
-open class TimetabledPassingTimeRecord private constructor() : UpdatableRecordImpl<TimetabledPassingTimeRecord>(TimetabledPassingTime.TIMETABLED_PASSING_TIME), Record5<UUID?, UUID?, UUID?, YearToSecond?, YearToSecond?> {
+open class TimetabledPassingTimeRecord private constructor() : UpdatableRecordImpl<TimetabledPassingTimeRecord>(TimetabledPassingTime.TIMETABLED_PASSING_TIME) {
 
     open var timetabledPassingTimeId: UUID?
         set(value): Unit = set(0, value)
@@ -50,62 +47,6 @@ open class TimetabledPassingTimeRecord private constructor() : UpdatableRecordIm
     // -------------------------------------------------------------------------
 
     override fun key(): Record1<UUID?> = super.key() as Record1<UUID?>
-
-    // -------------------------------------------------------------------------
-    // Record5 type implementation
-    // -------------------------------------------------------------------------
-
-    override fun fieldsRow(): Row5<UUID?, UUID?, UUID?, YearToSecond?, YearToSecond?> = super.fieldsRow() as Row5<UUID?, UUID?, UUID?, YearToSecond?, YearToSecond?>
-    override fun valuesRow(): Row5<UUID?, UUID?, UUID?, YearToSecond?, YearToSecond?> = super.valuesRow() as Row5<UUID?, UUID?, UUID?, YearToSecond?, YearToSecond?>
-    override fun field1(): Field<UUID?> = TimetabledPassingTime.TIMETABLED_PASSING_TIME.TIMETABLED_PASSING_TIME_ID
-    override fun field2(): Field<UUID?> = TimetabledPassingTime.TIMETABLED_PASSING_TIME.VEHICLE_JOURNEY_ID
-    override fun field3(): Field<UUID?> = TimetabledPassingTime.TIMETABLED_PASSING_TIME.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_ID
-    override fun field4(): Field<YearToSecond?> = TimetabledPassingTime.TIMETABLED_PASSING_TIME.ARRIVAL_TIME
-    override fun field5(): Field<YearToSecond?> = TimetabledPassingTime.TIMETABLED_PASSING_TIME.DEPARTURE_TIME
-    override fun component1(): UUID? = timetabledPassingTimeId
-    override fun component2(): UUID = vehicleJourneyId
-    override fun component3(): UUID = scheduledStopPointInJourneyPatternRefId
-    override fun component4(): YearToSecond? = arrivalTime
-    override fun component5(): YearToSecond? = departureTime
-    override fun value1(): UUID? = timetabledPassingTimeId
-    override fun value2(): UUID = vehicleJourneyId
-    override fun value3(): UUID = scheduledStopPointInJourneyPatternRefId
-    override fun value4(): YearToSecond? = arrivalTime
-    override fun value5(): YearToSecond? = departureTime
-
-    override fun value1(value: UUID?): TimetabledPassingTimeRecord {
-        set(0, value)
-        return this
-    }
-
-    override fun value2(value: UUID?): TimetabledPassingTimeRecord {
-        set(1, value)
-        return this
-    }
-
-    override fun value3(value: UUID?): TimetabledPassingTimeRecord {
-        set(2, value)
-        return this
-    }
-
-    override fun value4(value: YearToSecond?): TimetabledPassingTimeRecord {
-        set(3, value)
-        return this
-    }
-
-    override fun value5(value: YearToSecond?): TimetabledPassingTimeRecord {
-        set(4, value)
-        return this
-    }
-
-    override fun values(value1: UUID?, value2: UUID?, value3: UUID?, value4: YearToSecond?, value5: YearToSecond?): TimetabledPassingTimeRecord {
-        this.value1(value1)
-        this.value2(value2)
-        this.value3(value3)
-        this.value4(value4)
-        this.value5(value5)
-        return this
-    }
 
     /**
      * Create a detached, initialised TimetabledPassingTimeRecord

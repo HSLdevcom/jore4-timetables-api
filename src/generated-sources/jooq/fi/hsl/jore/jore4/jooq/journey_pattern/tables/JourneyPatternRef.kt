@@ -9,24 +9,33 @@ import fi.hsl.jore.jore4.jooq.journey_pattern.keys.JOURNEY_PATTERN_REF_PKEY
 import fi.hsl.jore.jore4.jooq.journey_pattern.keys.JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY
 import fi.hsl.jore.jore4.jooq.journey_pattern.keys.JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY
 import fi.hsl.jore.jore4.jooq.journey_pattern.tables.records.JourneyPatternRefRecord
-import fi.hsl.jore.jore4.jooq.route.tables.Direction
-import fi.hsl.jore.jore4.jooq.route.tables.TypeOfLine
+import fi.hsl.jore.jore4.jooq.route.tables.Direction.DirectionPath
+import fi.hsl.jore.jore4.jooq.route.tables.TypeOfLine.TypeOfLinePath
+import fi.hsl.jore.jore4.jooq.service_pattern.keys.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY
+import fi.hsl.jore.jore4.jooq.service_pattern.tables.ScheduledStopPointInJourneyPatternRef.ScheduledStopPointInJourneyPatternRefPath
+import fi.hsl.jore.jore4.jooq.vehicle_journey.keys.VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_PATTERN_REF_ID_FKEY
+import fi.hsl.jore.jore4.jooq.vehicle_journey.tables.VehicleJourney.VehicleJourneyPath
 
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
-import java.util.function.Function
 
+import kotlin.collections.Collection
 import kotlin.collections.List
 
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.Path
+import org.jooq.PlainSQL
+import org.jooq.QueryPart
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row9
+import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.SelectField
+import org.jooq.Select
+import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -44,19 +53,23 @@ import org.jooq.impl.TableImpl
 @Suppress("UNCHECKED_CAST")
 open class JourneyPatternRef(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, JourneyPatternRefRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, JourneyPatternRefRecord>?,
+    parentPath: InverseForeignKey<out Record, JourneyPatternRefRecord>?,
     aliased: Table<JourneyPatternRefRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<JourneyPatternRefRecord>(
     alias,
     JourneyPattern.JOURNEY_PATTERN,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment("Reference to a given snapshot of a JOURNEY PATTERN for a given operating day. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 "),
-    TableOptions.table()
+    TableOptions.table(),
+    where,
 ) {
     companion object {
 
@@ -140,8 +153,9 @@ open class JourneyPatternRef(
      */
     val ROUTE_VALIDITY_END: TableField<JourneyPatternRefRecord, LocalDate?> = createField(DSL.name("route_validity_end"), SQLDataType.LOCALDATE, this, "The end date of the validity period of the route associated with the referenced journey pattern. If NULL, then the end of the validity period is unbounded (infinity).")
 
-    private constructor(alias: Name, aliased: Table<JourneyPatternRefRecord>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<JourneyPatternRefRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<JourneyPatternRefRecord>?): this(alias, null, null, null, aliased, null, null)
+    private constructor(alias: Name, aliased: Table<JourneyPatternRefRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
+    private constructor(alias: Name, aliased: Table<JourneyPatternRefRecord>?, where: Condition?): this(alias, null, null, null, aliased, null, where)
 
     /**
      * Create an aliased <code>journey_pattern.journey_pattern_ref</code> table
@@ -160,42 +174,87 @@ open class JourneyPatternRef(
      */
     constructor(): this(DSL.name("journey_pattern_ref"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, JourneyPatternRefRecord>): this(Internal.createPathAlias(child, key), child, key, JOURNEY_PATTERN_REF, null)
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, JourneyPatternRefRecord>?, parentPath: InverseForeignKey<out Record, JourneyPatternRefRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, JOURNEY_PATTERN_REF, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class JourneyPatternRefPath : JourneyPatternRef, Path<JourneyPatternRefRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, JourneyPatternRefRecord>?, parentPath: InverseForeignKey<out Record, JourneyPatternRefRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<JourneyPatternRefRecord>): super(alias, aliased)
+        override fun `as`(alias: String): JourneyPatternRefPath = JourneyPatternRefPath(DSL.name(alias), this)
+        override fun `as`(alias: Name): JourneyPatternRefPath = JourneyPatternRefPath(alias, this)
+        override fun `as`(alias: Table<*>): JourneyPatternRefPath = JourneyPatternRefPath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else JourneyPattern.JOURNEY_PATTERN
     override fun getPrimaryKey(): UniqueKey<JourneyPatternRefRecord> = JOURNEY_PATTERN_REF_PKEY
     override fun getReferences(): List<ForeignKey<JourneyPatternRefRecord, *>> = listOf(JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY)
 
-    private lateinit var _typeOfLine: TypeOfLine
-    private lateinit var _direction: Direction
+    private lateinit var _typeOfLine: TypeOfLinePath
 
     /**
      * Get the implicit join path to the <code>route.type_of_line</code> table.
      */
-    fun typeOfLine(): TypeOfLine {
+    fun typeOfLine(): TypeOfLinePath {
         if (!this::_typeOfLine.isInitialized)
-            _typeOfLine = TypeOfLine(this, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY)
+            _typeOfLine = TypeOfLinePath(this, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY, null)
 
         return _typeOfLine;
     }
 
-    val typeOfLine: TypeOfLine
-        get(): TypeOfLine = typeOfLine()
+    val typeOfLine: TypeOfLinePath
+        get(): TypeOfLinePath = typeOfLine()
+
+    private lateinit var _direction: DirectionPath
 
     /**
      * Get the implicit join path to the <code>route.direction</code> table.
      */
-    fun direction(): Direction {
+    fun direction(): DirectionPath {
         if (!this::_direction.isInitialized)
-            _direction = Direction(this, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY)
+            _direction = DirectionPath(this, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY, null)
 
         return _direction;
     }
 
-    val direction: Direction
-        get(): Direction = direction()
+    val direction: DirectionPath
+        get(): DirectionPath = direction()
+
+    private lateinit var _scheduledStopPointInJourneyPatternRef: ScheduledStopPointInJourneyPatternRefPath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>service_pattern.scheduled_stop_point_in_journey_pattern_ref</code>
+     * table
+     */
+    fun scheduledStopPointInJourneyPatternRef(): ScheduledStopPointInJourneyPatternRefPath {
+        if (!this::_scheduledStopPointInJourneyPatternRef.isInitialized)
+            _scheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRefPath(this, null, SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY.inverseKey)
+
+        return _scheduledStopPointInJourneyPatternRef;
+    }
+
+    val scheduledStopPointInJourneyPatternRef: ScheduledStopPointInJourneyPatternRefPath
+        get(): ScheduledStopPointInJourneyPatternRefPath = scheduledStopPointInJourneyPatternRef()
+
+    private lateinit var _vehicleJourney: VehicleJourneyPath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>vehicle_journey.vehicle_journey</code> table
+     */
+    fun vehicleJourney(): VehicleJourneyPath {
+        if (!this::_vehicleJourney.isInitialized)
+            _vehicleJourney = VehicleJourneyPath(this, null, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_PATTERN_REF_ID_FKEY.inverseKey)
+
+        return _vehicleJourney;
+    }
+
+    val vehicleJourney: VehicleJourneyPath
+        get(): VehicleJourneyPath = vehicleJourney()
     override fun `as`(alias: String): JourneyPatternRef = JourneyPatternRef(DSL.name(alias), this)
     override fun `as`(alias: Name): JourneyPatternRef = JourneyPatternRef(alias, this)
-    override fun `as`(alias: Table<*>): JourneyPatternRef = JourneyPatternRef(alias.getQualifiedName(), this)
+    override fun `as`(alias: Table<*>): JourneyPatternRef = JourneyPatternRef(alias.qualifiedName, this)
 
     /**
      * Rename this table
@@ -210,21 +269,55 @@ open class JourneyPatternRef(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): JourneyPatternRef = JourneyPatternRef(name.getQualifiedName(), null)
-
-    // -------------------------------------------------------------------------
-    // Row9 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row9<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, LocalDate?, LocalDate?> = super.fieldsRow() as Row9<UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, LocalDate?, LocalDate?>
+    override fun rename(name: Table<*>): JourneyPatternRef = JourneyPatternRef(name.qualifiedName, null)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(from: (UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, LocalDate?, LocalDate?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    override fun where(condition: Condition?): JourneyPatternRef = JourneyPatternRef(qualifiedName, if (aliased()) this else null, condition)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, LocalDate?, LocalDate?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    override fun where(conditions: Collection<Condition>): JourneyPatternRef = where(DSL.and(conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(vararg conditions: Condition?): JourneyPatternRef = where(DSL.and(*conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(condition: Field<Boolean?>?): JourneyPatternRef = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(condition: SQL): JourneyPatternRef = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String): JourneyPatternRef = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg binds: Any?): JourneyPatternRef = where(DSL.condition(condition, *binds))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg parts: QueryPart): JourneyPatternRef = where(DSL.condition(condition, *parts))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereExists(select: Select<*>): JourneyPatternRef = where(DSL.exists(select))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereNotExists(select: Select<*>): JourneyPatternRef = where(DSL.notExists(select))
 }

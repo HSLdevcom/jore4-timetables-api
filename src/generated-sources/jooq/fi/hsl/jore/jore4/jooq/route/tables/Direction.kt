@@ -4,23 +4,30 @@
 package fi.hsl.jore.jore4.jooq.route.tables
 
 
+import fi.hsl.jore.jore4.jooq.journey_pattern.keys.JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY
+import fi.hsl.jore.jore4.jooq.journey_pattern.tables.JourneyPatternRef.JourneyPatternRefPath
 import fi.hsl.jore.jore4.jooq.route.Route
 import fi.hsl.jore.jore4.jooq.route.keys.DIRECTION_PKEY
 import fi.hsl.jore.jore4.jooq.route.keys.DIRECTION__DIRECTION_THE_OPPOSITE_OF_DIRECTION_FKEY
+import fi.hsl.jore.jore4.jooq.route.tables.Direction.DirectionPath
 import fi.hsl.jore.jore4.jooq.route.tables.records.DirectionRecord
 
-import java.util.function.Function
-
+import kotlin.collections.Collection
 import kotlin.collections.List
 
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.Path
+import org.jooq.PlainSQL
+import org.jooq.QueryPart
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row2
+import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.SelectField
+import org.jooq.Select
+import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -37,19 +44,23 @@ import org.jooq.impl.TableImpl
 @Suppress("UNCHECKED_CAST")
 open class Direction(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, DirectionRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, DirectionRecord>?,
+    parentPath: InverseForeignKey<out Record, DirectionRecord>?,
     aliased: Table<DirectionRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<DirectionRecord>(
     alias,
     Route.ROUTE,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment("The route directions from Transmodel"),
-    TableOptions.table()
+    TableOptions.table(),
+    where,
 ) {
     companion object {
 
@@ -76,8 +87,9 @@ open class Direction(
      */
     val THE_OPPOSITE_OF_DIRECTION: TableField<DirectionRecord, String?> = createField(DSL.name("the_opposite_of_direction"), SQLDataType.CLOB, this, "The opposite direction")
 
-    private constructor(alias: Name, aliased: Table<DirectionRecord>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<DirectionRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<DirectionRecord>?): this(alias, null, null, null, aliased, null, null)
+    private constructor(alias: Name, aliased: Table<DirectionRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
+    private constructor(alias: Name, aliased: Table<DirectionRecord>?, where: Condition?): this(alias, null, null, null, aliased, null, where)
 
     /**
      * Create an aliased <code>route.direction</code> table reference
@@ -94,28 +106,55 @@ open class Direction(
      */
     constructor(): this(DSL.name("direction"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, DirectionRecord>): this(Internal.createPathAlias(child, key), child, key, DIRECTION, null)
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, DirectionRecord>?, parentPath: InverseForeignKey<out Record, DirectionRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, DIRECTION, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class DirectionPath : Direction, Path<DirectionRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, DirectionRecord>?, parentPath: InverseForeignKey<out Record, DirectionRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<DirectionRecord>): super(alias, aliased)
+        override fun `as`(alias: String): DirectionPath = DirectionPath(DSL.name(alias), this)
+        override fun `as`(alias: Name): DirectionPath = DirectionPath(alias, this)
+        override fun `as`(alias: Table<*>): DirectionPath = DirectionPath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else Route.ROUTE
     override fun getPrimaryKey(): UniqueKey<DirectionRecord> = DIRECTION_PKEY
     override fun getReferences(): List<ForeignKey<DirectionRecord, *>> = listOf(DIRECTION__DIRECTION_THE_OPPOSITE_OF_DIRECTION_FKEY)
 
-    private lateinit var _direction: Direction
+    private lateinit var _direction: DirectionPath
 
     /**
      * Get the implicit join path to the <code>route.direction</code> table.
      */
-    fun direction(): Direction {
+    fun direction(): DirectionPath {
         if (!this::_direction.isInitialized)
-            _direction = Direction(this, DIRECTION__DIRECTION_THE_OPPOSITE_OF_DIRECTION_FKEY)
+            _direction = DirectionPath(this, DIRECTION__DIRECTION_THE_OPPOSITE_OF_DIRECTION_FKEY, null)
 
         return _direction;
     }
 
-    val direction: Direction
-        get(): Direction = direction()
+    val direction: DirectionPath
+        get(): DirectionPath = direction()
+
+    private lateinit var _journeyPatternRef: JourneyPatternRefPath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>journey_pattern.journey_pattern_ref</code> table
+     */
+    fun journeyPatternRef(): JourneyPatternRefPath {
+        if (!this::_journeyPatternRef.isInitialized)
+            _journeyPatternRef = JourneyPatternRefPath(this, null, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY.inverseKey)
+
+        return _journeyPatternRef;
+    }
+
+    val journeyPatternRef: JourneyPatternRefPath
+        get(): JourneyPatternRefPath = journeyPatternRef()
     override fun `as`(alias: String): Direction = Direction(DSL.name(alias), this)
     override fun `as`(alias: Name): Direction = Direction(alias, this)
-    override fun `as`(alias: Table<*>): Direction = Direction(alias.getQualifiedName(), this)
+    override fun `as`(alias: Table<*>): Direction = Direction(alias.qualifiedName, this)
 
     /**
      * Rename this table
@@ -130,21 +169,55 @@ open class Direction(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): Direction = Direction(name.getQualifiedName(), null)
-
-    // -------------------------------------------------------------------------
-    // Row2 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row2<String?, String?> = super.fieldsRow() as Row2<String?, String?>
+    override fun rename(name: Table<*>): Direction = Direction(name.qualifiedName, null)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(from: (String?, String?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    override fun where(condition: Condition?): Direction = Direction(qualifiedName, if (aliased()) this else null, condition)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(toType: Class<U>, from: (String?, String?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    override fun where(conditions: Collection<Condition>): Direction = where(DSL.and(conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(vararg conditions: Condition?): Direction = where(DSL.and(*conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(condition: Field<Boolean?>?): Direction = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(condition: SQL): Direction = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String): Direction = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg binds: Any?): Direction = where(DSL.condition(condition, *binds))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg parts: QueryPart): Direction = where(DSL.condition(condition, *parts))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereExists(select: Select<*>): Direction = where(DSL.exists(select))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereNotExists(select: Select<*>): Direction = where(DSL.notExists(select))
 }

@@ -8,20 +8,19 @@ import fi.hsl.jore.jore4.jooq.vehicle_schedule.VehicleSchedule
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.records.GetOverlappingSchedulesRecord
 
 import java.util.UUID
-import java.util.function.Function
 
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row8
 import org.jooq.Schema
-import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.impl.DSL
+import org.jooq.impl.DefaultDataType
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -32,19 +31,23 @@ import org.jooq.impl.TableImpl
 @Suppress("UNCHECKED_CAST")
 open class GetOverlappingSchedules(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, GetOverlappingSchedulesRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, GetOverlappingSchedulesRecord>?,
+    parentPath: InverseForeignKey<out Record, GetOverlappingSchedulesRecord>?,
     aliased: Table<GetOverlappingSchedulesRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<GetOverlappingSchedulesRecord>(
     alias,
     VehicleSchedule.VEHICLE_SCHEDULE,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment(""),
-    TableOptions.function()
+    TableOptions.function(),
+    where,
 ) {
     companion object {
 
@@ -90,18 +93,18 @@ open class GetOverlappingSchedules(
      */
     val PRIORITY: TableField<GetOverlappingSchedulesRecord, Int?> = createField(DSL.name("priority"), SQLDataType.INTEGER, this, "")
     @Deprecated(message = "Unknown data type. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
-    val CURRENT_VALIDITY_RANGE: TableField<GetOverlappingSchedulesRecord, Any?> = createField(DSL.name("current_validity_range"), org.jooq.impl.DefaultDataType.getDefaultDataType("\"pg_catalog\".\"daterange\""), this, "")
+    val CURRENT_VALIDITY_RANGE: TableField<GetOverlappingSchedulesRecord, Any?> = createField(DSL.name("current_validity_range"), DefaultDataType.getDefaultDataType("\"pg_catalog\".\"daterange\""), this, "")
     @Deprecated(message = "Unknown data type. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
-    val OTHER_VALIDITY_RANGE: TableField<GetOverlappingSchedulesRecord, Any?> = createField(DSL.name("other_validity_range"), org.jooq.impl.DefaultDataType.getDefaultDataType("\"pg_catalog\".\"daterange\""), this, "")
+    val OTHER_VALIDITY_RANGE: TableField<GetOverlappingSchedulesRecord, Any?> = createField(DSL.name("other_validity_range"), DefaultDataType.getDefaultDataType("\"pg_catalog\".\"daterange\""), this, "")
     @Deprecated(message = "Unknown data type. If this is a qualified, user-defined type, it may have been excluded from code generation. If this is a built-in type, you can define an explicit org.jooq.Binding to specify how this type should be handled. Deprecation can be turned off using <deprecationOnUnknownTypes/> in your code generator configuration.")
-    val VALIDITY_INTERSECTION: TableField<GetOverlappingSchedulesRecord, Any?> = createField(DSL.name("validity_intersection"), org.jooq.impl.DefaultDataType.getDefaultDataType("\"pg_catalog\".\"daterange\""), this, "")
+    val VALIDITY_INTERSECTION: TableField<GetOverlappingSchedulesRecord, Any?> = createField(DSL.name("validity_intersection"), DefaultDataType.getDefaultDataType("\"pg_catalog\".\"daterange\""), this, "")
 
-    private constructor(alias: Name, aliased: Table<GetOverlappingSchedulesRecord>?): this(alias, null, null, aliased, arrayOf(
+    private constructor(alias: Name, aliased: Table<GetOverlappingSchedulesRecord>?): this(alias, null, null, null, aliased, arrayOf(
         DSL.value(null, SQLDataType.UUID.array()),
         DSL.value(null, SQLDataType.UUID.array()),
         DSL.value(null, SQLDataType.BOOLEAN.defaultValue(DSL.field(DSL.raw("false"), SQLDataType.BOOLEAN)))
-    ))
-    private constructor(alias: Name, aliased: Table<GetOverlappingSchedulesRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    ), null)
+    private constructor(alias: Name, aliased: Table<GetOverlappingSchedulesRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
 
     /**
      * Create an aliased <code>vehicle_schedule.get_overlapping_schedules</code>
@@ -123,7 +126,7 @@ open class GetOverlappingSchedules(
     override fun getSchema(): Schema? = if (aliased()) null else VehicleSchedule.VEHICLE_SCHEDULE
     override fun `as`(alias: String): GetOverlappingSchedules = GetOverlappingSchedules(DSL.name(alias), this, parameters)
     override fun `as`(alias: Name): GetOverlappingSchedules = GetOverlappingSchedules(alias, this, parameters)
-    override fun `as`(alias: Table<*>): GetOverlappingSchedules = GetOverlappingSchedules(alias.getQualifiedName(), this, parameters)
+    override fun `as`(alias: Table<*>): GetOverlappingSchedules = GetOverlappingSchedules(alias.qualifiedName, this, parameters)
 
     /**
      * Rename this table
@@ -138,12 +141,7 @@ open class GetOverlappingSchedules(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): GetOverlappingSchedules = GetOverlappingSchedules(name.getQualifiedName(), null, parameters)
-
-    // -------------------------------------------------------------------------
-    // Row8 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row8<UUID?, UUID?, UUID?, Int?, Int?, Any?, Any?, Any?> = super.fieldsRow() as Row8<UUID?, UUID?, UUID?, Int?, Int?, Any?, Any?, Any?>
+    override fun rename(name: Table<*>): GetOverlappingSchedules = GetOverlappingSchedules(name.qualifiedName, null, parameters)
 
     /**
      * Call this table-valued function
@@ -170,15 +168,4 @@ open class GetOverlappingSchedules(
         filterJourneyPatternRefIds,
         ignorePriority
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
-
-    /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
-     */
-    fun <U> mapping(from: (UUID?, UUID?, UUID?, Int?, Int?, Any?, Any?, Any?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
-
-    /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
-     */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, UUID?, Int?, Int?, Any?, Any?, Any?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

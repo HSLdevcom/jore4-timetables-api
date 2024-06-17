@@ -8,10 +8,7 @@ import fi.hsl.jore.jore4.jooq.vehicle_service.tables.Block
 
 import java.util.UUID
 
-import org.jooq.Field
 import org.jooq.Record1
-import org.jooq.Record5
-import org.jooq.Row5
 import org.jooq.impl.UpdatableRecordImpl
 import org.jooq.types.YearToSecond
 
@@ -24,7 +21,7 @@ import org.jooq.types.YearToSecond
  * https://www.transmodel-cen.eu/model/index.htm?goto=3:5:958 
  */
 @Suppress("UNCHECKED_CAST")
-open class BlockRecord private constructor() : UpdatableRecordImpl<BlockRecord>(Block.BLOCK), Record5<UUID?, UUID?, YearToSecond?, YearToSecond?, UUID?> {
+open class BlockRecord private constructor() : UpdatableRecordImpl<BlockRecord>(Block.BLOCK) {
 
     open var blockId: UUID?
         set(value): Unit = set(0, value)
@@ -51,62 +48,6 @@ open class BlockRecord private constructor() : UpdatableRecordImpl<BlockRecord>(
     // -------------------------------------------------------------------------
 
     override fun key(): Record1<UUID?> = super.key() as Record1<UUID?>
-
-    // -------------------------------------------------------------------------
-    // Record5 type implementation
-    // -------------------------------------------------------------------------
-
-    override fun fieldsRow(): Row5<UUID?, UUID?, YearToSecond?, YearToSecond?, UUID?> = super.fieldsRow() as Row5<UUID?, UUID?, YearToSecond?, YearToSecond?, UUID?>
-    override fun valuesRow(): Row5<UUID?, UUID?, YearToSecond?, YearToSecond?, UUID?> = super.valuesRow() as Row5<UUID?, UUID?, YearToSecond?, YearToSecond?, UUID?>
-    override fun field1(): Field<UUID?> = Block.BLOCK.BLOCK_ID
-    override fun field2(): Field<UUID?> = Block.BLOCK.VEHICLE_SERVICE_ID
-    override fun field3(): Field<YearToSecond?> = Block.BLOCK.PREPARING_TIME
-    override fun field4(): Field<YearToSecond?> = Block.BLOCK.FINISHING_TIME
-    override fun field5(): Field<UUID?> = Block.BLOCK.VEHICLE_TYPE_ID
-    override fun component1(): UUID? = blockId
-    override fun component2(): UUID = vehicleServiceId
-    override fun component3(): YearToSecond? = preparingTime
-    override fun component4(): YearToSecond? = finishingTime
-    override fun component5(): UUID? = vehicleTypeId
-    override fun value1(): UUID? = blockId
-    override fun value2(): UUID = vehicleServiceId
-    override fun value3(): YearToSecond? = preparingTime
-    override fun value4(): YearToSecond? = finishingTime
-    override fun value5(): UUID? = vehicleTypeId
-
-    override fun value1(value: UUID?): BlockRecord {
-        set(0, value)
-        return this
-    }
-
-    override fun value2(value: UUID?): BlockRecord {
-        set(1, value)
-        return this
-    }
-
-    override fun value3(value: YearToSecond?): BlockRecord {
-        set(2, value)
-        return this
-    }
-
-    override fun value4(value: YearToSecond?): BlockRecord {
-        set(3, value)
-        return this
-    }
-
-    override fun value5(value: UUID?): BlockRecord {
-        set(4, value)
-        return this
-    }
-
-    override fun values(value1: UUID?, value2: UUID?, value3: YearToSecond?, value4: YearToSecond?, value5: UUID?): BlockRecord {
-        this.value1(value1)
-        this.value2(value2)
-        this.value3(value3)
-        this.value4(value4)
-        this.value5(value5)
-        return this
-    }
 
     /**
      * Create a detached, initialised BlockRecord

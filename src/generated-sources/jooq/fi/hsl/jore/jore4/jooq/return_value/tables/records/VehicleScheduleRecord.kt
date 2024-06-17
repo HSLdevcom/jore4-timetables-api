@@ -10,9 +10,6 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
 
-import org.jooq.Field
-import org.jooq.Record8
-import org.jooq.Row8
 import org.jooq.impl.TableRecordImpl
 
 
@@ -24,7 +21,7 @@ import org.jooq.impl.TableRecordImpl
  * are used in the UI side.
  */
 @Suppress("UNCHECKED_CAST")
-open class VehicleScheduleRecord private constructor() : TableRecordImpl<VehicleScheduleRecord>(VehicleSchedule.VEHICLE_SCHEDULE), Record8<UUID?, LocalDate?, LocalDate?, Int?, UUID?, UUID?, UUID?, OffsetDateTime?> {
+open class VehicleScheduleRecord private constructor() : TableRecordImpl<VehicleScheduleRecord>(VehicleSchedule.VEHICLE_SCHEDULE) {
 
     open var vehicleJourneyId: UUID?
         set(value): Unit = set(0, value)
@@ -57,89 +54,6 @@ open class VehicleScheduleRecord private constructor() : TableRecordImpl<Vehicle
     open var createdAt: OffsetDateTime?
         set(value): Unit = set(7, value)
         get(): OffsetDateTime? = get(7) as OffsetDateTime?
-
-    // -------------------------------------------------------------------------
-    // Record8 type implementation
-    // -------------------------------------------------------------------------
-
-    override fun fieldsRow(): Row8<UUID?, LocalDate?, LocalDate?, Int?, UUID?, UUID?, UUID?, OffsetDateTime?> = super.fieldsRow() as Row8<UUID?, LocalDate?, LocalDate?, Int?, UUID?, UUID?, UUID?, OffsetDateTime?>
-    override fun valuesRow(): Row8<UUID?, LocalDate?, LocalDate?, Int?, UUID?, UUID?, UUID?, OffsetDateTime?> = super.valuesRow() as Row8<UUID?, LocalDate?, LocalDate?, Int?, UUID?, UUID?, UUID?, OffsetDateTime?>
-    override fun field1(): Field<UUID?> = VehicleSchedule.VEHICLE_SCHEDULE.VEHICLE_JOURNEY_ID
-    override fun field2(): Field<LocalDate?> = VehicleSchedule.VEHICLE_SCHEDULE.VALIDITY_START
-    override fun field3(): Field<LocalDate?> = VehicleSchedule.VEHICLE_SCHEDULE.VALIDITY_END
-    override fun field4(): Field<Int?> = VehicleSchedule.VEHICLE_SCHEDULE.PRIORITY
-    override fun field5(): Field<UUID?> = VehicleSchedule.VEHICLE_SCHEDULE.DAY_TYPE_ID
-    override fun field6(): Field<UUID?> = VehicleSchedule.VEHICLE_SCHEDULE.VEHICLE_SCHEDULE_FRAME_ID
-    override fun field7(): Field<UUID?> = VehicleSchedule.VEHICLE_SCHEDULE.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID
-    override fun field8(): Field<OffsetDateTime?> = VehicleSchedule.VEHICLE_SCHEDULE.CREATED_AT
-    override fun component1(): UUID? = vehicleJourneyId
-    override fun component2(): LocalDate = validityStart
-    override fun component3(): LocalDate = validityEnd
-    override fun component4(): Int = priority
-    override fun component5(): UUID = dayTypeId
-    override fun component6(): UUID? = vehicleScheduleFrameId
-    override fun component7(): UUID? = substituteOperatingDayByLineTypeId
-    override fun component8(): OffsetDateTime? = createdAt
-    override fun value1(): UUID? = vehicleJourneyId
-    override fun value2(): LocalDate = validityStart
-    override fun value3(): LocalDate = validityEnd
-    override fun value4(): Int = priority
-    override fun value5(): UUID = dayTypeId
-    override fun value6(): UUID? = vehicleScheduleFrameId
-    override fun value7(): UUID? = substituteOperatingDayByLineTypeId
-    override fun value8(): OffsetDateTime? = createdAt
-
-    override fun value1(value: UUID?): VehicleScheduleRecord {
-        set(0, value)
-        return this
-    }
-
-    override fun value2(value: LocalDate?): VehicleScheduleRecord {
-        set(1, value)
-        return this
-    }
-
-    override fun value3(value: LocalDate?): VehicleScheduleRecord {
-        set(2, value)
-        return this
-    }
-
-    override fun value4(value: Int?): VehicleScheduleRecord {
-        set(3, value)
-        return this
-    }
-
-    override fun value5(value: UUID?): VehicleScheduleRecord {
-        set(4, value)
-        return this
-    }
-
-    override fun value6(value: UUID?): VehicleScheduleRecord {
-        set(5, value)
-        return this
-    }
-
-    override fun value7(value: UUID?): VehicleScheduleRecord {
-        set(6, value)
-        return this
-    }
-
-    override fun value8(value: OffsetDateTime?): VehicleScheduleRecord {
-        set(7, value)
-        return this
-    }
-
-    override fun values(value1: UUID?, value2: LocalDate?, value3: LocalDate?, value4: Int?, value5: UUID?, value6: UUID?, value7: UUID?, value8: OffsetDateTime?): VehicleScheduleRecord {
-        this.value1(value1)
-        this.value2(value2)
-        this.value3(value3)
-        this.value4(value4)
-        this.value5(value5)
-        this.value6(value6)
-        this.value7(value7)
-        this.value8(value8)
-        return this
-    }
 
     /**
      * Create a detached, initialised VehicleScheduleRecord

@@ -5,21 +5,31 @@ package fi.hsl.jore.jore4.jooq.service_calendar.tables
 
 
 import fi.hsl.jore.jore4.jooq.service_calendar.ServiceCalendar
+import fi.hsl.jore.jore4.jooq.service_calendar.keys.DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK__DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_DAY_TYPE_ID_FKEY
 import fi.hsl.jore.jore4.jooq.service_calendar.keys.DAY_TYPE_PKEY
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.DayTypeActiveOnDayOfWeek.DayTypeActiveOnDayOfWeekPath
 import fi.hsl.jore.jore4.jooq.service_calendar.tables.records.DayTypeRecord
+import fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService.VehicleServicePath
 
 import java.util.UUID
-import java.util.function.Function
 
+import kotlin.collections.Collection
+
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.JSONB
 import org.jooq.Name
+import org.jooq.Path
+import org.jooq.PlainSQL
+import org.jooq.QueryPart
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row3
+import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.SelectField
+import org.jooq.Select
+import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -38,19 +48,23 @@ import org.jooq.impl.TableImpl
 @Suppress("UNCHECKED_CAST")
 open class DayType(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, DayTypeRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, DayTypeRecord>?,
+    parentPath: InverseForeignKey<out Record, DayTypeRecord>?,
     aliased: Table<DayTypeRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<DayTypeRecord>(
     alias,
     ServiceCalendar.SERVICE_CALENDAR,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment("A type of day characterised by one or more properties which affect public transport operation. For example: weekday in school holidays. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=1:6:3:299 "),
-    TableOptions.table()
+    TableOptions.table(),
+    where,
 ) {
     companion object {
 
@@ -84,8 +98,9 @@ open class DayType(
      */
     val NAME_I18N: TableField<DayTypeRecord, JSONB?> = createField(DSL.name("name_i18n"), SQLDataType.JSONB.nullable(false), this, "Human-readable name for the DAY TYPE")
 
-    private constructor(alias: Name, aliased: Table<DayTypeRecord>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<DayTypeRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<DayTypeRecord>?): this(alias, null, null, null, aliased, null, null)
+    private constructor(alias: Name, aliased: Table<DayTypeRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
+    private constructor(alias: Name, aliased: Table<DayTypeRecord>?, where: Condition?): this(alias, null, null, null, aliased, null, where)
 
     /**
      * Create an aliased <code>service_calendar.day_type</code> table reference
@@ -102,12 +117,55 @@ open class DayType(
      */
     constructor(): this(DSL.name("day_type"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, DayTypeRecord>): this(Internal.createPathAlias(child, key), child, key, DAY_TYPE, null)
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, DayTypeRecord>?, parentPath: InverseForeignKey<out Record, DayTypeRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, DAY_TYPE, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class DayTypePath : DayType, Path<DayTypeRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, DayTypeRecord>?, parentPath: InverseForeignKey<out Record, DayTypeRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<DayTypeRecord>): super(alias, aliased)
+        override fun `as`(alias: String): DayTypePath = DayTypePath(DSL.name(alias), this)
+        override fun `as`(alias: Name): DayTypePath = DayTypePath(alias, this)
+        override fun `as`(alias: Table<*>): DayTypePath = DayTypePath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else ServiceCalendar.SERVICE_CALENDAR
     override fun getPrimaryKey(): UniqueKey<DayTypeRecord> = DAY_TYPE_PKEY
+
+    private lateinit var _dayTypeActiveOnDayOfWeek: DayTypeActiveOnDayOfWeekPath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>service_calendar.day_type_active_on_day_of_week</code> table
+     */
+    fun dayTypeActiveOnDayOfWeek(): DayTypeActiveOnDayOfWeekPath {
+        if (!this::_dayTypeActiveOnDayOfWeek.isInitialized)
+            _dayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeekPath(this, null, DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK__DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_DAY_TYPE_ID_FKEY.inverseKey)
+
+        return _dayTypeActiveOnDayOfWeek;
+    }
+
+    val dayTypeActiveOnDayOfWeek: DayTypeActiveOnDayOfWeekPath
+        get(): DayTypeActiveOnDayOfWeekPath = dayTypeActiveOnDayOfWeek()
+
+    private lateinit var _vehicleService: VehicleServicePath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>vehicle_service.vehicle_service</code> table
+     */
+    fun vehicleService(): VehicleServicePath {
+        if (!this::_vehicleService.isInitialized)
+            _vehicleService = VehicleServicePath(this, null, VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY.inverseKey)
+
+        return _vehicleService;
+    }
+
+    val vehicleService: VehicleServicePath
+        get(): VehicleServicePath = vehicleService()
     override fun `as`(alias: String): DayType = DayType(DSL.name(alias), this)
     override fun `as`(alias: Name): DayType = DayType(alias, this)
-    override fun `as`(alias: Table<*>): DayType = DayType(alias.getQualifiedName(), this)
+    override fun `as`(alias: Table<*>): DayType = DayType(alias.qualifiedName, this)
 
     /**
      * Rename this table
@@ -122,21 +180,55 @@ open class DayType(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): DayType = DayType(name.getQualifiedName(), null)
-
-    // -------------------------------------------------------------------------
-    // Row3 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row3<UUID?, String?, JSONB?> = super.fieldsRow() as Row3<UUID?, String?, JSONB?>
+    override fun rename(name: Table<*>): DayType = DayType(name.qualifiedName, null)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(from: (UUID?, String?, JSONB?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    override fun where(condition: Condition?): DayType = DayType(qualifiedName, if (aliased()) this else null, condition)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, String?, JSONB?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    override fun where(conditions: Collection<Condition>): DayType = where(DSL.and(conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(vararg conditions: Condition?): DayType = where(DSL.and(*conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(condition: Field<Boolean?>?): DayType = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(condition: SQL): DayType = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String): DayType = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg binds: Any?): DayType = where(DSL.condition(condition, *binds))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg parts: QueryPart): DayType = where(DSL.condition(condition, *parts))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereExists(select: Select<*>): DayType = where(DSL.exists(select))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereNotExists(select: Select<*>): DayType = where(DSL.notExists(select))
 }

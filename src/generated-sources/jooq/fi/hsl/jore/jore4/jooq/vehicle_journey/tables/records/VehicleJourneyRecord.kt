@@ -8,11 +8,8 @@ import fi.hsl.jore.jore4.jooq.vehicle_journey.tables.VehicleJourney
 
 import java.util.UUID
 
-import org.jooq.Field
 import org.jooq.JSONB
 import org.jooq.Record1
-import org.jooq.Record12
-import org.jooq.Row12
 import org.jooq.impl.UpdatableRecordImpl
 import org.jooq.types.YearToSecond
 
@@ -23,7 +20,7 @@ import org.jooq.types.YearToSecond
  * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:1:1:831 
  */
 @Suppress("UNCHECKED_CAST")
-open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<VehicleJourneyRecord>(VehicleJourney.VEHICLE_JOURNEY_), Record12<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?, String?> {
+open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<VehicleJourneyRecord>(VehicleJourney.VEHICLE_JOURNEY_) {
 
     open var vehicleJourneyId: UUID?
         set(value): Unit = set(0, value)
@@ -84,125 +81,6 @@ open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<Vehi
     // -------------------------------------------------------------------------
 
     override fun key(): Record1<UUID?> = super.key() as Record1<UUID?>
-
-    // -------------------------------------------------------------------------
-    // Record12 type implementation
-    // -------------------------------------------------------------------------
-
-    override fun fieldsRow(): Row12<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?, String?> = super.fieldsRow() as Row12<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?, String?>
-    override fun valuesRow(): Row12<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?, String?> = super.valuesRow() as Row12<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?, String?>
-    override fun field1(): Field<UUID?> = VehicleJourney.VEHICLE_JOURNEY_.VEHICLE_JOURNEY_ID
-    override fun field2(): Field<UUID?> = VehicleJourney.VEHICLE_JOURNEY_.JOURNEY_PATTERN_REF_ID
-    override fun field3(): Field<UUID?> = VehicleJourney.VEHICLE_JOURNEY_.BLOCK_ID
-    override fun field4(): Field<JSONB?> = VehicleJourney.VEHICLE_JOURNEY_.JOURNEY_NAME_I18N
-    override fun field5(): Field<YearToSecond?> = VehicleJourney.VEHICLE_JOURNEY_.TURNAROUND_TIME
-    override fun field6(): Field<YearToSecond?> = VehicleJourney.VEHICLE_JOURNEY_.LAYOVER_TIME
-    override fun field7(): Field<String?> = VehicleJourney.VEHICLE_JOURNEY_.JOURNEY_TYPE
-    override fun field8(): Field<String?> = VehicleJourney.VEHICLE_JOURNEY_.DISPLAYED_NAME
-    override fun field9(): Field<Boolean?> = VehicleJourney.VEHICLE_JOURNEY_.IS_VEHICLE_TYPE_MANDATORY
-    override fun field10(): Field<Boolean?> = VehicleJourney.VEHICLE_JOURNEY_.IS_BACKUP_JOURNEY
-    override fun field11(): Field<Boolean?> = VehicleJourney.VEHICLE_JOURNEY_.IS_EXTRA_JOURNEY
-    override fun field12(): Field<String?> = VehicleJourney.VEHICLE_JOURNEY_.CONTRACT_NUMBER
-    override fun component1(): UUID? = vehicleJourneyId
-    override fun component2(): UUID = journeyPatternRefId
-    override fun component3(): UUID = blockId
-    override fun component4(): JSONB? = journeyNameI18n
-    override fun component5(): YearToSecond? = turnaroundTime
-    override fun component6(): YearToSecond? = layoverTime
-    override fun component7(): String? = journeyType
-    override fun component8(): String? = displayedName
-    override fun component9(): Boolean? = isVehicleTypeMandatory
-    override fun component10(): Boolean? = isBackupJourney
-    override fun component11(): Boolean? = isExtraJourney
-    override fun component12(): String = contractNumber
-    override fun value1(): UUID? = vehicleJourneyId
-    override fun value2(): UUID = journeyPatternRefId
-    override fun value3(): UUID = blockId
-    override fun value4(): JSONB? = journeyNameI18n
-    override fun value5(): YearToSecond? = turnaroundTime
-    override fun value6(): YearToSecond? = layoverTime
-    override fun value7(): String? = journeyType
-    override fun value8(): String? = displayedName
-    override fun value9(): Boolean? = isVehicleTypeMandatory
-    override fun value10(): Boolean? = isBackupJourney
-    override fun value11(): Boolean? = isExtraJourney
-    override fun value12(): String = contractNumber
-
-    override fun value1(value: UUID?): VehicleJourneyRecord {
-        set(0, value)
-        return this
-    }
-
-    override fun value2(value: UUID?): VehicleJourneyRecord {
-        set(1, value)
-        return this
-    }
-
-    override fun value3(value: UUID?): VehicleJourneyRecord {
-        set(2, value)
-        return this
-    }
-
-    override fun value4(value: JSONB?): VehicleJourneyRecord {
-        set(3, value)
-        return this
-    }
-
-    override fun value5(value: YearToSecond?): VehicleJourneyRecord {
-        set(4, value)
-        return this
-    }
-
-    override fun value6(value: YearToSecond?): VehicleJourneyRecord {
-        set(5, value)
-        return this
-    }
-
-    override fun value7(value: String?): VehicleJourneyRecord {
-        set(6, value)
-        return this
-    }
-
-    override fun value8(value: String?): VehicleJourneyRecord {
-        set(7, value)
-        return this
-    }
-
-    override fun value9(value: Boolean?): VehicleJourneyRecord {
-        set(8, value)
-        return this
-    }
-
-    override fun value10(value: Boolean?): VehicleJourneyRecord {
-        set(9, value)
-        return this
-    }
-
-    override fun value11(value: Boolean?): VehicleJourneyRecord {
-        set(10, value)
-        return this
-    }
-
-    override fun value12(value: String?): VehicleJourneyRecord {
-        set(11, value)
-        return this
-    }
-
-    override fun values(value1: UUID?, value2: UUID?, value3: UUID?, value4: JSONB?, value5: YearToSecond?, value6: YearToSecond?, value7: String?, value8: String?, value9: Boolean?, value10: Boolean?, value11: Boolean?, value12: String?): VehicleJourneyRecord {
-        this.value1(value1)
-        this.value2(value2)
-        this.value3(value3)
-        this.value4(value4)
-        this.value5(value5)
-        this.value6(value6)
-        this.value7(value7)
-        this.value8(value8)
-        this.value9(value9)
-        this.value10(value10)
-        this.value11(value11)
-        this.value12(value12)
-        return this
-    }
 
     /**
      * Create a detached, initialised VehicleJourneyRecord

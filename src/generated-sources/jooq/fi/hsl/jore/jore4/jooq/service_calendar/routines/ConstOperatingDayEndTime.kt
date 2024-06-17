@@ -28,6 +28,6 @@ open class ConstOperatingDayEndTime : AbstractRoutine<YearToSecond>("const_opera
     }
 
     init {
-        returnParameter = RETURN_VALUE
+        returnParameter = ConstOperatingDayEndTime.RETURN_VALUE
     }
 }

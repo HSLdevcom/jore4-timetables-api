@@ -6,10 +6,7 @@ package fi.hsl.jore.jore4.jooq.route.tables.records
 
 import fi.hsl.jore.jore4.jooq.route.tables.Direction
 
-import org.jooq.Field
 import org.jooq.Record1
-import org.jooq.Record2
-import org.jooq.Row2
 import org.jooq.impl.UpdatableRecordImpl
 
 
@@ -17,7 +14,7 @@ import org.jooq.impl.UpdatableRecordImpl
  * The route directions from Transmodel
  */
 @Suppress("UNCHECKED_CAST")
-open class DirectionRecord private constructor() : UpdatableRecordImpl<DirectionRecord>(Direction.DIRECTION), Record2<String?, String?> {
+open class DirectionRecord private constructor() : UpdatableRecordImpl<DirectionRecord>(Direction.DIRECTION) {
 
     open var direction: String
         set(value): Unit = set(0, value)
@@ -32,35 +29,6 @@ open class DirectionRecord private constructor() : UpdatableRecordImpl<Direction
     // -------------------------------------------------------------------------
 
     override fun key(): Record1<String?> = super.key() as Record1<String?>
-
-    // -------------------------------------------------------------------------
-    // Record2 type implementation
-    // -------------------------------------------------------------------------
-
-    override fun fieldsRow(): Row2<String?, String?> = super.fieldsRow() as Row2<String?, String?>
-    override fun valuesRow(): Row2<String?, String?> = super.valuesRow() as Row2<String?, String?>
-    override fun field1(): Field<String?> = Direction.DIRECTION.DIRECTION_
-    override fun field2(): Field<String?> = Direction.DIRECTION.THE_OPPOSITE_OF_DIRECTION
-    override fun component1(): String = direction
-    override fun component2(): String? = theOppositeOfDirection
-    override fun value1(): String = direction
-    override fun value2(): String? = theOppositeOfDirection
-
-    override fun value1(value: String?): DirectionRecord {
-        set(0, value)
-        return this
-    }
-
-    override fun value2(value: String?): DirectionRecord {
-        set(1, value)
-        return this
-    }
-
-    override fun values(value1: String?, value2: String?): DirectionRecord {
-        this.value1(value1)
-        this.value2(value2)
-        return this
-    }
 
     /**
      * Create a detached, initialised DirectionRecord

@@ -8,16 +8,14 @@ import fi.hsl.jore.jore4.jooq.vehicle_service.VehicleService
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.records.GetVehicleServiceTimingDataRecord
 
 import java.util.UUID
-import java.util.function.Function
 
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row18
 import org.jooq.Schema
-import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -33,19 +31,23 @@ import org.jooq.types.YearToSecond
 @Suppress("UNCHECKED_CAST")
 open class GetVehicleServiceTimingData(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, GetVehicleServiceTimingDataRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, GetVehicleServiceTimingDataRecord>?,
+    parentPath: InverseForeignKey<out Record, GetVehicleServiceTimingDataRecord>?,
     aliased: Table<GetVehicleServiceTimingDataRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<GetVehicleServiceTimingDataRecord>(
     alias,
     VehicleService.VEHICLE_SERVICE,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment(""),
-    TableOptions.function()
+    TableOptions.function(),
+    where,
 ) {
     companion object {
 
@@ -169,10 +171,10 @@ open class GetVehicleServiceTimingData(
      */
     val STOP_ARRIVAL_TIME: TableField<GetVehicleServiceTimingDataRecord, YearToSecond?> = createField(DSL.name("stop_arrival_time"), SQLDataType.INTERVAL, this, "")
 
-    private constructor(alias: Name, aliased: Table<GetVehicleServiceTimingDataRecord>?): this(alias, null, null, aliased, arrayOf(
+    private constructor(alias: Name, aliased: Table<GetVehicleServiceTimingDataRecord>?): this(alias, null, null, null, aliased, arrayOf(
         DSL.value(null, SQLDataType.UUID.array())
-    ))
-    private constructor(alias: Name, aliased: Table<GetVehicleServiceTimingDataRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    ), null)
+    private constructor(alias: Name, aliased: Table<GetVehicleServiceTimingDataRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
 
     /**
      * Create an aliased
@@ -196,7 +198,7 @@ open class GetVehicleServiceTimingData(
     override fun getSchema(): Schema? = if (aliased()) null else VehicleService.VEHICLE_SERVICE
     override fun `as`(alias: String): GetVehicleServiceTimingData = GetVehicleServiceTimingData(DSL.name(alias), this, parameters)
     override fun `as`(alias: Name): GetVehicleServiceTimingData = GetVehicleServiceTimingData(alias, this, parameters)
-    override fun `as`(alias: Table<*>): GetVehicleServiceTimingData = GetVehicleServiceTimingData(alias.getQualifiedName(), this, parameters)
+    override fun `as`(alias: Table<*>): GetVehicleServiceTimingData = GetVehicleServiceTimingData(alias.qualifiedName, this, parameters)
 
     /**
      * Rename this table
@@ -211,12 +213,7 @@ open class GetVehicleServiceTimingData(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): GetVehicleServiceTimingData = GetVehicleServiceTimingData(name.getQualifiedName(), null, parameters)
-
-    // -------------------------------------------------------------------------
-    // Row18 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row18<UUID?, YearToSecond?, YearToSecond?, UUID?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, UUID?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, UUID?, YearToSecond?, YearToSecond?> = super.fieldsRow() as Row18<UUID?, YearToSecond?, YearToSecond?, UUID?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, UUID?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, UUID?, YearToSecond?, YearToSecond?>
+    override fun rename(name: Table<*>): GetVehicleServiceTimingData = GetVehicleServiceTimingData(name.qualifiedName, null, parameters)
 
     /**
      * Call this table-valued function
@@ -235,15 +232,4 @@ open class GetVehicleServiceTimingData(
     ): GetVehicleServiceTimingData = GetVehicleServiceTimingData(DSL.name("get_vehicle_service_timing_data"), null, arrayOf(
         vehicleServiceIds
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
-
-    /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
-     */
-    fun <U> mapping(from: (UUID?, YearToSecond?, YearToSecond?, UUID?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, UUID?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, UUID?, YearToSecond?, YearToSecond?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
-
-    /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
-     */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, YearToSecond?, YearToSecond?, UUID?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, UUID?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, YearToSecond?, UUID?, YearToSecond?, YearToSecond?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

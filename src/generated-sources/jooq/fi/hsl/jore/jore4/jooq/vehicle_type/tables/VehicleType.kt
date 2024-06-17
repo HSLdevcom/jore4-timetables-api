@@ -4,21 +4,29 @@
 package fi.hsl.jore.jore4.jooq.vehicle_type.tables
 
 
+import fi.hsl.jore.jore4.jooq.vehicle_service.keys.BLOCK__VEHICLE_TYPE_FKEY
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.Block.BlockPath
 import fi.hsl.jore.jore4.jooq.vehicle_type.keys.VEHICLE_TYPE_PKEY
 import fi.hsl.jore.jore4.jooq.vehicle_type.tables.records.VehicleTypeRecord
 
 import java.util.UUID
-import java.util.function.Function
 
+import kotlin.collections.Collection
+
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.JSONB
 import org.jooq.Name
+import org.jooq.Path
+import org.jooq.PlainSQL
+import org.jooq.QueryPart
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row4
+import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.SelectField
+import org.jooq.Select
+import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -39,19 +47,23 @@ import org.jooq.impl.TableImpl
 @Suppress("UNCHECKED_CAST")
 open class VehicleType(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, VehicleTypeRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, VehicleTypeRecord>?,
+    parentPath: InverseForeignKey<out Record, VehicleTypeRecord>?,
     aliased: Table<VehicleTypeRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<VehicleTypeRecord>(
     alias,
     fi.hsl.jore.jore4.jooq.vehicle_type.VehicleType.VEHICLE_TYPE,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment("The VEHICLE entity is used to describe the physical public transport vehicles available for short-term planning of operations and daily assignment (in contrast to logical vehicles considered for resource planning of operations and daily assignment (in contrast to logical vehicles cplanning). Each VEHICLE shall be classified as of a particular VEHICLE TYPE."),
-    TableOptions.table()
+    TableOptions.table(),
+    where,
 ) {
     companion object {
 
@@ -89,8 +101,9 @@ open class VehicleType(
      */
     val HSL_ID: TableField<VehicleTypeRecord, Short?> = createField(DSL.name("hsl_id"), SQLDataType.SMALLINT.nullable(false), this, "ID used in Hastus to represent the vehicle type.")
 
-    private constructor(alias: Name, aliased: Table<VehicleTypeRecord>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<VehicleTypeRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<VehicleTypeRecord>?): this(alias, null, null, null, aliased, null, null)
+    private constructor(alias: Name, aliased: Table<VehicleTypeRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
+    private constructor(alias: Name, aliased: Table<VehicleTypeRecord>?, where: Condition?): this(alias, null, null, null, aliased, null, where)
 
     /**
      * Create an aliased <code>vehicle_type.vehicle_type</code> table reference
@@ -107,12 +120,39 @@ open class VehicleType(
      */
     constructor(): this(DSL.name("vehicle_type"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, VehicleTypeRecord>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_TYPE_, null)
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, VehicleTypeRecord>?, parentPath: InverseForeignKey<out Record, VehicleTypeRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, VEHICLE_TYPE_, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class VehicleTypePath : VehicleType, Path<VehicleTypeRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, VehicleTypeRecord>?, parentPath: InverseForeignKey<out Record, VehicleTypeRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<VehicleTypeRecord>): super(alias, aliased)
+        override fun `as`(alias: String): VehicleTypePath = VehicleTypePath(DSL.name(alias), this)
+        override fun `as`(alias: Name): VehicleTypePath = VehicleTypePath(alias, this)
+        override fun `as`(alias: Table<*>): VehicleTypePath = VehicleTypePath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else fi.hsl.jore.jore4.jooq.vehicle_type.VehicleType.VEHICLE_TYPE
     override fun getPrimaryKey(): UniqueKey<VehicleTypeRecord> = VEHICLE_TYPE_PKEY
+
+    private lateinit var _block: BlockPath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>vehicle_service.block</code> table
+     */
+    fun block(): BlockPath {
+        if (!this::_block.isInitialized)
+            _block = BlockPath(this, null, BLOCK__VEHICLE_TYPE_FKEY.inverseKey)
+
+        return _block;
+    }
+
+    val block: BlockPath
+        get(): BlockPath = block()
     override fun `as`(alias: String): VehicleType = VehicleType(DSL.name(alias), this)
     override fun `as`(alias: Name): VehicleType = VehicleType(alias, this)
-    override fun `as`(alias: Table<*>): VehicleType = VehicleType(alias.getQualifiedName(), this)
+    override fun `as`(alias: Table<*>): VehicleType = VehicleType(alias.qualifiedName, this)
 
     /**
      * Rename this table
@@ -127,21 +167,55 @@ open class VehicleType(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): VehicleType = VehicleType(name.getQualifiedName(), null)
-
-    // -------------------------------------------------------------------------
-    // Row4 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row4<UUID?, String?, JSONB?, Short?> = super.fieldsRow() as Row4<UUID?, String?, JSONB?, Short?>
+    override fun rename(name: Table<*>): VehicleType = VehicleType(name.qualifiedName, null)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(from: (UUID?, String?, JSONB?, Short?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    override fun where(condition: Condition?): VehicleType = VehicleType(qualifiedName, if (aliased()) this else null, condition)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, String?, JSONB?, Short?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    override fun where(conditions: Collection<Condition>): VehicleType = where(DSL.and(conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(vararg conditions: Condition?): VehicleType = where(DSL.and(*conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(condition: Field<Boolean?>?): VehicleType = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(condition: SQL): VehicleType = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String): VehicleType = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg binds: Any?): VehicleType = where(DSL.condition(condition, *binds))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg parts: QueryPart): VehicleType = where(DSL.condition(condition, *parts))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereExists(select: Select<*>): VehicleType = where(DSL.exists(select))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereNotExists(select: Select<*>): VehicleType = where(DSL.notExists(select))
 }

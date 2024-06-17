@@ -31,24 +31,24 @@ open class VehicleJourneyStartTime : AbstractRoutine<String>("vehicle_journey_st
          * The parameter
          * <code>vehicle_journey.vehicle_journey_start_time.vj</code>.
          */
-        val VJ: Parameter<VehicleJourneyRecord?> = Internal.createParameter("vj", fi.hsl.jore.jore4.jooq.vehicle_journey.tables.VehicleJourney.VEHICLE_JOURNEY_.getDataType(), false, false)
+        val VJ: Parameter<VehicleJourneyRecord?> = Internal.createParameter("vj", fi.hsl.jore.jore4.jooq.vehicle_journey.tables.VehicleJourney.VEHICLE_JOURNEY_.dataType, false, false)
     }
 
     init {
-        returnParameter = RETURN_VALUE
-        addInParameter(VJ)
+        returnParameter = VehicleJourneyStartTime.RETURN_VALUE
+        addInParameter(VehicleJourneyStartTime.VJ)
     }
 
     /**
      * Set the <code>vj</code> parameter IN value to the routine
      */
-    fun setVj(value: VehicleJourneyRecord?): Unit = setValue(VJ, value)
+    fun setVj(value: VehicleJourneyRecord?): Unit = setValue(VehicleJourneyStartTime.VJ, value)
 
     /**
      * Set the <code>vj</code> parameter to the function to be used with a
      * {@link org.jooq.Select} statement
      */
     fun setVj(field: Field<VehicleJourneyRecord?>): Unit {
-        setField(VJ, field)
+        setField(VehicleJourneyStartTime.VJ, field)
     }
 }

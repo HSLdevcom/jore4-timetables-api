@@ -8,16 +8,14 @@ import fi.hsl.jore.jore4.jooq.passing_times.PassingTimes
 import fi.hsl.jore.jore4.jooq.passing_times.tables.records.GetPassingTimeOrderValidityDataRecord
 
 import java.util.UUID
-import java.util.function.Function
 
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row5
 import org.jooq.Schema
-import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -32,19 +30,23 @@ import org.jooq.impl.TableImpl
 @Suppress("UNCHECKED_CAST")
 open class GetPassingTimeOrderValidityData(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, GetPassingTimeOrderValidityDataRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, GetPassingTimeOrderValidityDataRecord>?,
+    parentPath: InverseForeignKey<out Record, GetPassingTimeOrderValidityDataRecord>?,
     aliased: Table<GetPassingTimeOrderValidityDataRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<GetPassingTimeOrderValidityDataRecord>(
     alias,
     PassingTimes.PASSING_TIMES,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment(""),
-    TableOptions.function()
+    TableOptions.function(),
+    where,
 ) {
     companion object {
 
@@ -90,11 +92,11 @@ open class GetPassingTimeOrderValidityData(
      */
     val COHERENT_JOURNEY_PATTERN_REFS: TableField<GetPassingTimeOrderValidityDataRecord, Boolean?> = createField(DSL.name("coherent_journey_pattern_refs"), SQLDataType.BOOLEAN, this, "")
 
-    private constructor(alias: Name, aliased: Table<GetPassingTimeOrderValidityDataRecord>?): this(alias, null, null, aliased, arrayOf(
+    private constructor(alias: Name, aliased: Table<GetPassingTimeOrderValidityDataRecord>?): this(alias, null, null, null, aliased, arrayOf(
         DSL.value(null, SQLDataType.UUID.array()),
         DSL.value(null, SQLDataType.UUID.array())
-    ))
-    private constructor(alias: Name, aliased: Table<GetPassingTimeOrderValidityDataRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    ), null)
+    private constructor(alias: Name, aliased: Table<GetPassingTimeOrderValidityDataRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
 
     /**
      * Create an aliased
@@ -118,7 +120,7 @@ open class GetPassingTimeOrderValidityData(
     override fun getSchema(): Schema? = if (aliased()) null else PassingTimes.PASSING_TIMES
     override fun `as`(alias: String): GetPassingTimeOrderValidityData = GetPassingTimeOrderValidityData(DSL.name(alias), this, parameters)
     override fun `as`(alias: Name): GetPassingTimeOrderValidityData = GetPassingTimeOrderValidityData(alias, this, parameters)
-    override fun `as`(alias: Table<*>): GetPassingTimeOrderValidityData = GetPassingTimeOrderValidityData(alias.getQualifiedName(), this, parameters)
+    override fun `as`(alias: Table<*>): GetPassingTimeOrderValidityData = GetPassingTimeOrderValidityData(alias.qualifiedName, this, parameters)
 
     /**
      * Rename this table
@@ -133,12 +135,7 @@ open class GetPassingTimeOrderValidityData(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): GetPassingTimeOrderValidityData = GetPassingTimeOrderValidityData(name.getQualifiedName(), null, parameters)
-
-    // -------------------------------------------------------------------------
-    // Row5 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row5<UUID?, UUID?, UUID?, Boolean?, Boolean?> = super.fieldsRow() as Row5<UUID?, UUID?, UUID?, Boolean?, Boolean?>
+    override fun rename(name: Table<*>): GetPassingTimeOrderValidityData = GetPassingTimeOrderValidityData(name.qualifiedName, null, parameters)
 
     /**
      * Call this table-valued function
@@ -161,15 +158,4 @@ open class GetPassingTimeOrderValidityData(
         filterVehicleJourneyIds,
         filterJourneyPatternRefIds
     )).let { if (aliased()) it.`as`(unqualifiedName) else it }
-
-    /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
-     */
-    fun <U> mapping(from: (UUID?, UUID?, UUID?, Boolean?, Boolean?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
-
-    /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
-     */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, UUID?, Boolean?, Boolean?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }
