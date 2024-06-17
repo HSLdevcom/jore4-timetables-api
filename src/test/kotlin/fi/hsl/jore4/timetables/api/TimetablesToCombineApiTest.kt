@@ -26,17 +26,20 @@ import java.util.UUID
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test")
-class TimetablesToCombineApiTest(@Autowired val mockMvc: MockMvc) {
+class TimetablesToCombineApiTest(
+    @Autowired val mockMvc: MockMvc
+) {
     @MockkBean
     private lateinit var combineTimetablesService: CombineTimetablesService
 
-    private val defaultTargetFrame = VehicleScheduleFrame(
-        vehicleScheduleFrameId = UUID.fromString("379076ee-d595-47e3-8050-2610d594b57c"),
-        validityStart = LocalDate.now(),
-        validityEnd = LocalDate.now(),
-        priority = 20,
-        label = "label"
-    )
+    private val defaultTargetFrame =
+        VehicleScheduleFrame(
+            vehicleScheduleFrameId = UUID.fromString("379076ee-d595-47e3-8050-2610d594b57c"),
+            validityStart = LocalDate.now(),
+            validityEnd = LocalDate.now(),
+            priority = 20,
+            label = "label"
+        )
     private val defaultToCombineTargetId = defaultTargetFrame.vehicleScheduleFrameId
 
     private fun executeToCombineTimetablesRequest(

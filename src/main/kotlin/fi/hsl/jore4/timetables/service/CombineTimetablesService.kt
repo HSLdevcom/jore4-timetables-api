@@ -33,11 +33,15 @@ class CombineTimetablesService(
     fun combineTimetables(
         stagingVehicleScheduleFrameIds: List<UUID>,
         targetPriority: TimetablesPriority
-    ): List<UUID> = stagingVehicleScheduleFrameIds.map { stagingFrameId ->
-        combineSingleTimetable(stagingFrameId, targetPriority)
-    }
+    ): List<UUID> =
+        stagingVehicleScheduleFrameIds.map { stagingFrameId ->
+            combineSingleTimetable(stagingFrameId, targetPriority)
+        }
 
-    private fun combineSingleTimetable(stagingVehicleScheduleFrameId: UUID, targetPriority: TimetablesPriority): UUID {
+    private fun combineSingleTimetable(
+        stagingVehicleScheduleFrameId: UUID,
+        targetPriority: TimetablesPriority
+    ): UUID {
         validateTargetPriority(targetPriority)
 
         LOGGER.info { "Combining timetables... $stagingVehicleScheduleFrameId to priority $targetPriority" }
@@ -74,15 +78,18 @@ class CombineTimetablesService(
         // ID of an existing row, can never be null.
         val stagingVehicleScheduleFrameId = stagingVehicleScheduleFrame.vehicleScheduleFrameId!!
 
-        val targetVehicleScheduleFrames = vehicleScheduleFrameRepository
-            .fetchTargetVehicleScheduleFrames(stagingVehicleScheduleFrame, targetPriority)
+        val targetVehicleScheduleFrames =
+            vehicleScheduleFrameRepository
+                .fetchTargetVehicleScheduleFrames(stagingVehicleScheduleFrame, targetPriority)
         LOGGER.info { "Found ${targetVehicleScheduleFrames.size} target vehicle schedule frames." }
 
-        val targetVehicleScheduleFrame = targetVehicleScheduleFrames.firstOrNull()
-            ?: throw TargetFrameNotFoundException("Target frame not found", stagingVehicleScheduleFrameId)
+        val targetVehicleScheduleFrame =
+            targetVehicleScheduleFrames.firstOrNull()
+                ?: throw TargetFrameNotFoundException("Target frame not found", stagingVehicleScheduleFrameId)
         if (targetVehicleScheduleFrames.size > 1) {
-            val targetFrameIds = targetVehicleScheduleFrames
-                .map { it.vehicleScheduleFrameId!! } // Primary key, can never be null.
+            val targetFrameIds =
+                targetVehicleScheduleFrames
+                    .map { it.vehicleScheduleFrameId!! } // Primary key, can never be null.
             // Supporting this case would require splitting the frame somehow.
             throw MultipleTargetFramesFoundException(
                 "Multiple target frames found.",

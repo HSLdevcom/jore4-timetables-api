@@ -23,7 +23,6 @@ fun main(args: Array<String>) {
 @SpringBootApplication
 @EnableConfigurationProperties(DatabaseProperties::class, JOOQProperties::class)
 class TimetablesApiApplication {
-
     @Bean
     @Primary
     fun objectMapper(): ObjectMapper {

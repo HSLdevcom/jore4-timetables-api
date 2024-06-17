@@ -31,27 +31,32 @@ private val LOGGER = KotlinLogging.logger {}
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test")
-class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
+class TimetablesReplaceApiTest(
+    @Autowired val mockMvc: MockMvc
+) {
     @MockkBean
     private lateinit var replaceTimetablesService: ReplaceTimetablesService
 
-    private val defaultStagingFrameIds = listOf(
-        UUID.fromString("94cc71bc-c276-4c34-8e7c-47452f9481ac"),
-        UUID.fromString("83e04376-81c7-4b83-8301-a5c9ee253014")
-    )
+    private val defaultStagingFrameIds =
+        listOf(
+            UUID.fromString("94cc71bc-c276-4c34-8e7c-47452f9481ac"),
+            UUID.fromString("83e04376-81c7-4b83-8301-a5c9ee253014")
+        )
     private val defaultTargetPriority = TimetablesPriority.STANDARD
-    private val defaultReplacedFrameIds = listOf(
-        UUID.fromString("976b9c25-2d7e-42fa-8a59-b538486a5554"),
-        UUID.fromString("db9bb4d3-8ea2-4041-bf5a-f6c9b86c7fcc"),
-        UUID.fromString("ae791d72-6f3d-4618-940b-16a440019120")
-    )
+    private val defaultReplacedFrameIds =
+        listOf(
+            UUID.fromString("976b9c25-2d7e-42fa-8a59-b538486a5554"),
+            UUID.fromString("db9bb4d3-8ea2-4041-bf5a-f6c9b86c7fcc"),
+            UUID.fromString("ae791d72-6f3d-4618-940b-16a440019120")
+        )
 
     private fun executeReplaceTimetablesRequest(
         stagingFrameIds: List<UUID> = defaultStagingFrameIds,
         targetPriority: Int = defaultTargetPriority.value
-    ): ResultActions {
-        return mockMvc.perform(
-            MockMvcRequestBuilders.post("/timetables/replace")
+    ): ResultActions =
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .post("/timetables/replace")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     """
@@ -62,7 +67,6 @@ class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
                     """.trimIndent()
                 )
         )
-    }
 
     @Test
     fun `returns 200 and a correct response when called successfully`() {
@@ -137,17 +141,20 @@ class TimetablesReplaceApiTest(@Autowired val mockMvc: MockMvc) {
         // to get better test coverage by involving error type detection.
         // Other transaction system errors are handled similarly,
         // type detection for each error case is tested in more detail in a separate suite.
-        val sqlErrorMessage = "ERROR: conflicting schedules detected: vehicle schedule frame Where: PL/pgSQL function vehicle_schedule.validate_queued_schedules_uniqueness()"
+        val sqlErrorMessage =
+            "ERROR: conflicting schedules detected: vehicle schedule frame Where: " +
+                "PL/pgSQL function vehicle_schedule.validate_queued_schedules_uniqueness()"
 
         every {
             replaceTimetablesService.replaceTimetables(
                 defaultStagingFrameIds,
                 defaultTargetPriority
             )
-        } throws TransactionSystemException(
-            "JDBC Commit Failed",
-            Exception(sqlErrorMessage)
-        )
+        } throws
+            TransactionSystemException(
+                "JDBC Commit Failed",
+                Exception(sqlErrorMessage)
+            )
 
         executeReplaceTimetablesRequest()
             .andExpect(status().isConflict)

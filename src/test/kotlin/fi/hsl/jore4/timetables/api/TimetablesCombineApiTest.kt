@@ -30,26 +30,31 @@ import java.util.UUID
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test")
-class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
+class TimetablesCombineApiTest(
+    @Autowired val mockMvc: MockMvc
+) {
     @MockkBean
     private lateinit var combineTimetablesService: CombineTimetablesService
 
-    private val defaultStagingFrameIds = listOf(
-        UUID.fromString("eff6e408-eb1d-4cb5-ac05-f22d7eb8dfb3"),
-        UUID.fromString("d4a36212-7729-4021-95fc-1b55cc158e9d")
-    )
+    private val defaultStagingFrameIds =
+        listOf(
+            UUID.fromString("eff6e408-eb1d-4cb5-ac05-f22d7eb8dfb3"),
+            UUID.fromString("d4a36212-7729-4021-95fc-1b55cc158e9d")
+        )
     private val defaultTargetPriority = TimetablesPriority.STANDARD
-    private val defaultTargetFrameIds = listOf(
-        UUID.fromString("b4d9d780-5575-489e-8180-b51765f4970d"),
-        UUID.fromString("006c93ab-e4ff-4148-a973-08cf80fb87e9")
-    )
+    private val defaultTargetFrameIds =
+        listOf(
+            UUID.fromString("b4d9d780-5575-489e-8180-b51765f4970d"),
+            UUID.fromString("006c93ab-e4ff-4148-a973-08cf80fb87e9")
+        )
 
     private fun executeCombineTimetablesRequest(
         stagingFrameIds: List<UUID> = defaultStagingFrameIds,
         targetPriority: Int = defaultTargetPriority.value
-    ): ResultActions {
-        return mockMvc.perform(
-            MockMvcRequestBuilders.post("/timetables/combine")
+    ): ResultActions =
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .post("/timetables/combine")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     """
@@ -60,7 +65,6 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
                     """.trimIndent()
                 )
         )
-    }
 
     @Test
     fun `returns 200 and a correct response when called successfully`() {
@@ -129,17 +133,20 @@ class TimetablesCombineApiTest(@Autowired val mockMvc: MockMvc) {
         // to get better test coverage by involving error type detection.
         // Other transaction system errors are handled similarly,
         // type detection for each error case is tested in more detail in a separate suite.
-        val sqlErrorMessage = "ERROR: conflicting schedules detected: vehicle schedule frame Where: PL/pgSQL function vehicle_schedule.validate_queued_schedules_uniqueness()"
+        val sqlErrorMessage =
+            "ERROR: conflicting schedules detected: vehicle schedule frame Where: " +
+                "PL/pgSQL function vehicle_schedule.validate_queued_schedules_uniqueness()"
 
         every {
             combineTimetablesService.combineTimetables(
                 defaultStagingFrameIds,
                 defaultTargetPriority
             )
-        } throws TransactionSystemException(
-            "JDBC Commit Failed",
-            Exception(sqlErrorMessage)
-        )
+        } throws
+            TransactionSystemException(
+                "JDBC Commit Failed",
+                Exception(sqlErrorMessage)
+            )
 
         executeCombineTimetablesRequest()
             .andExpect(status().isConflict)

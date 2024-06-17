@@ -16,15 +16,17 @@ class TimetablesDataInserterRunner(
     val databaseConfiguration: DatabaseProperties
 ) {
     fun truncateAndInsertDataset(datasetJson: String): String {
-        val inserterWorkDirectory = Paths.get("jore4-hasura/test/hasura")
-            .toAbsolutePath().toString()
+        val inserterWorkDirectory =
+            Paths.get("jore4-hasura/test/hasura")
+                .toAbsolutePath().toString()
         // Note: this performs DB truncation internally.
         val command = "yarn --silent timetables-data-inserter:cli insert hsl ${buildDatabaseArguments()}"
 
-        val process = ProcessBuilder(*command.split(" ").toTypedArray())
-            .directory(File(inserterWorkDirectory))
-            .redirectError(ProcessBuilder.Redirect.INHERIT)
-            .start()
+        val process =
+            ProcessBuilder(*command.split(" ").toTypedArray())
+                .directory(File(inserterWorkDirectory))
+                .redirectError(ProcessBuilder.Redirect.INHERIT)
+                .start()
 
         process.outputStream.bufferedWriter().use { writer ->
             writer.write(datasetJson)
@@ -36,9 +38,10 @@ class TimetablesDataInserterRunner(
             throw RuntimeException("Running timetables-data-inserter timed out.")
         }
 
-        val output = process.inputStream.bufferedReader().use { reader ->
-            reader.readText()
-        }
+        val output =
+            process.inputStream.bufferedReader().use { reader ->
+                reader.readText()
+            }
 
         return output
     }

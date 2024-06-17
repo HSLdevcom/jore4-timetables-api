@@ -34,49 +34,50 @@ class VehicleScheduleFrameRepository(private val dsl: DSLContext, config: Defaul
         val stagingFrame = VEHICLE_SCHEDULE_FRAME.`as`("staging")
         val replacedFrame = VEHICLE_SCHEDULE_FRAME.`as`("replaced")
 
-        val framesReplacedByStagingQuery = dsl
-            .with(
-                overlappingSchedulesCTE
-                    .fields(
-                        stagingFrameIdName,
-                        replacedFrameIdName
-                    )
-                    .`as`(
-                        dsl
-                            .select(
-                                getOverlappingSchedules.CURRENT_VEHICLE_SCHEDULE_FRAME_ID.`as`(
-                                    stagingVehicleScheduleFrameIdField.name
-                                ),
-                                getOverlappingSchedules.OTHER_VEHICLE_SCHEDULE_FRAME_ID.`as`(
-                                    replacedVehicleScheduleFrameIdField.name
+        val framesReplacedByStagingQuery =
+            dsl
+                .with(
+                    overlappingSchedulesCTE
+                        .fields(
+                            stagingFrameIdName,
+                            replacedFrameIdName
+                        )
+                        .`as`(
+                            dsl
+                                .select(
+                                    getOverlappingSchedules.CURRENT_VEHICLE_SCHEDULE_FRAME_ID.`as`(
+                                        stagingVehicleScheduleFrameIdField.name
+                                    ),
+                                    getOverlappingSchedules.OTHER_VEHICLE_SCHEDULE_FRAME_ID.`as`(
+                                        replacedVehicleScheduleFrameIdField.name
+                                    )
                                 )
-                            )
-                            .from(
-                                getOverlappingSchedules(
-                                    arrayOf(stagingVehicleScheduleFrameId),
-                                    arrayOf(),
-                                    true
+                                .from(
+                                    getOverlappingSchedules(
+                                        arrayOf(stagingVehicleScheduleFrameId),
+                                        arrayOf(),
+                                        true
+                                    )
                                 )
-                            )
-                    )
-            )
-            .select(
-                stagingVehicleScheduleFrameIdField,
-                replacedVehicleScheduleFrameIdField
-            )
-            .from(replacedFrame)
-            .join(overlappingSchedulesCTE)
-            .on(replacedFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(replacedVehicleScheduleFrameIdField))
-            .join(stagingFrame)
-            .on(stagingFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(stagingVehicleScheduleFrameIdField))
-            // The overlapping schedules query returns other frames as well, filter out unwanted ones.
-            .where(stagingFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(stagingVehicleScheduleFrameId))
-            .and(replacedFrame.PRIORITY.eq(targetPriority.value))
-            // Must be able to update the validity time of replaced frame,
-            // so it ends before staging starts.
-            // Thus, also needs to start before,
-            // so a valid validity range can be set without touching start time.
-            .and(replacedFrame.VALIDITY_START.lessThan(stagingFrame.VALIDITY_START))
+                        )
+                )
+                .select(
+                    stagingVehicleScheduleFrameIdField,
+                    replacedVehicleScheduleFrameIdField
+                )
+                .from(replacedFrame)
+                .join(overlappingSchedulesCTE)
+                .on(replacedFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(replacedVehicleScheduleFrameIdField))
+                .join(stagingFrame)
+                .on(stagingFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(stagingVehicleScheduleFrameIdField))
+                // The overlapping schedules query returns other frames as well, filter out unwanted ones.
+                .where(stagingFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(stagingVehicleScheduleFrameId))
+                .and(replacedFrame.PRIORITY.eq(targetPriority.value))
+                // Must be able to update the validity time of replaced frame,
+                // so it ends before staging starts.
+                // Thus, also needs to start before,
+                // so a valid validity range can be set without touching start time.
+                .and(replacedFrame.VALIDITY_START.lessThan(stagingFrame.VALIDITY_START))
 
         return dsl
             .select()
@@ -106,44 +107,45 @@ class VehicleScheduleFrameRepository(private val dsl: DSLContext, config: Defaul
         val stagingFrame = VEHICLE_SCHEDULE_FRAME.`as`("staging")
         val targetFrame = VEHICLE_SCHEDULE_FRAME.`as`("target")
 
-        val framesOverlappedByStagingQuery = dsl
-            .with(
-                overlappingSchedulesCTE
-                    .fields(
-                        stagingFrameIdName,
-                        targetFrameIdName
-                    )
-                    .`as`(
-                        dsl
-                            .select(
-                                getOverlappingSchedules.CURRENT_VEHICLE_SCHEDULE_FRAME_ID.`as`(
-                                    stagingVehicleScheduleFrameIdField.name
-                                ),
-                                getOverlappingSchedules.OTHER_VEHICLE_SCHEDULE_FRAME_ID.`as`(
-                                    targetVehicleScheduleFrameIdField.name
+        val framesOverlappedByStagingQuery =
+            dsl
+                .with(
+                    overlappingSchedulesCTE
+                        .fields(
+                            stagingFrameIdName,
+                            targetFrameIdName
+                        )
+                        .`as`(
+                            dsl
+                                .select(
+                                    getOverlappingSchedules.CURRENT_VEHICLE_SCHEDULE_FRAME_ID.`as`(
+                                        stagingVehicleScheduleFrameIdField.name
+                                    ),
+                                    getOverlappingSchedules.OTHER_VEHICLE_SCHEDULE_FRAME_ID.`as`(
+                                        targetVehicleScheduleFrameIdField.name
+                                    )
                                 )
-                            )
-                            .from(
-                                getOverlappingSchedules(
-                                    arrayOf(stagingVehicleScheduleFrameId),
-                                    arrayOf(),
-                                    true
+                                .from(
+                                    getOverlappingSchedules(
+                                        arrayOf(stagingVehicleScheduleFrameId),
+                                        arrayOf(),
+                                        true
+                                    )
                                 )
-                            )
-                    )
-            )
-            .select(
-                stagingVehicleScheduleFrameIdField,
-                targetVehicleScheduleFrameIdField
-            )
-            .from(targetFrame)
-            .join(overlappingSchedulesCTE)
-            .on(targetFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(targetVehicleScheduleFrameIdField))
-            .join(stagingFrame)
-            .on(stagingFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(stagingVehicleScheduleFrameIdField))
-            // The overlapping schedules query returns other frames as well, filter out unwanted ones.
-            .where(stagingFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(stagingVehicleScheduleFrameId))
-            .and(targetFrame.PRIORITY.eq(targetPriority.value))
+                        )
+                )
+                .select(
+                    stagingVehicleScheduleFrameIdField,
+                    targetVehicleScheduleFrameIdField
+                )
+                .from(targetFrame)
+                .join(overlappingSchedulesCTE)
+                .on(targetFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(targetVehicleScheduleFrameIdField))
+                .join(stagingFrame)
+                .on(stagingFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(stagingVehicleScheduleFrameIdField))
+                // The overlapping schedules query returns other frames as well, filter out unwanted ones.
+                .where(stagingFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(stagingVehicleScheduleFrameId))
+                .and(targetFrame.PRIORITY.eq(targetPriority.value))
 
         return dsl
             .select()

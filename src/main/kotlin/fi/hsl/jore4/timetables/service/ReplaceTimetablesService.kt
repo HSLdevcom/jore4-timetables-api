@@ -19,7 +19,10 @@ class ReplaceTimetablesService(
     private val vehicleScheduleFrameRepository: VehicleScheduleFrameRepository
 ) {
     @Transactional
-    fun replaceTimetables(stagingVehicleScheduleFrameIds: List<UUID>, targetPriority: TimetablesPriority): List<UUID> =
+    fun replaceTimetables(
+        stagingVehicleScheduleFrameIds: List<UUID>,
+        targetPriority: TimetablesPriority
+    ): List<UUID> =
         stagingVehicleScheduleFrameIds.map {
             processSingleStagingFrameReplacements(it, targetPriority)
         }.flatten()

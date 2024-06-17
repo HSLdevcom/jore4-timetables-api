@@ -53,22 +53,25 @@ class DataSourceConfig(
     fun timetablesDataSource() = HikariDataSource(createStandardHikariConfig())
 
     @Bean
-    fun transactionAwareDataSource(@Qualifier("timetablesDataSource") dataSource: DataSource) =
-        TransactionAwareDataSourceProxy(dataSource)
+    fun transactionAwareDataSource(
+        @Qualifier("timetablesDataSource") dataSource: DataSource
+    ) = TransactionAwareDataSourceProxy(dataSource)
 
     @Bean
-    fun transactionManager(@Qualifier("timetablesDataSource") dataSource: DataSource) =
-        DataSourceTransactionManager(dataSource)
+    fun transactionManager(
+        @Qualifier("timetablesDataSource") dataSource: DataSource
+    ) = DataSourceTransactionManager(dataSource)
 
     companion object {
-        private fun createCommonHikariConfig() = HikariConfig().apply {
-            connectionTimeout = TimeUnit.SECONDS.toMillis(30)
-            idleTimeout = TimeUnit.MINUTES.toMillis(1)
-            leakDetectionThreshold = TimeUnit.MINUTES.toMillis(10)
-            maxLifetime = TimeUnit.MINUTES.toMillis(15)
+        private fun createCommonHikariConfig() =
+            HikariConfig().apply {
+                connectionTimeout = TimeUnit.SECONDS.toMillis(30)
+                idleTimeout = TimeUnit.MINUTES.toMillis(1)
+                leakDetectionThreshold = TimeUnit.MINUTES.toMillis(10)
+                maxLifetime = TimeUnit.MINUTES.toMillis(15)
 
-            // SQL query to test whether connection is alive
-            connectionTestQuery = "SELECT 1"
-        }
+                // SQL query to test whether connection is alive
+                connectionTestQuery = "SELECT 1"
+            }
     }
 }

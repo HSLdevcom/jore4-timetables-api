@@ -26,27 +26,31 @@ import java.util.UUID
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test")
-class TimetablesToReplaceApiTest(@Autowired val mockMvc: MockMvc) {
+class TimetablesToReplaceApiTest(
+    @Autowired val mockMvc: MockMvc
+) {
     @MockkBean
     private lateinit var replaceTimetablesService: ReplaceTimetablesService
 
-    private val defaultVehicleScheduleFrames = listOf(
-        VehicleScheduleFrame(
-            vehicleScheduleFrameId = UUID.fromString("d541ced9-8c15-4320-9c13-0c5c34067984"),
-            validityStart = LocalDate.now(),
-            validityEnd = LocalDate.now(),
-            priority = 20,
-            label = "label"
-        ),
-        VehicleScheduleFrame(
-            vehicleScheduleFrameId = UUID.fromString("c7f851c7-016c-4ba9-ac2e-34fc285ce233"),
-            validityStart = LocalDate.now(),
-            validityEnd = LocalDate.now(),
-            priority = 20,
-            label = "label"
+    private val defaultVehicleScheduleFrames =
+        listOf(
+            VehicleScheduleFrame(
+                vehicleScheduleFrameId = UUID.fromString("d541ced9-8c15-4320-9c13-0c5c34067984"),
+                validityStart = LocalDate.now(),
+                validityEnd = LocalDate.now(),
+                priority = 20,
+                label = "label"
+            ),
+            VehicleScheduleFrame(
+                vehicleScheduleFrameId = UUID.fromString("c7f851c7-016c-4ba9-ac2e-34fc285ce233"),
+                validityStart = LocalDate.now(),
+                validityEnd = LocalDate.now(),
+                priority = 20,
+                label = "label"
+            )
         )
-    )
     private val defaultToReplaceIds = defaultVehicleScheduleFrames.map { it.vehicleScheduleFrameId }
+
     private fun executeToReplaceTimetablesRequest(
         stagingFrameId: UUID,
         targetPriority: Int
