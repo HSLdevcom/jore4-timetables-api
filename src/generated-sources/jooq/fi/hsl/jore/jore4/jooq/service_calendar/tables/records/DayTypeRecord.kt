@@ -8,11 +8,8 @@ import fi.hsl.jore.jore4.jooq.service_calendar.tables.DayType
 
 import java.util.UUID
 
-import org.jooq.Field
 import org.jooq.JSONB
 import org.jooq.Record1
-import org.jooq.Record3
-import org.jooq.Row3
 import org.jooq.impl.UpdatableRecordImpl
 
 
@@ -22,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl
  * https://www.transmodel-cen.eu/model/index.htm?goto=1:6:3:299 
  */
 @Suppress("UNCHECKED_CAST")
-open class DayTypeRecord private constructor() : UpdatableRecordImpl<DayTypeRecord>(DayType.DAY_TYPE), Record3<UUID?, String?, JSONB?> {
+open class DayTypeRecord private constructor() : UpdatableRecordImpl<DayTypeRecord>(DayType.DAY_TYPE) {
 
     open var dayTypeId: UUID?
         set(value): Unit = set(0, value)
@@ -41,44 +38,6 @@ open class DayTypeRecord private constructor() : UpdatableRecordImpl<DayTypeReco
     // -------------------------------------------------------------------------
 
     override fun key(): Record1<UUID?> = super.key() as Record1<UUID?>
-
-    // -------------------------------------------------------------------------
-    // Record3 type implementation
-    // -------------------------------------------------------------------------
-
-    override fun fieldsRow(): Row3<UUID?, String?, JSONB?> = super.fieldsRow() as Row3<UUID?, String?, JSONB?>
-    override fun valuesRow(): Row3<UUID?, String?, JSONB?> = super.valuesRow() as Row3<UUID?, String?, JSONB?>
-    override fun field1(): Field<UUID?> = DayType.DAY_TYPE.DAY_TYPE_ID
-    override fun field2(): Field<String?> = DayType.DAY_TYPE.LABEL
-    override fun field3(): Field<JSONB?> = DayType.DAY_TYPE.NAME_I18N
-    override fun component1(): UUID? = dayTypeId
-    override fun component2(): String = label
-    override fun component3(): JSONB = nameI18n
-    override fun value1(): UUID? = dayTypeId
-    override fun value2(): String = label
-    override fun value3(): JSONB = nameI18n
-
-    override fun value1(value: UUID?): DayTypeRecord {
-        set(0, value)
-        return this
-    }
-
-    override fun value2(value: String?): DayTypeRecord {
-        set(1, value)
-        return this
-    }
-
-    override fun value3(value: JSONB?): DayTypeRecord {
-        set(2, value)
-        return this
-    }
-
-    override fun values(value1: UUID?, value2: String?, value3: JSONB?): DayTypeRecord {
-        this.value1(value1)
-        this.value2(value2)
-        this.value3(value3)
-        return this
-    }
 
     /**
      * Create a detached, initialised DayTypeRecord

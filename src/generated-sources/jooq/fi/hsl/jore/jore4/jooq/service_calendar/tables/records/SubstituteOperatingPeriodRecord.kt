@@ -8,10 +8,7 @@ import fi.hsl.jore.jore4.jooq.service_calendar.tables.SubstituteOperatingPeriod
 
 import java.util.UUID
 
-import org.jooq.Field
 import org.jooq.Record1
-import org.jooq.Record3
-import org.jooq.Row3
 import org.jooq.impl.UpdatableRecordImpl
 
 
@@ -20,7 +17,7 @@ import org.jooq.impl.UpdatableRecordImpl
  * by line types.
  */
 @Suppress("UNCHECKED_CAST")
-open class SubstituteOperatingPeriodRecord private constructor() : UpdatableRecordImpl<SubstituteOperatingPeriodRecord>(SubstituteOperatingPeriod.SUBSTITUTE_OPERATING_PERIOD), Record3<UUID?, String?, Boolean?> {
+open class SubstituteOperatingPeriodRecord private constructor() : UpdatableRecordImpl<SubstituteOperatingPeriodRecord>(SubstituteOperatingPeriod.SUBSTITUTE_OPERATING_PERIOD) {
 
     open var substituteOperatingPeriodId: UUID?
         set(value): Unit = set(0, value)
@@ -41,44 +38,6 @@ open class SubstituteOperatingPeriodRecord private constructor() : UpdatableReco
     // -------------------------------------------------------------------------
 
     override fun key(): Record1<UUID?> = super.key() as Record1<UUID?>
-
-    // -------------------------------------------------------------------------
-    // Record3 type implementation
-    // -------------------------------------------------------------------------
-
-    override fun fieldsRow(): Row3<UUID?, String?, Boolean?> = super.fieldsRow() as Row3<UUID?, String?, Boolean?>
-    override fun valuesRow(): Row3<UUID?, String?, Boolean?> = super.valuesRow() as Row3<UUID?, String?, Boolean?>
-    override fun field1(): Field<UUID?> = SubstituteOperatingPeriod.SUBSTITUTE_OPERATING_PERIOD.SUBSTITUTE_OPERATING_PERIOD_ID
-    override fun field2(): Field<String?> = SubstituteOperatingPeriod.SUBSTITUTE_OPERATING_PERIOD.PERIOD_NAME
-    override fun field3(): Field<Boolean?> = SubstituteOperatingPeriod.SUBSTITUTE_OPERATING_PERIOD.IS_PRESET
-    override fun component1(): UUID? = substituteOperatingPeriodId
-    override fun component2(): String = periodName
-    override fun component3(): Boolean? = isPreset
-    override fun value1(): UUID? = substituteOperatingPeriodId
-    override fun value2(): String = periodName
-    override fun value3(): Boolean? = isPreset
-
-    override fun value1(value: UUID?): SubstituteOperatingPeriodRecord {
-        set(0, value)
-        return this
-    }
-
-    override fun value2(value: String?): SubstituteOperatingPeriodRecord {
-        set(1, value)
-        return this
-    }
-
-    override fun value3(value: Boolean?): SubstituteOperatingPeriodRecord {
-        set(2, value)
-        return this
-    }
-
-    override fun values(value1: UUID?, value2: String?, value3: Boolean?): SubstituteOperatingPeriodRecord {
-        this.value1(value1)
-        this.value2(value2)
-        this.value3(value3)
-        return this
-    }
 
     /**
      * Create a detached, initialised SubstituteOperatingPeriodRecord

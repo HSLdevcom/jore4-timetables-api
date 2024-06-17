@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional
  */
 @Suppress("UNCHECKED_CAST")
 @Transactional(readOnly = true)
-abstract class AbstractSpringDAOImpl<R : UpdatableRecord<R>, P, T>(table: Table<R>, type: Class<P>, configuration: Configuration?) : DAOImpl<R, P, T>(table, type, configuration) {
+abstract class AbstractSpringDAOImpl<R : UpdatableRecord<R>, P : Any, T>(table: Table<R>, type: Class<P>, configuration: Configuration?) : DAOImpl<R, P, T>(table, type, configuration) {
 
     constructor(table: Table<R>, type: Class<P>) : this(table, type, null)
 

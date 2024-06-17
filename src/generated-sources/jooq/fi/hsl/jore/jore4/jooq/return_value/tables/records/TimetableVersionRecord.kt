@@ -9,9 +9,6 @@ import fi.hsl.jore.jore4.jooq.return_value.tables.TimetableVersion
 import java.time.LocalDate
 import java.util.UUID
 
-import org.jooq.Field
-import org.jooq.Record7
-import org.jooq.Row7
 import org.jooq.impl.TableRecordImpl
 
 
@@ -43,7 +40,7 @@ import org.jooq.impl.TableRecordImpl
 
  */
 @Suppress("UNCHECKED_CAST")
-open class TimetableVersionRecord private constructor() : TableRecordImpl<TimetableVersionRecord>(TimetableVersion.TIMETABLE_VERSION), Record7<UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?> {
+open class TimetableVersionRecord private constructor() : TableRecordImpl<TimetableVersionRecord>(TimetableVersion.TIMETABLE_VERSION) {
 
     open var vehicleScheduleFrameId: UUID?
         set(value): Unit = set(0, value)
@@ -72,80 +69,6 @@ open class TimetableVersionRecord private constructor() : TableRecordImpl<Timeta
     open var dayTypeId: UUID
         set(value): Unit = set(6, value)
         get(): UUID = get(6) as UUID
-
-    // -------------------------------------------------------------------------
-    // Record7 type implementation
-    // -------------------------------------------------------------------------
-
-    override fun fieldsRow(): Row7<UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?> = super.fieldsRow() as Row7<UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?>
-    override fun valuesRow(): Row7<UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?> = super.valuesRow() as Row7<UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?>
-    override fun field1(): Field<UUID?> = TimetableVersion.TIMETABLE_VERSION.VEHICLE_SCHEDULE_FRAME_ID
-    override fun field2(): Field<UUID?> = TimetableVersion.TIMETABLE_VERSION.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID
-    override fun field3(): Field<LocalDate?> = TimetableVersion.TIMETABLE_VERSION.VALIDITY_START
-    override fun field4(): Field<LocalDate?> = TimetableVersion.TIMETABLE_VERSION.VALIDITY_END
-    override fun field5(): Field<Int?> = TimetableVersion.TIMETABLE_VERSION.PRIORITY
-    override fun field6(): Field<Boolean?> = TimetableVersion.TIMETABLE_VERSION.IN_EFFECT
-    override fun field7(): Field<UUID?> = TimetableVersion.TIMETABLE_VERSION.DAY_TYPE_ID
-    override fun component1(): UUID? = vehicleScheduleFrameId
-    override fun component2(): UUID? = substituteOperatingDayByLineTypeId
-    override fun component3(): LocalDate = validityStart
-    override fun component4(): LocalDate = validityEnd
-    override fun component5(): Int = priority
-    override fun component6(): Boolean = inEffect
-    override fun component7(): UUID = dayTypeId
-    override fun value1(): UUID? = vehicleScheduleFrameId
-    override fun value2(): UUID? = substituteOperatingDayByLineTypeId
-    override fun value3(): LocalDate = validityStart
-    override fun value4(): LocalDate = validityEnd
-    override fun value5(): Int = priority
-    override fun value6(): Boolean = inEffect
-    override fun value7(): UUID = dayTypeId
-
-    override fun value1(value: UUID?): TimetableVersionRecord {
-        set(0, value)
-        return this
-    }
-
-    override fun value2(value: UUID?): TimetableVersionRecord {
-        set(1, value)
-        return this
-    }
-
-    override fun value3(value: LocalDate?): TimetableVersionRecord {
-        set(2, value)
-        return this
-    }
-
-    override fun value4(value: LocalDate?): TimetableVersionRecord {
-        set(3, value)
-        return this
-    }
-
-    override fun value5(value: Int?): TimetableVersionRecord {
-        set(4, value)
-        return this
-    }
-
-    override fun value6(value: Boolean?): TimetableVersionRecord {
-        set(5, value)
-        return this
-    }
-
-    override fun value7(value: UUID?): TimetableVersionRecord {
-        set(6, value)
-        return this
-    }
-
-    override fun values(value1: UUID?, value2: UUID?, value3: LocalDate?, value4: LocalDate?, value5: Int?, value6: Boolean?, value7: UUID?): TimetableVersionRecord {
-        this.value1(value1)
-        this.value2(value2)
-        this.value3(value3)
-        this.value4(value4)
-        this.value5(value5)
-        this.value6(value6)
-        this.value7(value7)
-        return this
-    }
 
     /**
      * Create a detached, initialised TimetableVersionRecord

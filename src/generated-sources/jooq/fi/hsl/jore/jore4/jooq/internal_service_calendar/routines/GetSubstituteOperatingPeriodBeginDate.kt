@@ -37,21 +37,21 @@ open class GetSubstituteOperatingPeriodBeginDate : AbstractRoutine<LocalDate>("g
     }
 
     init {
-        returnParameter = RETURN_VALUE
-        addInParameter(SUBSTITUTE_OPERATING_PERIOD_UUID)
+        returnParameter = GetSubstituteOperatingPeriodBeginDate.RETURN_VALUE
+        addInParameter(GetSubstituteOperatingPeriodBeginDate.SUBSTITUTE_OPERATING_PERIOD_UUID)
     }
 
     /**
      * Set the <code>substitute_operating_period_uuid</code> parameter IN value
      * to the routine
      */
-    fun setSubstituteOperatingPeriodUuid(value: UUID?): Unit = setValue(SUBSTITUTE_OPERATING_PERIOD_UUID, value)
+    fun setSubstituteOperatingPeriodUuid(value: UUID?): Unit = setValue(GetSubstituteOperatingPeriodBeginDate.SUBSTITUTE_OPERATING_PERIOD_UUID, value)
 
     /**
      * Set the <code>substitute_operating_period_uuid</code> parameter to the
      * function to be used with a {@link org.jooq.Select} statement
      */
     fun setSubstituteOperatingPeriodUuid(field: Field<UUID?>): Unit {
-        setField(SUBSTITUTE_OPERATING_PERIOD_UUID, field)
+        setField(GetSubstituteOperatingPeriodBeginDate.SUBSTITUTE_OPERATING_PERIOD_UUID, field)
     }
 }

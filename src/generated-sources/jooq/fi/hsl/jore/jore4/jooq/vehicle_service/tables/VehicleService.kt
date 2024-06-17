@@ -4,27 +4,36 @@
 package fi.hsl.jore.jore4.jooq.vehicle_service.tables
 
 
-import fi.hsl.jore.jore4.jooq.service_calendar.tables.DayType
-import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.VehicleScheduleFrame
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.DayType.DayTypePath
+import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.VehicleScheduleFrame.VehicleScheduleFramePath
+import fi.hsl.jore.jore4.jooq.vehicle_service.keys.BLOCK__BLOCK_VEHICLE_SERVICE_ID_FKEY
+import fi.hsl.jore.jore4.jooq.vehicle_service.keys.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE__JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_VEHICLE_SERVICE_ID_FKEY
 import fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE_PKEY
 import fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY
 import fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.Block.BlockPath
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.JourneyPatternsInVehicleService.JourneyPatternsInVehicleServicePath
 import fi.hsl.jore.jore4.jooq.vehicle_service.tables.records.VehicleServiceRecord
 
 import java.util.UUID
-import java.util.function.Function
 
+import kotlin.collections.Collection
 import kotlin.collections.List
 
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.JSONB
 import org.jooq.Name
+import org.jooq.Path
+import org.jooq.PlainSQL
+import org.jooq.QueryPart
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row4
+import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.SelectField
+import org.jooq.Select
+import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -44,19 +53,23 @@ import org.jooq.impl.TableImpl
 @Suppress("UNCHECKED_CAST")
 open class VehicleService(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, VehicleServiceRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, VehicleServiceRecord>?,
+    parentPath: InverseForeignKey<out Record, VehicleServiceRecord>?,
     aliased: Table<VehicleServiceRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<VehicleServiceRecord>(
     alias,
     fi.hsl.jore.jore4.jooq.vehicle_service.VehicleService.VEHICLE_SERVICE,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment("A work plan for a single vehicle for a whole day, planned for a specific DAY TYPE. A VEHICLE SERVICE includes one or several BLOCKs. If there is no service on a given day, it does not include any BLOCKs. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:5:965 "),
-    TableOptions.table()
+    TableOptions.table(),
+    where,
 ) {
     companion object {
 
@@ -97,8 +110,9 @@ open class VehicleService(
      */
     val NAME_I18N: TableField<VehicleServiceRecord, JSONB?> = createField(DSL.name("name_i18n"), SQLDataType.JSONB, this, "Name for vehicle service.")
 
-    private constructor(alias: Name, aliased: Table<VehicleServiceRecord>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<VehicleServiceRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<VehicleServiceRecord>?): this(alias, null, null, null, aliased, null, null)
+    private constructor(alias: Name, aliased: Table<VehicleServiceRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
+    private constructor(alias: Name, aliased: Table<VehicleServiceRecord>?, where: Condition?): this(alias, null, null, null, aliased, null, where)
 
     /**
      * Create an aliased <code>vehicle_service.vehicle_service</code> table
@@ -117,44 +131,88 @@ open class VehicleService(
      */
     constructor(): this(DSL.name("vehicle_service"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, VehicleServiceRecord>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_SERVICE_, null)
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, VehicleServiceRecord>?, parentPath: InverseForeignKey<out Record, VehicleServiceRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, VEHICLE_SERVICE_, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class VehicleServicePath : VehicleService, Path<VehicleServiceRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, VehicleServiceRecord>?, parentPath: InverseForeignKey<out Record, VehicleServiceRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<VehicleServiceRecord>): super(alias, aliased)
+        override fun `as`(alias: String): VehicleServicePath = VehicleServicePath(DSL.name(alias), this)
+        override fun `as`(alias: Name): VehicleServicePath = VehicleServicePath(alias, this)
+        override fun `as`(alias: Table<*>): VehicleServicePath = VehicleServicePath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else fi.hsl.jore.jore4.jooq.vehicle_service.VehicleService.VEHICLE_SERVICE
     override fun getPrimaryKey(): UniqueKey<VehicleServiceRecord> = VEHICLE_SERVICE_PKEY
     override fun getReferences(): List<ForeignKey<VehicleServiceRecord, *>> = listOf(VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY, VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY)
 
-    private lateinit var _dayType: DayType
-    private lateinit var _vehicleScheduleFrame: VehicleScheduleFrame
+    private lateinit var _dayType: DayTypePath
 
     /**
      * Get the implicit join path to the <code>service_calendar.day_type</code>
      * table.
      */
-    fun dayType(): DayType {
+    fun dayType(): DayTypePath {
         if (!this::_dayType.isInitialized)
-            _dayType = DayType(this, VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY)
+            _dayType = DayTypePath(this, VEHICLE_SERVICE__VEHICLE_SERVICE_DAY_TYPE_ID_FKEY, null)
 
         return _dayType;
     }
 
-    val dayType: DayType
-        get(): DayType = dayType()
+    val dayType: DayTypePath
+        get(): DayTypePath = dayType()
+
+    private lateinit var _vehicleScheduleFrame: VehicleScheduleFramePath
 
     /**
      * Get the implicit join path to the
      * <code>vehicle_schedule.vehicle_schedule_frame</code> table.
      */
-    fun vehicleScheduleFrame(): VehicleScheduleFrame {
+    fun vehicleScheduleFrame(): VehicleScheduleFramePath {
         if (!this::_vehicleScheduleFrame.isInitialized)
-            _vehicleScheduleFrame = VehicleScheduleFrame(this, VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY)
+            _vehicleScheduleFrame = VehicleScheduleFramePath(this, VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY, null)
 
         return _vehicleScheduleFrame;
     }
 
-    val vehicleScheduleFrame: VehicleScheduleFrame
-        get(): VehicleScheduleFrame = vehicleScheduleFrame()
+    val vehicleScheduleFrame: VehicleScheduleFramePath
+        get(): VehicleScheduleFramePath = vehicleScheduleFrame()
+
+    private lateinit var _block: BlockPath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>vehicle_service.block</code> table
+     */
+    fun block(): BlockPath {
+        if (!this::_block.isInitialized)
+            _block = BlockPath(this, null, BLOCK__BLOCK_VEHICLE_SERVICE_ID_FKEY.inverseKey)
+
+        return _block;
+    }
+
+    val block: BlockPath
+        get(): BlockPath = block()
+
+    private lateinit var _journeyPatternsInVehicleService: JourneyPatternsInVehicleServicePath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>vehicle_service.journey_patterns_in_vehicle_service</code> table
+     */
+    fun journeyPatternsInVehicleService(): JourneyPatternsInVehicleServicePath {
+        if (!this::_journeyPatternsInVehicleService.isInitialized)
+            _journeyPatternsInVehicleService = JourneyPatternsInVehicleServicePath(this, null, JOURNEY_PATTERNS_IN_VEHICLE_SERVICE__JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_VEHICLE_SERVICE_ID_FKEY.inverseKey)
+
+        return _journeyPatternsInVehicleService;
+    }
+
+    val journeyPatternsInVehicleService: JourneyPatternsInVehicleServicePath
+        get(): JourneyPatternsInVehicleServicePath = journeyPatternsInVehicleService()
     override fun `as`(alias: String): VehicleService = VehicleService(DSL.name(alias), this)
     override fun `as`(alias: Name): VehicleService = VehicleService(alias, this)
-    override fun `as`(alias: Table<*>): VehicleService = VehicleService(alias.getQualifiedName(), this)
+    override fun `as`(alias: Table<*>): VehicleService = VehicleService(alias.qualifiedName, this)
 
     /**
      * Rename this table
@@ -169,21 +227,55 @@ open class VehicleService(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): VehicleService = VehicleService(name.getQualifiedName(), null)
-
-    // -------------------------------------------------------------------------
-    // Row4 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row4<UUID?, UUID?, UUID?, JSONB?> = super.fieldsRow() as Row4<UUID?, UUID?, UUID?, JSONB?>
+    override fun rename(name: Table<*>): VehicleService = VehicleService(name.qualifiedName, null)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(from: (UUID?, UUID?, UUID?, JSONB?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    override fun where(condition: Condition?): VehicleService = VehicleService(qualifiedName, if (aliased()) this else null, condition)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, UUID?, JSONB?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    override fun where(conditions: Collection<Condition>): VehicleService = where(DSL.and(conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(vararg conditions: Condition?): VehicleService = where(DSL.and(*conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(condition: Field<Boolean?>?): VehicleService = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(condition: SQL): VehicleService = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String): VehicleService = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg binds: Any?): VehicleService = where(DSL.condition(condition, *binds))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg parts: QueryPart): VehicleService = where(DSL.condition(condition, *parts))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereExists(select: Select<*>): VehicleService = where(DSL.exists(select))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereNotExists(select: Select<*>): VehicleService = where(DSL.notExists(select))
 }

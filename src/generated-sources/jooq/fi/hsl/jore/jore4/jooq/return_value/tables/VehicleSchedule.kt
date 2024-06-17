@@ -10,21 +10,25 @@ import fi.hsl.jore.jore4.jooq.return_value.tables.records.VehicleScheduleRecord
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
-import java.util.function.Function
 
+import kotlin.collections.Collection
+
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.PlainSQL
+import org.jooq.QueryPart
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row8
+import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.SelectField
+import org.jooq.Select
+import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.impl.DSL
-import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -39,19 +43,23 @@ import org.jooq.impl.TableImpl
 @Suppress("UNCHECKED_CAST")
 open class VehicleSchedule(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, VehicleScheduleRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, VehicleScheduleRecord>?,
+    parentPath: InverseForeignKey<out Record, VehicleScheduleRecord>?,
     aliased: Table<VehicleScheduleRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<VehicleScheduleRecord>(
     alias,
     ReturnValue.RETURN_VALUE,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment("This return value table is used in function vehicle_journey.get_vehicle_schedules_on_date. It consists of vehicle_journey_id, vehicle_schedule_frame_id or\nsubstitute_operating_day_by_line_type_id and also enriched with data, which are used in the UI side."),
-    TableOptions.table()
+    TableOptions.table(),
+    where,
 ) {
     companion object {
 
@@ -108,8 +116,9 @@ open class VehicleSchedule(
      */
     val CREATED_AT: TableField<VehicleScheduleRecord, OffsetDateTime?> = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "")
 
-    private constructor(alias: Name, aliased: Table<VehicleScheduleRecord>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<VehicleScheduleRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<VehicleScheduleRecord>?): this(alias, null, null, null, aliased, null, null)
+    private constructor(alias: Name, aliased: Table<VehicleScheduleRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
+    private constructor(alias: Name, aliased: Table<VehicleScheduleRecord>?, where: Condition?): this(alias, null, null, null, aliased, null, where)
 
     /**
      * Create an aliased <code>return_value.vehicle_schedule</code> table
@@ -127,12 +136,10 @@ open class VehicleSchedule(
      * Create a <code>return_value.vehicle_schedule</code> table reference
      */
     constructor(): this(DSL.name("vehicle_schedule"), null)
-
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, VehicleScheduleRecord>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_SCHEDULE, null)
     override fun getSchema(): Schema? = if (aliased()) null else ReturnValue.RETURN_VALUE
     override fun `as`(alias: String): VehicleSchedule = VehicleSchedule(DSL.name(alias), this)
     override fun `as`(alias: Name): VehicleSchedule = VehicleSchedule(alias, this)
-    override fun `as`(alias: Table<*>): VehicleSchedule = VehicleSchedule(alias.getQualifiedName(), this)
+    override fun `as`(alias: Table<*>): VehicleSchedule = VehicleSchedule(alias.qualifiedName, this)
 
     /**
      * Rename this table
@@ -147,21 +154,55 @@ open class VehicleSchedule(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): VehicleSchedule = VehicleSchedule(name.getQualifiedName(), null)
-
-    // -------------------------------------------------------------------------
-    // Row8 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row8<UUID?, LocalDate?, LocalDate?, Int?, UUID?, UUID?, UUID?, OffsetDateTime?> = super.fieldsRow() as Row8<UUID?, LocalDate?, LocalDate?, Int?, UUID?, UUID?, UUID?, OffsetDateTime?>
+    override fun rename(name: Table<*>): VehicleSchedule = VehicleSchedule(name.qualifiedName, null)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(from: (UUID?, LocalDate?, LocalDate?, Int?, UUID?, UUID?, UUID?, OffsetDateTime?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    override fun where(condition: Condition?): VehicleSchedule = VehicleSchedule(qualifiedName, if (aliased()) this else null, condition)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, LocalDate?, LocalDate?, Int?, UUID?, UUID?, UUID?, OffsetDateTime?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    override fun where(conditions: Collection<Condition>): VehicleSchedule = where(DSL.and(conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(vararg conditions: Condition?): VehicleSchedule = where(DSL.and(*conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(condition: Field<Boolean?>?): VehicleSchedule = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(condition: SQL): VehicleSchedule = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String): VehicleSchedule = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg binds: Any?): VehicleSchedule = where(DSL.condition(condition, *binds))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg parts: QueryPart): VehicleSchedule = where(DSL.condition(condition, *parts))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereExists(select: Select<*>): VehicleSchedule = where(DSL.exists(select))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereNotExists(select: Select<*>): VehicleSchedule = where(DSL.notExists(select))
 }

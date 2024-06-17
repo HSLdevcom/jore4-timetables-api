@@ -10,10 +10,7 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
 
-import org.jooq.Field
 import org.jooq.Record1
-import org.jooq.Record9
-import org.jooq.Row9
 import org.jooq.impl.UpdatableRecordImpl
 import org.jooq.types.YearToSecond
 
@@ -24,7 +21,7 @@ import org.jooq.types.YearToSecond
  * are always bound to a type of line.
  */
 @Suppress("UNCHECKED_CAST")
-open class SubstituteOperatingDayByLineTypeRecord private constructor() : UpdatableRecordImpl<SubstituteOperatingDayByLineTypeRecord>(SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE), Record9<UUID?, String?, LocalDate?, Int?, YearToSecond?, YearToSecond?, String?, UUID?, OffsetDateTime?> {
+open class SubstituteOperatingDayByLineTypeRecord private constructor() : UpdatableRecordImpl<SubstituteOperatingDayByLineTypeRecord>(SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE) {
 
     open var substituteOperatingDayByLineTypeId: UUID?
         set(value): Unit = set(0, value)
@@ -67,98 +64,6 @@ open class SubstituteOperatingDayByLineTypeRecord private constructor() : Updata
     // -------------------------------------------------------------------------
 
     override fun key(): Record1<UUID?> = super.key() as Record1<UUID?>
-
-    // -------------------------------------------------------------------------
-    // Record9 type implementation
-    // -------------------------------------------------------------------------
-
-    override fun fieldsRow(): Row9<UUID?, String?, LocalDate?, Int?, YearToSecond?, YearToSecond?, String?, UUID?, OffsetDateTime?> = super.fieldsRow() as Row9<UUID?, String?, LocalDate?, Int?, YearToSecond?, YearToSecond?, String?, UUID?, OffsetDateTime?>
-    override fun valuesRow(): Row9<UUID?, String?, LocalDate?, Int?, YearToSecond?, YearToSecond?, String?, UUID?, OffsetDateTime?> = super.valuesRow() as Row9<UUID?, String?, LocalDate?, Int?, YearToSecond?, YearToSecond?, String?, UUID?, OffsetDateTime?>
-    override fun field1(): Field<UUID?> = SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_ID
-    override fun field2(): Field<String?> = SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE.TYPE_OF_LINE
-    override fun field3(): Field<LocalDate?> = SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE.SUPERSEDED_DATE
-    override fun field4(): Field<Int?> = SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE.SUBSTITUTE_DAY_OF_WEEK
-    override fun field5(): Field<YearToSecond?> = SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE.BEGIN_TIME
-    override fun field6(): Field<YearToSecond?> = SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE.END_TIME
-    override fun field7(): Field<String?> = SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE.TIMEZONE
-    override fun field8(): Field<UUID?> = SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE.SUBSTITUTE_OPERATING_PERIOD_ID
-    override fun field9(): Field<OffsetDateTime?> = SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE.CREATED_AT
-    override fun component1(): UUID? = substituteOperatingDayByLineTypeId
-    override fun component2(): String = typeOfLine
-    override fun component3(): LocalDate = supersededDate
-    override fun component4(): Int? = substituteDayOfWeek
-    override fun component5(): YearToSecond? = beginTime
-    override fun component6(): YearToSecond? = endTime
-    override fun component7(): String? = timezone
-    override fun component8(): UUID = substituteOperatingPeriodId
-    override fun component9(): OffsetDateTime? = createdAt
-    override fun value1(): UUID? = substituteOperatingDayByLineTypeId
-    override fun value2(): String = typeOfLine
-    override fun value3(): LocalDate = supersededDate
-    override fun value4(): Int? = substituteDayOfWeek
-    override fun value5(): YearToSecond? = beginTime
-    override fun value6(): YearToSecond? = endTime
-    override fun value7(): String? = timezone
-    override fun value8(): UUID = substituteOperatingPeriodId
-    override fun value9(): OffsetDateTime? = createdAt
-
-    override fun value1(value: UUID?): SubstituteOperatingDayByLineTypeRecord {
-        set(0, value)
-        return this
-    }
-
-    override fun value2(value: String?): SubstituteOperatingDayByLineTypeRecord {
-        set(1, value)
-        return this
-    }
-
-    override fun value3(value: LocalDate?): SubstituteOperatingDayByLineTypeRecord {
-        set(2, value)
-        return this
-    }
-
-    override fun value4(value: Int?): SubstituteOperatingDayByLineTypeRecord {
-        set(3, value)
-        return this
-    }
-
-    override fun value5(value: YearToSecond?): SubstituteOperatingDayByLineTypeRecord {
-        set(4, value)
-        return this
-    }
-
-    override fun value6(value: YearToSecond?): SubstituteOperatingDayByLineTypeRecord {
-        set(5, value)
-        return this
-    }
-
-    override fun value7(value: String?): SubstituteOperatingDayByLineTypeRecord {
-        set(6, value)
-        return this
-    }
-
-    override fun value8(value: UUID?): SubstituteOperatingDayByLineTypeRecord {
-        set(7, value)
-        return this
-    }
-
-    override fun value9(value: OffsetDateTime?): SubstituteOperatingDayByLineTypeRecord {
-        set(8, value)
-        return this
-    }
-
-    override fun values(value1: UUID?, value2: String?, value3: LocalDate?, value4: Int?, value5: YearToSecond?, value6: YearToSecond?, value7: String?, value8: UUID?, value9: OffsetDateTime?): SubstituteOperatingDayByLineTypeRecord {
-        this.value1(value1)
-        this.value2(value2)
-        this.value3(value3)
-        this.value4(value4)
-        this.value5(value5)
-        this.value6(value6)
-        this.value7(value7)
-        this.value8(value8)
-        this.value9(value9)
-        return this
-    }
 
     /**
      * Create a detached, initialised SubstituteOperatingDayByLineTypeRecord

@@ -7,21 +7,29 @@ package fi.hsl.jore.jore4.jooq.vehicle_schedule.tables
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.VehicleSchedule
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.keys.VEHICLE_SCHEDULE_FRAME_PKEY
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.records.VehicleScheduleFrameRecord
+import fi.hsl.jore.jore4.jooq.vehicle_service.keys.VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService.VehicleServicePath
 
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
-import java.util.function.Function
 
+import kotlin.collections.Collection
+
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.JSONB
 import org.jooq.Name
+import org.jooq.Path
+import org.jooq.PlainSQL
+import org.jooq.QueryPart
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row9
+import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.SelectField
+import org.jooq.Select
+import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -40,19 +48,23 @@ import org.jooq.impl.TableImpl
 @Suppress("UNCHECKED_CAST")
 open class VehicleScheduleFrame(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, VehicleScheduleFrameRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, VehicleScheduleFrameRecord>?,
+    parentPath: InverseForeignKey<out Record, VehicleScheduleFrameRecord>?,
     aliased: Table<VehicleScheduleFrameRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<VehicleScheduleFrameRecord>(
     alias,
     VehicleSchedule.VEHICLE_SCHEDULE,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment("A coherent set of BLOCKS, COMPOUND BLOCKs, COURSEs of JOURNEY and VEHICLE SCHEDULEs to which the same set of VALIDITY CONDITIONs have been assigned. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:7:2:993 "),
-    TableOptions.table()
+    TableOptions.table(),
+    where,
 ) {
     companion object {
 
@@ -133,8 +145,9 @@ open class VehicleScheduleFrame(
      */
     val CREATED_AT: TableField<VehicleScheduleFrameRecord, OffsetDateTime?> = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "")
 
-    private constructor(alias: Name, aliased: Table<VehicleScheduleFrameRecord>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<VehicleScheduleFrameRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<VehicleScheduleFrameRecord>?): this(alias, null, null, null, aliased, null, null)
+    private constructor(alias: Name, aliased: Table<VehicleScheduleFrameRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
+    private constructor(alias: Name, aliased: Table<VehicleScheduleFrameRecord>?, where: Condition?): this(alias, null, null, null, aliased, null, where)
 
     /**
      * Create an aliased <code>vehicle_schedule.vehicle_schedule_frame</code>
@@ -154,12 +167,39 @@ open class VehicleScheduleFrame(
      */
     constructor(): this(DSL.name("vehicle_schedule_frame"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, VehicleScheduleFrameRecord>): this(Internal.createPathAlias(child, key), child, key, VEHICLE_SCHEDULE_FRAME, null)
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, VehicleScheduleFrameRecord>?, parentPath: InverseForeignKey<out Record, VehicleScheduleFrameRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, VEHICLE_SCHEDULE_FRAME, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class VehicleScheduleFramePath : VehicleScheduleFrame, Path<VehicleScheduleFrameRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, VehicleScheduleFrameRecord>?, parentPath: InverseForeignKey<out Record, VehicleScheduleFrameRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<VehicleScheduleFrameRecord>): super(alias, aliased)
+        override fun `as`(alias: String): VehicleScheduleFramePath = VehicleScheduleFramePath(DSL.name(alias), this)
+        override fun `as`(alias: Name): VehicleScheduleFramePath = VehicleScheduleFramePath(alias, this)
+        override fun `as`(alias: Table<*>): VehicleScheduleFramePath = VehicleScheduleFramePath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else VehicleSchedule.VEHICLE_SCHEDULE
     override fun getPrimaryKey(): UniqueKey<VehicleScheduleFrameRecord> = VEHICLE_SCHEDULE_FRAME_PKEY
+
+    private lateinit var _vehicleService: VehicleServicePath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>vehicle_service.vehicle_service</code> table
+     */
+    fun vehicleService(): VehicleServicePath {
+        if (!this::_vehicleService.isInitialized)
+            _vehicleService = VehicleServicePath(this, null, VEHICLE_SERVICE__VEHICLE_SERVICE_VEHICLE_SCHEDULE_FRAME_ID_FKEY.inverseKey)
+
+        return _vehicleService;
+    }
+
+    val vehicleService: VehicleServicePath
+        get(): VehicleServicePath = vehicleService()
     override fun `as`(alias: String): VehicleScheduleFrame = VehicleScheduleFrame(DSL.name(alias), this)
     override fun `as`(alias: Name): VehicleScheduleFrame = VehicleScheduleFrame(alias, this)
-    override fun `as`(alias: Table<*>): VehicleScheduleFrame = VehicleScheduleFrame(alias.getQualifiedName(), this)
+    override fun `as`(alias: Table<*>): VehicleScheduleFrame = VehicleScheduleFrame(alias.qualifiedName, this)
 
     /**
      * Rename this table
@@ -174,21 +214,55 @@ open class VehicleScheduleFrame(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): VehicleScheduleFrame = VehicleScheduleFrame(name.getQualifiedName(), null)
-
-    // -------------------------------------------------------------------------
-    // Row9 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row9<UUID?, JSONB?, LocalDate?, LocalDate?, Int?, String?, String?, JSONB?, OffsetDateTime?> = super.fieldsRow() as Row9<UUID?, JSONB?, LocalDate?, LocalDate?, Int?, String?, String?, JSONB?, OffsetDateTime?>
+    override fun rename(name: Table<*>): VehicleScheduleFrame = VehicleScheduleFrame(name.qualifiedName, null)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(from: (UUID?, JSONB?, LocalDate?, LocalDate?, Int?, String?, String?, JSONB?, OffsetDateTime?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    override fun where(condition: Condition?): VehicleScheduleFrame = VehicleScheduleFrame(qualifiedName, if (aliased()) this else null, condition)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, JSONB?, LocalDate?, LocalDate?, Int?, String?, String?, JSONB?, OffsetDateTime?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    override fun where(conditions: Collection<Condition>): VehicleScheduleFrame = where(DSL.and(conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(vararg conditions: Condition?): VehicleScheduleFrame = where(DSL.and(*conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(condition: Field<Boolean?>?): VehicleScheduleFrame = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(condition: SQL): VehicleScheduleFrame = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String): VehicleScheduleFrame = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg binds: Any?): VehicleScheduleFrame = where(DSL.condition(condition, *binds))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg parts: QueryPart): VehicleScheduleFrame = where(DSL.condition(condition, *parts))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereExists(select: Select<*>): VehicleScheduleFrame = where(DSL.exists(select))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereNotExists(select: Select<*>): VehicleScheduleFrame = where(DSL.notExists(select))
 }

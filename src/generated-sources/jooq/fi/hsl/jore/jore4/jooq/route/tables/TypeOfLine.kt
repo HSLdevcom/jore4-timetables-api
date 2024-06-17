@@ -4,20 +4,29 @@
 package fi.hsl.jore.jore4.jooq.route.tables
 
 
+import fi.hsl.jore.jore4.jooq.journey_pattern.keys.JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY
+import fi.hsl.jore.jore4.jooq.journey_pattern.tables.JourneyPatternRef.JourneyPatternRefPath
 import fi.hsl.jore.jore4.jooq.route.Route
 import fi.hsl.jore.jore4.jooq.route.keys.TYPE_OF_LINE_PKEY
 import fi.hsl.jore.jore4.jooq.route.tables.records.TypeOfLineRecord
+import fi.hsl.jore.jore4.jooq.service_calendar.keys.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY
+import fi.hsl.jore.jore4.jooq.service_calendar.tables.SubstituteOperatingDayByLineType.SubstituteOperatingDayByLineTypePath
 
-import java.util.function.Function
+import kotlin.collections.Collection
 
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.Path
+import org.jooq.PlainSQL
+import org.jooq.QueryPart
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row1
+import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.SelectField
+import org.jooq.Select
+import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -34,19 +43,23 @@ import org.jooq.impl.TableImpl
 @Suppress("UNCHECKED_CAST")
 open class TypeOfLine(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, TypeOfLineRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, TypeOfLineRecord>?,
+    parentPath: InverseForeignKey<out Record, TypeOfLineRecord>?,
     aliased: Table<TypeOfLineRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<TypeOfLineRecord>(
     alias,
     Route.ROUTE,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment("Type of line. https://www.transmodel-cen.eu/model/index.htm?goto=2:1:3:424"),
-    TableOptions.table()
+    TableOptions.table(),
+    where,
 ) {
     companion object {
 
@@ -67,8 +80,9 @@ open class TypeOfLine(
      */
     val TYPE_OF_LINE_: TableField<TypeOfLineRecord, String?> = createField(DSL.name("type_of_line"), SQLDataType.CLOB.nullable(false), this, "GTFS route type: https://developers.google.com/transit/gtfs/reference/extended-route-types")
 
-    private constructor(alias: Name, aliased: Table<TypeOfLineRecord>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<TypeOfLineRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<TypeOfLineRecord>?): this(alias, null, null, null, aliased, null, null)
+    private constructor(alias: Name, aliased: Table<TypeOfLineRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
+    private constructor(alias: Name, aliased: Table<TypeOfLineRecord>?, where: Condition?): this(alias, null, null, null, aliased, null, where)
 
     /**
      * Create an aliased <code>route.type_of_line</code> table reference
@@ -85,12 +99,55 @@ open class TypeOfLine(
      */
     constructor(): this(DSL.name("type_of_line"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, TypeOfLineRecord>): this(Internal.createPathAlias(child, key), child, key, TYPE_OF_LINE, null)
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, TypeOfLineRecord>?, parentPath: InverseForeignKey<out Record, TypeOfLineRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, TYPE_OF_LINE, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class TypeOfLinePath : TypeOfLine, Path<TypeOfLineRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, TypeOfLineRecord>?, parentPath: InverseForeignKey<out Record, TypeOfLineRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<TypeOfLineRecord>): super(alias, aliased)
+        override fun `as`(alias: String): TypeOfLinePath = TypeOfLinePath(DSL.name(alias), this)
+        override fun `as`(alias: Name): TypeOfLinePath = TypeOfLinePath(alias, this)
+        override fun `as`(alias: Table<*>): TypeOfLinePath = TypeOfLinePath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else Route.ROUTE
     override fun getPrimaryKey(): UniqueKey<TypeOfLineRecord> = TYPE_OF_LINE_PKEY
+
+    private lateinit var _journeyPatternRef: JourneyPatternRefPath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>journey_pattern.journey_pattern_ref</code> table
+     */
+    fun journeyPatternRef(): JourneyPatternRefPath {
+        if (!this::_journeyPatternRef.isInitialized)
+            _journeyPatternRef = JourneyPatternRefPath(this, null, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY.inverseKey)
+
+        return _journeyPatternRef;
+    }
+
+    val journeyPatternRef: JourneyPatternRefPath
+        get(): JourneyPatternRefPath = journeyPatternRef()
+
+    private lateinit var _substituteOperatingDayByLineType: SubstituteOperatingDayByLineTypePath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>service_calendar.substitute_operating_day_by_line_type</code> table
+     */
+    fun substituteOperatingDayByLineType(): SubstituteOperatingDayByLineTypePath {
+        if (!this::_substituteOperatingDayByLineType.isInitialized)
+            _substituteOperatingDayByLineType = SubstituteOperatingDayByLineTypePath(this, null, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY.inverseKey)
+
+        return _substituteOperatingDayByLineType;
+    }
+
+    val substituteOperatingDayByLineType: SubstituteOperatingDayByLineTypePath
+        get(): SubstituteOperatingDayByLineTypePath = substituteOperatingDayByLineType()
     override fun `as`(alias: String): TypeOfLine = TypeOfLine(DSL.name(alias), this)
     override fun `as`(alias: Name): TypeOfLine = TypeOfLine(alias, this)
-    override fun `as`(alias: Table<*>): TypeOfLine = TypeOfLine(alias.getQualifiedName(), this)
+    override fun `as`(alias: Table<*>): TypeOfLine = TypeOfLine(alias.qualifiedName, this)
 
     /**
      * Rename this table
@@ -105,21 +162,55 @@ open class TypeOfLine(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): TypeOfLine = TypeOfLine(name.getQualifiedName(), null)
-
-    // -------------------------------------------------------------------------
-    // Row1 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row1<String?> = super.fieldsRow() as Row1<String?>
+    override fun rename(name: Table<*>): TypeOfLine = TypeOfLine(name.qualifiedName, null)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(from: (String?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    override fun where(condition: Condition?): TypeOfLine = TypeOfLine(qualifiedName, if (aliased()) this else null, condition)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(toType: Class<U>, from: (String?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    override fun where(conditions: Collection<Condition>): TypeOfLine = where(DSL.and(conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(vararg conditions: Condition?): TypeOfLine = where(DSL.and(*conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(condition: Field<Boolean?>?): TypeOfLine = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(condition: SQL): TypeOfLine = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String): TypeOfLine = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg binds: Any?): TypeOfLine = where(DSL.condition(condition, *binds))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg parts: QueryPart): TypeOfLine = where(DSL.condition(condition, *parts))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereExists(select: Select<*>): TypeOfLine = where(DSL.exists(select))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereNotExists(select: Select<*>): TypeOfLine = where(DSL.notExists(select))
 }

@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.5</version>
+        <version>3.3.0</version>
         <relativePath/>
     </parent>
 
@@ -39,6 +39,11 @@
         <kotlin-logging-jvm.version>3.0.2</kotlin-logging-jvm.version>
         <quicktheories.version>0.26</quicktheories.version>
         <mockk.version>1.13.8</mockk.version>
+
+        <!-- Spring Boot BOM depends on version 3.19.8, which is incompatible with kotlin >= 1.9 -->
+        <!-- 3.19.9 has the required fix https://github.com/jOOQ/jOOQ/issues/16691 -->
+        <!-- This override should probably be dropped on next Sping Boot BOM update -->
+        <jooq.version>3.19.10</jooq.version>
 
         <!-- Other properties -->
         <start.class>fi.hsl.jore4.timetables.TimetablesApiApplicationKt</start.class>

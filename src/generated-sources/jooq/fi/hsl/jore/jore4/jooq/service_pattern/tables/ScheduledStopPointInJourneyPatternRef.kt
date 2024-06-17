@@ -4,25 +4,32 @@
 package fi.hsl.jore.jore4.jooq.service_pattern.tables
 
 
-import fi.hsl.jore.jore4.jooq.journey_pattern.tables.JourneyPatternRef
+import fi.hsl.jore.jore4.jooq.journey_pattern.tables.JourneyPatternRef.JourneyPatternRefPath
+import fi.hsl.jore.jore4.jooq.passing_times.keys.TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_SCHEDULED_STOP_POINT_IN_JOURNEY_PA_FKEY
+import fi.hsl.jore.jore4.jooq.passing_times.tables.TimetabledPassingTime.TimetabledPassingTimePath
 import fi.hsl.jore.jore4.jooq.service_pattern.ServicePattern
 import fi.hsl.jore.jore4.jooq.service_pattern.keys.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_PKEY
 import fi.hsl.jore.jore4.jooq.service_pattern.keys.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY
 import fi.hsl.jore.jore4.jooq.service_pattern.tables.records.ScheduledStopPointInJourneyPatternRefRecord
 
 import java.util.UUID
-import java.util.function.Function
 
+import kotlin.collections.Collection
 import kotlin.collections.List
 
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.Path
+import org.jooq.PlainSQL
+import org.jooq.QueryPart
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row5
+import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.SelectField
+import org.jooq.Select
+import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -40,19 +47,23 @@ import org.jooq.impl.TableImpl
 @Suppress("UNCHECKED_CAST")
 open class ScheduledStopPointInJourneyPatternRef(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, ScheduledStopPointInJourneyPatternRefRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, ScheduledStopPointInJourneyPatternRefRecord>?,
+    parentPath: InverseForeignKey<out Record, ScheduledStopPointInJourneyPatternRefRecord>?,
     aliased: Table<ScheduledStopPointInJourneyPatternRefRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<ScheduledStopPointInJourneyPatternRefRecord>(
     alias,
     ServicePattern.SERVICE_PATTERN,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment("Reference the a SCHEDULED STOP POINT within a JOURNEY PATTERN. Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 "),
-    TableOptions.table()
+    TableOptions.table(),
+    where,
 ) {
     companion object {
 
@@ -103,8 +114,9 @@ open class ScheduledStopPointInJourneyPatternRef(
      */
     val TIMING_PLACE_LABEL: TableField<ScheduledStopPointInJourneyPatternRefRecord, String?> = createField(DSL.name("timing_place_label"), SQLDataType.CLOB, this, "The label of the timing place associated with the referenced scheduled stop point in journey pattern")
 
-    private constructor(alias: Name, aliased: Table<ScheduledStopPointInJourneyPatternRefRecord>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<ScheduledStopPointInJourneyPatternRefRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<ScheduledStopPointInJourneyPatternRefRecord>?): this(alias, null, null, null, aliased, null, null)
+    private constructor(alias: Name, aliased: Table<ScheduledStopPointInJourneyPatternRefRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
+    private constructor(alias: Name, aliased: Table<ScheduledStopPointInJourneyPatternRefRecord>?, where: Condition?): this(alias, null, null, null, aliased, null, where)
 
     /**
      * Create an aliased
@@ -127,29 +139,56 @@ open class ScheduledStopPointInJourneyPatternRef(
      */
     constructor(): this(DSL.name("scheduled_stop_point_in_journey_pattern_ref"), null)
 
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, ScheduledStopPointInJourneyPatternRefRecord>): this(Internal.createPathAlias(child, key), child, key, SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF, null)
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, ScheduledStopPointInJourneyPatternRefRecord>?, parentPath: InverseForeignKey<out Record, ScheduledStopPointInJourneyPatternRefRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class ScheduledStopPointInJourneyPatternRefPath : ScheduledStopPointInJourneyPatternRef, Path<ScheduledStopPointInJourneyPatternRefRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, ScheduledStopPointInJourneyPatternRefRecord>?, parentPath: InverseForeignKey<out Record, ScheduledStopPointInJourneyPatternRefRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<ScheduledStopPointInJourneyPatternRefRecord>): super(alias, aliased)
+        override fun `as`(alias: String): ScheduledStopPointInJourneyPatternRefPath = ScheduledStopPointInJourneyPatternRefPath(DSL.name(alias), this)
+        override fun `as`(alias: Name): ScheduledStopPointInJourneyPatternRefPath = ScheduledStopPointInJourneyPatternRefPath(alias, this)
+        override fun `as`(alias: Table<*>): ScheduledStopPointInJourneyPatternRefPath = ScheduledStopPointInJourneyPatternRefPath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else ServicePattern.SERVICE_PATTERN
     override fun getPrimaryKey(): UniqueKey<ScheduledStopPointInJourneyPatternRefRecord> = SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_PKEY
     override fun getReferences(): List<ForeignKey<ScheduledStopPointInJourneyPatternRefRecord, *>> = listOf(SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY)
 
-    private lateinit var _journeyPatternRef: JourneyPatternRef
+    private lateinit var _journeyPatternRef: JourneyPatternRefPath
 
     /**
      * Get the implicit join path to the
      * <code>journey_pattern.journey_pattern_ref</code> table.
      */
-    fun journeyPatternRef(): JourneyPatternRef {
+    fun journeyPatternRef(): JourneyPatternRefPath {
         if (!this::_journeyPatternRef.isInitialized)
-            _journeyPatternRef = JourneyPatternRef(this, SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY)
+            _journeyPatternRef = JourneyPatternRefPath(this, SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY, null)
 
         return _journeyPatternRef;
     }
 
-    val journeyPatternRef: JourneyPatternRef
-        get(): JourneyPatternRef = journeyPatternRef()
+    val journeyPatternRef: JourneyPatternRefPath
+        get(): JourneyPatternRefPath = journeyPatternRef()
+
+    private lateinit var _timetabledPassingTime: TimetabledPassingTimePath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>passing_times.timetabled_passing_time</code> table
+     */
+    fun timetabledPassingTime(): TimetabledPassingTimePath {
+        if (!this::_timetabledPassingTime.isInitialized)
+            _timetabledPassingTime = TimetabledPassingTimePath(this, null, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_SCHEDULED_STOP_POINT_IN_JOURNEY_PA_FKEY.inverseKey)
+
+        return _timetabledPassingTime;
+    }
+
+    val timetabledPassingTime: TimetabledPassingTimePath
+        get(): TimetabledPassingTimePath = timetabledPassingTime()
     override fun `as`(alias: String): ScheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef(DSL.name(alias), this)
     override fun `as`(alias: Name): ScheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef(alias, this)
-    override fun `as`(alias: Table<*>): ScheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef(alias.getQualifiedName(), this)
+    override fun `as`(alias: Table<*>): ScheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef(alias.qualifiedName, this)
 
     /**
      * Rename this table
@@ -164,21 +203,55 @@ open class ScheduledStopPointInJourneyPatternRef(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): ScheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef(name.getQualifiedName(), null)
-
-    // -------------------------------------------------------------------------
-    // Row5 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row5<UUID?, UUID?, String?, Int?, String?> = super.fieldsRow() as Row5<UUID?, UUID?, String?, Int?, String?>
+    override fun rename(name: Table<*>): ScheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef(name.qualifiedName, null)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(from: (UUID?, UUID?, String?, Int?, String?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    override fun where(condition: Condition?): ScheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef(qualifiedName, if (aliased()) this else null, condition)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, String?, Int?, String?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    override fun where(conditions: Collection<Condition>): ScheduledStopPointInJourneyPatternRef = where(DSL.and(conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(vararg conditions: Condition?): ScheduledStopPointInJourneyPatternRef = where(DSL.and(*conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(condition: Field<Boolean?>?): ScheduledStopPointInJourneyPatternRef = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(condition: SQL): ScheduledStopPointInJourneyPatternRef = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String): ScheduledStopPointInJourneyPatternRef = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg binds: Any?): ScheduledStopPointInJourneyPatternRef = where(DSL.condition(condition, *binds))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg parts: QueryPart): ScheduledStopPointInJourneyPatternRef = where(DSL.condition(condition, *parts))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereExists(select: Select<*>): ScheduledStopPointInJourneyPatternRef = where(DSL.exists(select))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereNotExists(select: Select<*>): ScheduledStopPointInJourneyPatternRef = where(DSL.notExists(select))
 }

@@ -9,21 +9,25 @@ import fi.hsl.jore.jore4.jooq.return_value.tables.records.TimetableVersionRecord
 
 import java.time.LocalDate
 import java.util.UUID
-import java.util.function.Function
 
+import kotlin.collections.Collection
+
+import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.PlainSQL
+import org.jooq.QueryPart
 import org.jooq.Record
-import org.jooq.Records
-import org.jooq.Row7
+import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.SelectField
+import org.jooq.Select
+import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.impl.DSL
-import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -58,19 +62,23 @@ import org.jooq.impl.TableImpl
 @Suppress("UNCHECKED_CAST")
 open class TimetableVersion(
     alias: Name,
-    child: Table<out Record>?,
-    path: ForeignKey<out Record, TimetableVersionRecord>?,
+    path: Table<out Record>?,
+    childPath: ForeignKey<out Record, TimetableVersionRecord>?,
+    parentPath: InverseForeignKey<out Record, TimetableVersionRecord>?,
     aliased: Table<TimetableVersionRecord>?,
-    parameters: Array<Field<*>?>?
+    parameters: Array<Field<*>?>?,
+    where: Condition?
 ): TableImpl<TimetableVersionRecord>(
     alias,
     ReturnValue.RETURN_VALUE,
-    child,
     path,
+    childPath,
+    parentPath,
     aliased,
     parameters,
     DSL.comment("This return value is used for functions that determine what timetable versions are in effect. In effect will be true for all the timetable version rows that\nare valid on given observation day and are the highest priority of that day type. As an example if we have:\nSaturday Standard priority valid for 1.1.2023 - 30.6.2023\nSaturday Temporary priority valid for 1.5.2023 - 31.5.2023\nSaturday Special priority valid for 20.5.2023 - 20.5.2023\n\nIf we check the timetable versions for the date 1.2.2023, for Saturday we only get the Standard priority, beacuse it is the only one valid on that time. So that \nrow would have in_effect = true. \nIf we check the timetable versions for the date 1.5.2023, for Saturday we would get the Standard and the Temporary priority for this date, as they are both valid.\nBut only the higher priority is in effect on this date. So the Saturday Temporary priority would have in_effect = true, and the Saturday Standard priority would \nhave in_effect = false.\nIf we check the timetable versions for the date 20.5.2023, for Saturday we have all three valid, but only one can be in_effect, and that would be the Special \npriority in this case.\n"),
-    TableOptions.table()
+    TableOptions.table(),
+    where,
 ) {
     companion object {
 
@@ -122,8 +130,9 @@ open class TimetableVersion(
      */
     val DAY_TYPE_ID: TableField<TimetableVersionRecord, UUID?> = createField(DSL.name("day_type_id"), SQLDataType.UUID.nullable(false), this, "")
 
-    private constructor(alias: Name, aliased: Table<TimetableVersionRecord>?): this(alias, null, null, aliased, null)
-    private constructor(alias: Name, aliased: Table<TimetableVersionRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
+    private constructor(alias: Name, aliased: Table<TimetableVersionRecord>?): this(alias, null, null, null, aliased, null, null)
+    private constructor(alias: Name, aliased: Table<TimetableVersionRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
+    private constructor(alias: Name, aliased: Table<TimetableVersionRecord>?, where: Condition?): this(alias, null, null, null, aliased, null, where)
 
     /**
      * Create an aliased <code>return_value.timetable_version</code> table
@@ -141,12 +150,10 @@ open class TimetableVersion(
      * Create a <code>return_value.timetable_version</code> table reference
      */
     constructor(): this(DSL.name("timetable_version"), null)
-
-    constructor(child: Table<out Record>, key: ForeignKey<out Record, TimetableVersionRecord>): this(Internal.createPathAlias(child, key), child, key, TIMETABLE_VERSION, null)
     override fun getSchema(): Schema? = if (aliased()) null else ReturnValue.RETURN_VALUE
     override fun `as`(alias: String): TimetableVersion = TimetableVersion(DSL.name(alias), this)
     override fun `as`(alias: Name): TimetableVersion = TimetableVersion(alias, this)
-    override fun `as`(alias: Table<*>): TimetableVersion = TimetableVersion(alias.getQualifiedName(), this)
+    override fun `as`(alias: Table<*>): TimetableVersion = TimetableVersion(alias.qualifiedName, this)
 
     /**
      * Rename this table
@@ -161,21 +168,55 @@ open class TimetableVersion(
     /**
      * Rename this table
      */
-    override fun rename(name: Table<*>): TimetableVersion = TimetableVersion(name.getQualifiedName(), null)
-
-    // -------------------------------------------------------------------------
-    // Row7 type methods
-    // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row7<UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?> = super.fieldsRow() as Row7<UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?>
+    override fun rename(name: Table<*>): TimetableVersion = TimetableVersion(name.qualifiedName, null)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(from: (UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    override fun where(condition: Condition?): TimetableVersion = TimetableVersion(qualifiedName, if (aliased()) this else null, condition)
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, LocalDate?, LocalDate?, Int?, Boolean?, UUID?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    override fun where(conditions: Collection<Condition>): TimetableVersion = where(DSL.and(conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(vararg conditions: Condition?): TimetableVersion = where(DSL.and(*conditions))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun where(condition: Field<Boolean?>?): TimetableVersion = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(condition: SQL): TimetableVersion = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String): TimetableVersion = where(DSL.condition(condition))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg binds: Any?): TimetableVersion = where(DSL.condition(condition, *binds))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @PlainSQL override fun where(@Stringly.SQL condition: String, vararg parts: QueryPart): TimetableVersion = where(DSL.condition(condition, *parts))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereExists(select: Select<*>): TimetableVersion = where(DSL.exists(select))
+
+    /**
+     * Create an inline derived table from this table
+     */
+    override fun whereNotExists(select: Select<*>): TimetableVersion = where(DSL.notExists(select))
 }
