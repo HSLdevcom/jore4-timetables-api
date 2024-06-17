@@ -42,7 +42,6 @@ class TimetablesController(
     data class CombineOrReplaceTimetablesRequestBody(
         val stagingVehicleScheduleFrameIds: List<UUID>,
         val targetPriority: Int
-
     ) {
         @AssertTrue(message = "false")
         fun isTargetPriorityValid(): Boolean = TimetablesPriority.fromInt(targetPriority) != null
@@ -58,10 +57,11 @@ class TimetablesController(
         requestBody: CombineOrReplaceTimetablesRequestBody
     ): ResponseEntity<CombineTimetablesResponseBody> {
         LOGGER.debug { "Combine api, request: $requestBody" }
-        val combineResult = combineTimetablesService.combineTimetables(
-            requestBody.stagingVehicleScheduleFrameIds,
-            parseTargetPriority(requestBody.targetPriority)
-        )
+        val combineResult =
+            combineTimetablesService.combineTimetables(
+                requestBody.stagingVehicleScheduleFrameIds,
+                parseTargetPriority(requestBody.targetPriority)
+            )
 
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -78,10 +78,11 @@ class TimetablesController(
         requestBody: CombineOrReplaceTimetablesRequestBody
     ): ResponseEntity<ReplaceTimetablesResponseBody> {
         LOGGER.debug { "Replace api, request: $requestBody" }
-        val replaceResult = replaceTimetablesService.replaceTimetables(
-            requestBody.stagingVehicleScheduleFrameIds,
-            parseTargetPriority(requestBody.targetPriority)
-        )
+        val replaceResult =
+            replaceTimetablesService.replaceTimetables(
+                requestBody.stagingVehicleScheduleFrameIds,
+                parseTargetPriority(requestBody.targetPriority)
+            )
 
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -107,10 +108,11 @@ class TimetablesController(
     ): ResponseEntity<ToReplaceTimetablesResponseBody> {
         LOGGER.info { "ToReplace api, stagingVehicleScheduleFrameId: $stagingVehicleScheduleFrameId, targetPriority: $targetPriority" }
 
-        val vehicleScheduleFrameIds = replaceTimetablesService.fetchVehicleScheduleFramesToReplace(
-            stagingVehicleScheduleFrameId,
-            parseTargetPriority(targetPriority)
-        ).mapNotNull { it.vehicleScheduleFrameId }
+        val vehicleScheduleFrameIds =
+            replaceTimetablesService.fetchVehicleScheduleFramesToReplace(
+                stagingVehicleScheduleFrameId,
+                parseTargetPriority(targetPriority)
+            ).mapNotNull { it.vehicleScheduleFrameId }
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(ToReplaceTimetablesResponseBody(toReplaceVehicleScheduleFrameIds = vehicleScheduleFrameIds))
@@ -125,10 +127,11 @@ class TimetablesController(
     ): ResponseEntity<ToCombineTimetablesResponseBody> {
         LOGGER.info { "ToCombine api, stagingVehicleScheduleFrameId: $stagingVehicleScheduleFrameId, targetPriority: $targetPriority" }
 
-        val targetVehicleScheduleFrame = combineTimetablesService.fetchTargetVehicleScheduleFrame(
-            stagingVehicleScheduleFrameId,
-            parseTargetPriority(targetPriority)
-        )
+        val targetVehicleScheduleFrame =
+            combineTimetablesService.fetchTargetVehicleScheduleFrame(
+                stagingVehicleScheduleFrameId,
+                parseTargetPriority(targetPriority)
+            )
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(
@@ -141,45 +144,48 @@ class TimetablesController(
 
     @ExceptionHandler(RuntimeException::class)
     fun handleRuntimeException(ex: RuntimeException): ResponseEntity<JoreErrorResponse> {
-        val errorExtensions: JoreErrorExtensions = when (ex) {
-            is InvalidTargetPriorityException -> InvalidTargetPriorityExtensions.from(ex)
+        val errorExtensions: JoreErrorExtensions =
+            when (ex) {
+                is InvalidTargetPriorityException -> InvalidTargetPriorityExtensions.from(ex)
 
-            is StagingVehicleScheduleFrameNotFoundException -> StagingVehicleScheduleFrameNotFoundExtensions.from(ex)
+                is StagingVehicleScheduleFrameNotFoundException -> StagingVehicleScheduleFrameNotFoundExtensions.from(ex)
 
-            is TargetFrameNotFoundException -> TargetVehicleScheduleFrameNotFoundExtensions.from(ex)
+                is TargetFrameNotFoundException -> TargetVehicleScheduleFrameNotFoundExtensions.from(ex)
 
-            is MultipleTargetFramesFoundException -> MultipleTargetFramesFoundExtensions.from(ex)
+                is MultipleTargetFramesFoundException -> MultipleTargetFramesFoundExtensions.from(ex)
 
-            is TargetPriorityParsingException -> TargetPriorityParsingExtensions.from(ex)
+                is TargetPriorityParsingException -> TargetPriorityParsingExtensions.from(ex)
 
-            // Occurs on Commit / Rollback errors.
-            is TransactionSystemException -> TransactionSystemExtensions.from(ex)
+                // Occurs on Commit / Rollback errors.
+                is TransactionSystemException -> TransactionSystemExtensions.from(ex)
 
-            else -> {
-                LOGGER.error { "Exception during request:$ex" }
-                LOGGER.error(ex.stackTraceToString())
+                else -> {
+                    LOGGER.error { "Exception during request:$ex" }
+                    LOGGER.error(ex.stackTraceToString())
 
-                PlainStatusExtensions(HttpStatus.CONFLICT)
-            }
-        }
-
-        val httpStatus: HttpStatus = errorExtensions.run {
-            if (code !in 400..499) {
-                LOGGER.warn { "Violating Hasura error response contract by returning code not like 4xx: $code" }
+                    PlainStatusExtensions(HttpStatus.CONFLICT)
+                }
             }
 
-            HttpStatus.resolve(code) ?: run {
-                // This block should never be entered (and never will when using valid HTTP status codes).
-                LOGGER.warn { "Could not resolve HttpStatus from code $code" }
-                HttpStatus.BAD_REQUEST // default in case not resolved
+        val httpStatus: HttpStatus =
+            errorExtensions.run {
+                if (code !in 400..499) {
+                    LOGGER.warn { "Violating Hasura error response contract by returning code not like 4xx: $code" }
+                }
+
+                HttpStatus.resolve(code) ?: run {
+                    // This block should never be entered (and never will when using valid HTTP status codes).
+                    LOGGER.warn { "Could not resolve HttpStatus from code $code" }
+                    HttpStatus.BAD_REQUEST // default in case not resolved
+                }
             }
-        }
 
         return ResponseEntity(JoreErrorResponse(ex.message, errorExtensions), httpStatus)
     }
 
     companion object {
-        private fun parseTargetPriority(targetPriority: Int) = TimetablesPriority.fromInt(targetPriority)
-            ?: throw TargetPriorityParsingException("Failed to parse target priority", targetPriority)
+        private fun parseTargetPriority(targetPriority: Int) =
+            TimetablesPriority.fromInt(targetPriority)
+                ?: throw TargetPriorityParsingException("Failed to parse target priority", targetPriority)
     }
 }

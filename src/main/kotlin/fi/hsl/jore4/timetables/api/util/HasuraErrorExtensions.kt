@@ -25,7 +25,6 @@ data class PlainStatusExtensions(
     override val code: Int,
     override val type: TimetablesApiErrorType
 ) : JoreErrorExtensions {
-
     constructor(httpStatus: HttpStatus) : this(
         httpStatus.value(),
         TimetablesApiErrorType.UnknownError
@@ -37,13 +36,13 @@ data class InvalidTargetPriorityExtensions(
     override val type: TimetablesApiErrorType,
     val targetPriority: TimetablesPriority
 ) : JoreErrorExtensions {
-
     companion object {
-        fun from(ex: InvalidTargetPriorityException) = InvalidTargetPriorityExtensions(
-            HttpStatus.BAD_REQUEST.value(),
-            TimetablesApiErrorType.InvalidTargetPriorityError,
-            ex.targetPriority
-        )
+        fun from(ex: InvalidTargetPriorityException) =
+            InvalidTargetPriorityExtensions(
+                HttpStatus.BAD_REQUEST.value(),
+                TimetablesApiErrorType.InvalidTargetPriorityError,
+                ex.targetPriority
+            )
     }
 }
 
@@ -52,13 +51,13 @@ data class StagingVehicleScheduleFrameNotFoundExtensions(
     override val type: TimetablesApiErrorType,
     val stagingVehicleScheduleFrameId: UUID
 ) : JoreErrorExtensions {
-
     companion object {
-        fun from(ex: StagingVehicleScheduleFrameNotFoundException) = StagingVehicleScheduleFrameNotFoundExtensions(
-            HttpStatus.NOT_FOUND.value(),
-            TimetablesApiErrorType.StagingVehicleScheduleFrameNotFoundError,
-            ex.stagingVehicleScheduleFrameId
-        )
+        fun from(ex: StagingVehicleScheduleFrameNotFoundException) =
+            StagingVehicleScheduleFrameNotFoundExtensions(
+                HttpStatus.NOT_FOUND.value(),
+                TimetablesApiErrorType.StagingVehicleScheduleFrameNotFoundError,
+                ex.stagingVehicleScheduleFrameId
+            )
     }
 }
 
@@ -67,13 +66,13 @@ data class TargetVehicleScheduleFrameNotFoundExtensions(
     override val type: TimetablesApiErrorType,
     val stagingVehicleScheduleFrameId: UUID
 ) : JoreErrorExtensions {
-
     companion object {
-        fun from(ex: TargetFrameNotFoundException) = TargetVehicleScheduleFrameNotFoundExtensions(
-            HttpStatus.NOT_FOUND.value(),
-            TimetablesApiErrorType.TargetVehicleScheduleFrameNotFoundError,
-            ex.stagingVehicleScheduleFrameId
-        )
+        fun from(ex: TargetFrameNotFoundException) =
+            TargetVehicleScheduleFrameNotFoundExtensions(
+                HttpStatus.NOT_FOUND.value(),
+                TimetablesApiErrorType.TargetVehicleScheduleFrameNotFoundError,
+                ex.stagingVehicleScheduleFrameId
+            )
     }
 }
 
@@ -83,14 +82,14 @@ data class MultipleTargetFramesFoundExtensions(
     val stagingVehicleScheduleFrameId: UUID,
     val targetVehicleScheduleFrameIds: List<UUID>
 ) : JoreErrorExtensions {
-
     companion object {
-        fun from(ex: MultipleTargetFramesFoundException) = MultipleTargetFramesFoundExtensions(
-            HttpStatus.CONFLICT.value(),
-            TimetablesApiErrorType.MultipleTargetFramesFoundError,
-            ex.stagingVehicleScheduleFrameId,
-            ex.targetVehicleScheduleFrameIds
-        )
+        fun from(ex: MultipleTargetFramesFoundException) =
+            MultipleTargetFramesFoundExtensions(
+                HttpStatus.CONFLICT.value(),
+                TimetablesApiErrorType.MultipleTargetFramesFoundError,
+                ex.stagingVehicleScheduleFrameId,
+                ex.targetVehicleScheduleFrameIds
+            )
     }
 }
 
@@ -99,13 +98,13 @@ data class TargetPriorityParsingExtensions(
     override val type: TimetablesApiErrorType,
     val targetPriority: Int
 ) : JoreErrorExtensions {
-
     companion object {
-        fun from(ex: TargetPriorityParsingException) = TargetPriorityParsingExtensions(
-            HttpStatus.BAD_REQUEST.value(),
-            TimetablesApiErrorType.TargetPriorityParsingError,
-            ex.targetPriority
-        )
+        fun from(ex: TargetPriorityParsingException) =
+            TargetPriorityParsingExtensions(
+                HttpStatus.BAD_REQUEST.value(),
+                TimetablesApiErrorType.TargetPriorityParsingError,
+                ex.targetPriority
+            )
     }
 }
 
@@ -114,13 +113,13 @@ data class TransactionSystemExtensions(
     override val type: TimetablesApiErrorType,
     val sqlErrorMessage: String
 ) : JoreErrorExtensions {
-
     companion object {
-        fun from(ex: TransactionSystemException) = TransactionSystemExtensions(
-            HttpStatus.CONFLICT.value(),
-            resolveErrorType(ex),
-            ex.cause?.message ?: "unknown error on transaction commit or rollback"
-        )
+        fun from(ex: TransactionSystemException) =
+            TransactionSystemExtensions(
+                HttpStatus.CONFLICT.value(),
+                resolveErrorType(ex),
+                ex.cause?.message ?: "unknown error on transaction commit or rollback"
+            )
 
         private fun resolveErrorType(ex: TransactionSystemException): TimetablesApiErrorType {
             val errorMessage = ex.cause?.message ?: "" // Should always be defined though.
@@ -131,14 +130,19 @@ data class TransactionSystemExtensions(
                 ?: TimetablesApiErrorType.TransactionSystemError
         }
 
-        private val errorTypesWithMatchingSubstrings = listOf(
-            TimetablesApiErrorType.PassingTimeStopPointMatchingOrderError to "passing times and their matching stop points must be in same order",
-            TimetablesApiErrorType.PassingTimeFirstArrivalTimeError to "first passing time must not have arrival_time set",
-            TimetablesApiErrorType.PassingTimeLastDepartureTimeError to "last passing time must not have departure_time set",
-            TimetablesApiErrorType.PassingTimeNullError to "all passing time that are not first or last in the sequence must have both departure and arrival time defined",
-            TimetablesApiErrorType.PassingTimesMixedJourneyPatternRefsError to "inconsistent journey_pattern_ref within vehicle journey, all timetabled_passing_times must reference same journey_pattern_ref as the vehicle_journey",
-            TimetablesApiErrorType.ConflictingSchedulesError to "validate_queued_schedules_uniqueness",
-            TimetablesApiErrorType.SequentialIntegrityError to "validate_service_sequential_integrity"
-        )
+        private val errorTypesWithMatchingSubstrings =
+            @Suppress("ktlint:standard:max-line-length")
+            listOf(
+                TimetablesApiErrorType.PassingTimeStopPointMatchingOrderError to
+                    "passing times and their matching stop points must be in same order",
+                TimetablesApiErrorType.PassingTimeFirstArrivalTimeError to "first passing time must not have arrival_time set",
+                TimetablesApiErrorType.PassingTimeLastDepartureTimeError to "last passing time must not have departure_time set",
+                TimetablesApiErrorType.PassingTimeNullError to
+                    "all passing time that are not first or last in the sequence must have both departure and arrival time defined",
+                TimetablesApiErrorType.PassingTimesMixedJourneyPatternRefsError to
+                    "inconsistent journey_pattern_ref within vehicle journey, all timetabled_passing_times must reference same journey_pattern_ref as the vehicle_journey",
+                TimetablesApiErrorType.ConflictingSchedulesError to "validate_queued_schedules_uniqueness",
+                TimetablesApiErrorType.SequentialIntegrityError to "validate_service_sequential_integrity"
+            )
     }
 }

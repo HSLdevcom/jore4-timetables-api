@@ -19,7 +19,6 @@ class TimetablesDataset : MutableMap<String, Any?> by mutableMapOf() {
             return OBJECT_MAPPER.readValue(jsonStream, object : TypeReference<TimetablesDataset>() {})
         }
 
-        fun createFromMutableMap(data: MutableMap<String, Any?>) =
-            TimetablesDataset().also { it.putAll(data) }
+        fun createFromMutableMap(data: MutableMap<String, Any?>) = TimetablesDataset().also { it.putAll(data) }
     }
 }
