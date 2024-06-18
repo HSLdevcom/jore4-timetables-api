@@ -11,8 +11,8 @@ import java.util.UUID
 import org.jooq.Field
 import org.jooq.JSONB
 import org.jooq.Record1
-import org.jooq.Record11
-import org.jooq.Row11
+import org.jooq.Record12
+import org.jooq.Row12
 import org.jooq.impl.UpdatableRecordImpl
 import org.jooq.types.YearToSecond
 
@@ -23,7 +23,7 @@ import org.jooq.types.YearToSecond
  * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:1:1:831 
  */
 @Suppress("UNCHECKED_CAST")
-open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<VehicleJourneyRecord>(VehicleJourney.VEHICLE_JOURNEY_), Record11<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?> {
+open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<VehicleJourneyRecord>(VehicleJourney.VEHICLE_JOURNEY_), Record12<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?, String?> {
 
     open var vehicleJourneyId: UUID?
         set(value): Unit = set(0, value)
@@ -75,6 +75,10 @@ open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<Vehi
         set(value): Unit = set(10, value)
         get(): Boolean? = get(10) as Boolean?
 
+    open var contractNumber: String
+        set(value): Unit = set(11, value)
+        get(): String = get(11) as String
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -82,11 +86,11 @@ open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<Vehi
     override fun key(): Record1<UUID?> = super.key() as Record1<UUID?>
 
     // -------------------------------------------------------------------------
-    // Record11 type implementation
+    // Record12 type implementation
     // -------------------------------------------------------------------------
 
-    override fun fieldsRow(): Row11<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?> = super.fieldsRow() as Row11<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?>
-    override fun valuesRow(): Row11<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?> = super.valuesRow() as Row11<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?>
+    override fun fieldsRow(): Row12<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?, String?> = super.fieldsRow() as Row12<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?, String?>
+    override fun valuesRow(): Row12<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?, String?> = super.valuesRow() as Row12<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?, String?>
     override fun field1(): Field<UUID?> = VehicleJourney.VEHICLE_JOURNEY_.VEHICLE_JOURNEY_ID
     override fun field2(): Field<UUID?> = VehicleJourney.VEHICLE_JOURNEY_.JOURNEY_PATTERN_REF_ID
     override fun field3(): Field<UUID?> = VehicleJourney.VEHICLE_JOURNEY_.BLOCK_ID
@@ -98,6 +102,7 @@ open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<Vehi
     override fun field9(): Field<Boolean?> = VehicleJourney.VEHICLE_JOURNEY_.IS_VEHICLE_TYPE_MANDATORY
     override fun field10(): Field<Boolean?> = VehicleJourney.VEHICLE_JOURNEY_.IS_BACKUP_JOURNEY
     override fun field11(): Field<Boolean?> = VehicleJourney.VEHICLE_JOURNEY_.IS_EXTRA_JOURNEY
+    override fun field12(): Field<String?> = VehicleJourney.VEHICLE_JOURNEY_.CONTRACT_NUMBER
     override fun component1(): UUID? = vehicleJourneyId
     override fun component2(): UUID = journeyPatternRefId
     override fun component3(): UUID = blockId
@@ -109,6 +114,7 @@ open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<Vehi
     override fun component9(): Boolean? = isVehicleTypeMandatory
     override fun component10(): Boolean? = isBackupJourney
     override fun component11(): Boolean? = isExtraJourney
+    override fun component12(): String = contractNumber
     override fun value1(): UUID? = vehicleJourneyId
     override fun value2(): UUID = journeyPatternRefId
     override fun value3(): UUID = blockId
@@ -120,6 +126,7 @@ open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<Vehi
     override fun value9(): Boolean? = isVehicleTypeMandatory
     override fun value10(): Boolean? = isBackupJourney
     override fun value11(): Boolean? = isExtraJourney
+    override fun value12(): String = contractNumber
 
     override fun value1(value: UUID?): VehicleJourneyRecord {
         set(0, value)
@@ -176,7 +183,12 @@ open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<Vehi
         return this
     }
 
-    override fun values(value1: UUID?, value2: UUID?, value3: UUID?, value4: JSONB?, value5: YearToSecond?, value6: YearToSecond?, value7: String?, value8: String?, value9: Boolean?, value10: Boolean?, value11: Boolean?): VehicleJourneyRecord {
+    override fun value12(value: String?): VehicleJourneyRecord {
+        set(11, value)
+        return this
+    }
+
+    override fun values(value1: UUID?, value2: UUID?, value3: UUID?, value4: JSONB?, value5: YearToSecond?, value6: YearToSecond?, value7: String?, value8: String?, value9: Boolean?, value10: Boolean?, value11: Boolean?, value12: String?): VehicleJourneyRecord {
         this.value1(value1)
         this.value2(value2)
         this.value3(value3)
@@ -188,13 +200,14 @@ open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<Vehi
         this.value9(value9)
         this.value10(value10)
         this.value11(value11)
+        this.value12(value12)
         return this
     }
 
     /**
      * Create a detached, initialised VehicleJourneyRecord
      */
-    constructor(vehicleJourneyId: UUID? = null, journeyPatternRefId: UUID, blockId: UUID, journeyNameI18n: JSONB? = null, turnaroundTime: YearToSecond? = null, layoverTime: YearToSecond? = null, journeyType: String? = null, displayedName: String? = null, isVehicleTypeMandatory: Boolean? = null, isBackupJourney: Boolean? = null, isExtraJourney: Boolean? = null): this() {
+    constructor(vehicleJourneyId: UUID? = null, journeyPatternRefId: UUID, blockId: UUID, journeyNameI18n: JSONB? = null, turnaroundTime: YearToSecond? = null, layoverTime: YearToSecond? = null, journeyType: String? = null, displayedName: String? = null, isVehicleTypeMandatory: Boolean? = null, isBackupJourney: Boolean? = null, isExtraJourney: Boolean? = null, contractNumber: String): this() {
         this.vehicleJourneyId = vehicleJourneyId
         this.journeyPatternRefId = journeyPatternRefId
         this.blockId = blockId
@@ -206,6 +219,7 @@ open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<Vehi
         this.isVehicleTypeMandatory = isVehicleTypeMandatory
         this.isBackupJourney = isBackupJourney
         this.isExtraJourney = isExtraJourney
+        this.contractNumber = contractNumber
         resetChangedOnNotNull()
     }
 
@@ -225,6 +239,7 @@ open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<Vehi
             this.isVehicleTypeMandatory = value.isVehicleTypeMandatory
             this.isBackupJourney = value.isBackupJourney
             this.isExtraJourney = value.isExtraJourney
+            this.contractNumber = value.contractNumber
             resetChangedOnNotNull()
         }
     }
