@@ -160,4 +160,15 @@ open class VehicleJourneyDao(configuration: Configuration?) : AbstractSpringDAOI
      * Fetch records that have <code>is_extra_journey IN (values)</code>
      */
     fun fetchByIsExtraJourney(vararg values: Boolean): List<fi.hsl.jore.jore4.jooq.vehicle_journey.tables.pojos.VehicleJourney> = fetch(VehicleJourney.VEHICLE_JOURNEY_.IS_EXTRA_JOURNEY, *values.toTypedArray())
+
+    /**
+     * Fetch records that have <code>contract_number BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    fun fetchRangeOfContractNumber(lowerInclusive: String, upperInclusive: String): List<fi.hsl.jore.jore4.jooq.vehicle_journey.tables.pojos.VehicleJourney> = fetchRange(VehicleJourney.VEHICLE_JOURNEY_.CONTRACT_NUMBER, lowerInclusive, upperInclusive)
+
+    /**
+     * Fetch records that have <code>contract_number IN (values)</code>
+     */
+    fun fetchByContractNumber(vararg values: String): List<fi.hsl.jore.jore4.jooq.vehicle_journey.tables.pojos.VehicleJourney> = fetch(VehicleJourney.VEHICLE_JOURNEY_.CONTRACT_NUMBER, *values)
 }
