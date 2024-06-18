@@ -6,10 +6,10 @@ import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
 import fi.hsl.jore4.timetables.service.InvalidTargetPriorityException
 import fi.hsl.jore4.timetables.service.ReplaceTimetablesService
 import fi.hsl.jore4.timetables.service.StagingVehicleScheduleFrameNotFoundException
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import mu.KotlinLogging
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired

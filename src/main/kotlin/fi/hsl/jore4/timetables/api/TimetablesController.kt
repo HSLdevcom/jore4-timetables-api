@@ -16,9 +16,9 @@ import fi.hsl.jore4.timetables.service.MultipleTargetFramesFoundException
 import fi.hsl.jore4.timetables.service.ReplaceTimetablesService
 import fi.hsl.jore4.timetables.service.StagingVehicleScheduleFrameNotFoundException
 import fi.hsl.jore4.timetables.service.TargetFrameNotFoundException
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.validation.Valid
 import jakarta.validation.constraints.AssertTrue
-import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.TransactionSystemException

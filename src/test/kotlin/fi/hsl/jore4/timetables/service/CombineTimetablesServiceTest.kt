@@ -8,7 +8,7 @@ import fi.hsl.jore4.timetables.extensions.deepClone
 import fi.hsl.jore4.timetables.extensions.getNested
 import fi.hsl.jore4.timetables.repository.VehicleScheduleFrameRepository
 import fi.hsl.jore4.timetables.repository.VehicleServiceRepository
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested

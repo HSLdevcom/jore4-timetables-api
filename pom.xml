@@ -36,9 +36,10 @@
         <ktlint-plugin.version>3.2.0</ktlint-plugin.version>
 
         <!-- Library versions -->
-        <kotlin-logging-jvm.version>3.0.2</kotlin-logging-jvm.version>
+        <kotlin-logging-jvm.version>7.0.0</kotlin-logging-jvm.version>
         <quicktheories.version>0.26</quicktheories.version>
-        <mockk.version>1.13.8</mockk.version>
+        <mockk.version>1.13.11</mockk.version>
+        <springmockk.version>4.0.2</springmockk.version>
 
         <!-- Spring Boot BOM depends on version 3.19.8, which is incompatible with kotlin >= 1.9 -->
         <!-- 3.19.9 has the required fix https://github.com/jOOQ/jOOQ/issues/16691 -->
@@ -541,7 +542,7 @@
         </dependency>
 
         <dependency>
-            <groupId>io.github.microutils</groupId>
+            <groupId>io.github.oshai</groupId>
             <artifactId>kotlin-logging-jvm</artifactId>
             <version>${kotlin-logging-jvm.version}</version>
         </dependency>
@@ -580,7 +581,7 @@
         <dependency>
           <groupId>com.ninja-squad</groupId>
           <artifactId>springmockk</artifactId>
-          <version>4.0.2</version>
+          <version>${springmockk.version}</version>
           <scope>test</scope>
         </dependency>
 
