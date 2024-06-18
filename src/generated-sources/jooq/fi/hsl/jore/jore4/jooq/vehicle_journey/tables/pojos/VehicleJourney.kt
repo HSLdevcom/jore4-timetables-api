@@ -34,7 +34,8 @@ data class VehicleJourney(
     var isBackupJourney: Boolean? = null,
     @Suppress("INAPPLICABLE_JVM_NAME")
     @set:JvmName("setIsExtraJourney")
-    var isExtraJourney: Boolean? = null
+    var isExtraJourney: Boolean? = null,
+    var contractNumber: String
 ): Serializable {
 
 
@@ -104,6 +105,8 @@ data class VehicleJourney(
         }
         else if (this.isExtraJourney != o.isExtraJourney)
             return false
+        if (this.contractNumber != o.contractNumber)
+            return false
         return true
     }
 
@@ -121,6 +124,7 @@ data class VehicleJourney(
         result = prime * result + (if (this.isVehicleTypeMandatory == null) 0 else this.isVehicleTypeMandatory.hashCode())
         result = prime * result + (if (this.isBackupJourney == null) 0 else this.isBackupJourney.hashCode())
         result = prime * result + (if (this.isExtraJourney == null) 0 else this.isExtraJourney.hashCode())
+        result = prime * result + this.contractNumber.hashCode()
         return result
     }
 
@@ -138,6 +142,7 @@ data class VehicleJourney(
         sb.append(", ").append(isVehicleTypeMandatory)
         sb.append(", ").append(isBackupJourney)
         sb.append(", ").append(isExtraJourney)
+        sb.append(", ").append(contractNumber)
 
         sb.append(")")
         return sb.toString()

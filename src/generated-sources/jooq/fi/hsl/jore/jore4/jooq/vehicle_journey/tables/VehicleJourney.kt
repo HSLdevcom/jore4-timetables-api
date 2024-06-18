@@ -23,7 +23,7 @@ import org.jooq.JSONB
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Records
-import org.jooq.Row11
+import org.jooq.Row12
 import org.jooq.Schema
 import org.jooq.SelectField
 import org.jooq.Table
@@ -149,6 +149,12 @@ open class VehicleJourney(
      */
     val IS_EXTRA_JOURNEY: TableField<VehicleJourneyRecord, Boolean?> = createField(DSL.name("is_extra_journey"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field(DSL.raw("false"), SQLDataType.BOOLEAN)), this, "Is the journey an extra journey.")
 
+    /**
+     * The column <code>vehicle_journey.vehicle_journey.contract_number</code>.
+     * The contract number for this vehicle journey.
+     */
+    val CONTRACT_NUMBER: TableField<VehicleJourneyRecord, String?> = createField(DSL.name("contract_number"), SQLDataType.CLOB.nullable(false), this, "The contract number for this vehicle journey.")
+
     private constructor(alias: Name, aliased: Table<VehicleJourneyRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<VehicleJourneyRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
@@ -239,18 +245,18 @@ open class VehicleJourney(
     override fun rename(name: Table<*>): VehicleJourney = VehicleJourney(name.getQualifiedName(), null)
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row11<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?> = super.fieldsRow() as Row11<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?>
+    override fun fieldsRow(): Row12<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?, String?> = super.fieldsRow() as Row12<UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?, String?>
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    fun <U> mapping(from: (UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    fun <U> mapping(from: (UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?, String?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    fun <U> mapping(toType: Class<U>, from: (UUID?, UUID?, UUID?, JSONB?, YearToSecond?, YearToSecond?, String?, String?, Boolean?, Boolean?, Boolean?, String?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }
