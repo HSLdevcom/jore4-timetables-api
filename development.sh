@@ -6,7 +6,7 @@ cd "$(dirname "$0")" # Setting the working directory as the script directory
 
 COMMAND=${1:-}
 
-DOCKER_COMPOSE_CMD="docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.custom.yml"
+DOCKER_COMPOSE_CMD="docker compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.custom.yml"
 
 instruct_and_exit() {
   echo "Usage: ${0} <command>"
