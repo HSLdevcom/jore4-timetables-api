@@ -1,5 +1,4 @@
 ---
-version: "3.8"
 services:
   # build and run the local image instead
   # note: it's currently expose on port 3009
