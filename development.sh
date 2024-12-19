@@ -20,11 +20,25 @@ instruct_and_exit() {
   exit 1
 }
 
+# Download Docker Compose bundle from the "jore4-docker-compose-bundle"
+# repository.
 download_docker_bundle() {
-  # based on https://github.com/HSLdevcom/jore4-tools#download-docker-bundlesh
+  # First, clean untracked files from `docker` directory even if they are
+  # git-ignored.
+  git clean -fx ./docker
 
-  echo "Downloading latest version of E2E docker-compose package..."
-  curl https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/download-docker-bundle.sh | bash
+  echo "Downloading the latest version of the JORE4 Docker Compose bundle..."
+
+  # Download the latest Docker Compose bundle from the jore4-docker-compose-bundle
+  # repository as a ZIP file. Extracts the files from the `docker-compose`
+  # directory (of the ZIP file) to your local `docker` directory.
+  curl -sL https://github.com/HSLdevcom/jore4-docker-compose-bundle/archive/refs/heads/main.zip \
+      -o /tmp/jore4-docker-compose-bundle.zip \
+    && unzip -q /tmp/jore4-docker-compose-bundle.zip -d /tmp \
+    && mv /tmp/jore4-docker-compose-bundle-main/docker-compose/* ./docker \
+    && rm -fr \
+      /tmp/jore4-docker-compose-bundle.zip \
+      /tmp/jore4-docker-compose-bundle-main/
 }
 
 start_all() {
