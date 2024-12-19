@@ -21,10 +21,22 @@ instruct_and_exit() {
 }
 
 download_docker_bundle() {
-  # based on https://github.com/HSLdevcom/jore4-tools#download-docker-bundlesh
+  # First, clean untracked files from `docker` directory even if they are
+  # git-ignored.
+  git clean -fx ./docker
 
-  echo "Downloading latest version of E2E docker-compose package..."
-  curl https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/download-docker-bundle.sh | bash
+  echo "Downloading the latest version of the JORE4 E2E Docker Compose bundle..."
+
+  # Extract only the contents of the `docker-compose` directory inside the ZIP
+  # archive to the local `docker` directory. Includes a conditional option
+  # selection (--wildcards vs --include) because of the tar option differences
+  # between Linux (GNU) and macOS (BSD).
+  curl -L https://github.com/HSLdevcom/jore4-docker-compose-bundle/archive/refs/heads/main.zip \
+    | tar -xz \
+      -C ./docker \
+      --strip-components 2 \
+      $(if test $(uname) == 'Darwin'; then echo "--include"; else echo "--wildcards"; fi) \
+        'jore4-docker-compose-bundle-main/docker-compose/*'
 }
 
 start_all() {
