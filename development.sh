@@ -37,6 +37,17 @@ download_docker_bundle() {
     && rm -fr \
       /tmp/jore4-docker-compose-bundle.zip \
       /tmp/jore4-docker-compose-bundle-main/
+
+  echo "Generating a release version file for the downloaded bundle..."
+
+  # Create a release version file containing the SHA digest of the last commit
+  # in the main branch of the jore4-docker-compose-bundle repository.
+  curl -s -H "Accept: application/vnd.github.v3+json" \
+    https://api.github.com/repos/HSLdevcom/jore4-docker-compose-bundle/branches/main \
+    | grep '"sha"' \
+    | head -1 \
+    | sed -E 's/.*"sha": "(.*)",/\1/' \
+    > ./docker/RELEASE_VERSION.txt
 }
 
 start_all() {
