@@ -31,10 +31,10 @@ download_docker_bundle() {
   # Extract only the contents of the `docker-compose` directory inside the ZIP
   # archive to the local `docker` directory.
   curl -L jore4-docker-compose-bundle.zip https://github.com/HSLdevcom/jore4-docker-compose-bundle/archive/refs/heads/main.zip \
-    | tar -xz \
+    | bsdtar -xz \
       -C ./docker \
       --strip-components 2 \
-      --include 'jore4-docker-compose-bundle-main/docker-compose/*'
+      --include='jore4-docker-compose-bundle-main/docker-compose/*'
 }
 
 start_all() {
