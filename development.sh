@@ -36,7 +36,8 @@ instruct_and_exit() {
 # Download Docker Compose bundle from the "jore4-docker-compose-bundle"
 # repository. GitHub CLI is required to be installed.
 #
-# A commit SHA can be given as an argument.
+# A commit SHA can be given as an argument. The given SHA may contain only a
+# substring of the actual value.
 download_docker_bundle() {
   local commit_sha="${1:-}"
 
@@ -48,23 +49,24 @@ download_docker_bundle() {
     # Verify that a commit with SHA actually exists in the repository.
     echo "Verifying that a commit with SHA '${commit_sha}' exists in the ${repo_owner}/${repo_name} repository..."
 
-    # First, query GitHub API using the commit SHA argument.
-    local http_response=$(
+    # First, try to find matching commit SHA from GitHub.
+    local gh_commit_sha=$(
       gh api \
         -H "Accept: application/vnd.github+json" \
         -H "X-GitHub-Api-Version: 2022-11-28" \
         "${gh_path}/commits/${commit_sha}" \
-        --silent \
-        --include
+        --jq '.sha'
     )
-    local http_status=$(echo "$http_response" | awk '/^HTTP/{print $2}')
 
-    # Then, check if the status is not 200.
-    if [[ $http_status != "200" ]]; then
+    # Then, compare if a substring match is found.
+    if [[ "$gh_commit_sha" == "$commit_sha"* ]]; then
+      echo "Commit with the following SHA digest is found: ${gh_commit_sha}"
+
+      # Replace the commit SHA given as argument with a full SHA digest.
+      commit_sha="$gh_commit_sha"
+    else
       echo "Error: Querying GH API with the commit ID '${commit_sha}' failed." >&2
       exit 1
-    else
-      echo "SHA digest OK."
     fi
   else # when no argument given
     # Resolve the SHA digest of the last commit in the main branch.
