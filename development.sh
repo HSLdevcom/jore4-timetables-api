@@ -79,10 +79,6 @@ download_docker_bundle() {
     echo "Resolved the SHA digest of the last commit in the main branch: ${commit_sha}"
   fi
 
-  # First, clean untracked files from `docker` directory even if they are
-  # git-ignored.
-  git clean -fx ./docker
-
   local zip_file="/tmp/${repo_name}.zip"
   local unzip_target_dir_prefix="/tmp/${repo_owner}-${repo_name}"
 
@@ -91,12 +87,18 @@ download_docker_bundle() {
 
   echo "Downloading the JORE4 Docker Compose bundle..."
 
-  # Download the latest Docker Compose bundle from the jore4-docker-compose-bundle
-  # repository as a ZIP file. Extracts the files from the `docker-compose`
-  # directory (of the ZIP file) to your local `docker` directory.
+  # Download the latest Docker Compose bundle from the
+  # jore4-docker-compose-bundle repository as a ZIP file and extract its
+  # contents to a temporary directory.
   gh api "${gh_common_path}/zipball/${commit_sha}" > "$zip_file" \
-    && unzip -q "$zip_file" -d /tmp \
-    && mv "$unzip_target_dir_prefix"-*/docker-compose/* ./docker
+    && unzip -q "$zip_file" -d /tmp
+
+  # Clean untracked files from `docker` directory even if they are git-ignored.
+  git clean -fx ./docker
+
+  # Copy files from the `docker-compose` directory of the ZIP file to your
+  # local `docker` directory.
+  mv "$unzip_target_dir_prefix"-*/docker-compose/* ./docker
 
   # Remove the temporary files and directories created above.
   rm -fr "$zip_file" "$unzip_target_dir_prefix"-*
