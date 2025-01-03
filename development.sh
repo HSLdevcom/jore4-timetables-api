@@ -5,62 +5,122 @@ set -eu
 cd "$(dirname "$0")" # Setting the working directory as the script directory
 
 COMMAND=${1:-}
+ARG1=${2:-}
 
 DOCKER_COMPOSE_CMD="docker compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.custom.yml"
 
 instruct_and_exit() {
-  echo "Usage: ${0} <command>"
+  echo "Usage: ${0} <command> [<argument>]"
   echo ""
   echo "Available commands:"
-  echo "start               Start the dependencies and the dockerized application"
-  echo "start:deps          Start the dependencies only"
-  echo "generate:jooq       Generate jOOQ classes"
-  echo "build:data-inserter Installs required dependencies and builds the timetables data inserter"
-  echo "stop                Stop the dependencies and the dockerized application"
+  echo ""
+  echo "start [<commit_sha>]       Start the dependencies and the dockerized application. A commit SHA can"
+  echo "                           be given as an argument to fetch a specific version of Docker Compose"
+  echo "                           bundle. Without argument, the latest commit in the main branch of the"
+  echo "                           jore4-docker-compose-bundle repository is used."
+  echo ""
+  echo "start:deps [<commit_sha>]  Start the dependencies only. A commit SHA can be given as an argument to"
+  echo "                           fetch a specific version of Docker Compose bundle. Without argument, the"
+  echo "                           latest commit in the main branch of the jore4-docker-compose-bundle"
+  echo "                           repository is used."
+  echo ""
+  echo "generate:jooq              Generate jOOQ classes"
+  echo ""
+  echo "build:data-inserter        Installs required dependencies and builds the timetables data inserter"
+  echo ""
+  echo "stop                       Stop the dependencies and the dockerized application"
+  echo ""
   exit 1
 }
 
 # Download Docker Compose bundle from the "jore4-docker-compose-bundle"
-# repository.
+# repository. GitHub CLI is required to be installed.
+#
+# A commit SHA can be given as an argument.
 download_docker_bundle() {
+  local commit_sha="${1:-}"
+
+  local repo_name="jore4-docker-compose-bundle"
+  local repo_owner="HSLdevcom"
+  local gh_common_path="/repos/${repo_owner}/${repo_name}"
+
+  if [[ -n "$commit_sha" ]]; then
+    # Verify that a commit with SHA actually exists in the repository.
+    echo "Verifying that a commit with SHA '${commit_sha}' exists in the ${repo_owner}/${repo_name} repository..."
+
+    # First, query GitHub API using the commit SHA argument.
+    local http_response=$(
+      gh api \
+        -H "Accept: application/vnd.github+json" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        "${gh_common_path}/commits/${commit_sha}" \
+        --silent \
+        --include
+    )
+    local http_status=$(echo "$http_response" | awk '/^HTTP/{print $2}')
+
+    # Then, check if the status is not 200.
+    if [[ $http_status != "200" ]]; then
+      echo "Error: Querying GitHub API with the commit ID '${commit_sha}' failed." >&2
+      exit 1
+    else
+      echo "SHA digest OK."
+    fi
+  else # when no argument given
+    # Resolve the SHA digest of the last commit in the main branch.
+    commit_sha=$(
+      gh api \
+        -H "Accept: application/vnd.github+json" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        "${gh_common_path}/branches/main" \
+        --jq '.commit.sha'
+    )
+
+    echo "Resolved the SHA digest of the last commit in the main branch: ${commit_sha}"
+  fi
+
   # First, clean untracked files from `docker` directory even if they are
   # git-ignored.
   git clean -fx ./docker
 
-  echo "Downloading the latest version of the JORE4 Docker Compose bundle..."
+  local zip_file="/tmp/${repo_name}.zip"
+  local unzip_target_dir_prefix="/tmp/${repo_owner}-${repo_name}"
+
+  # Remove old temporary directories if any remain.
+  rm -fr "$unzip_target_dir_prefix"-*
+
+  echo "Downloading the JORE4 Docker Compose bundle..."
 
   # Download the latest Docker Compose bundle from the jore4-docker-compose-bundle
   # repository as a ZIP file. Extracts the files from the `docker-compose`
   # directory (of the ZIP file) to your local `docker` directory.
-  curl -sL https://github.com/HSLdevcom/jore4-docker-compose-bundle/archive/refs/heads/main.zip \
-      -o /tmp/jore4-docker-compose-bundle.zip \
-    && unzip -q /tmp/jore4-docker-compose-bundle.zip -d /tmp \
-    && mv /tmp/jore4-docker-compose-bundle-main/docker-compose/* ./docker \
-    && rm -fr \
-      /tmp/jore4-docker-compose-bundle.zip \
-      /tmp/jore4-docker-compose-bundle-main/
+  gh api "${gh_common_path}/zipball/${commit_sha}" > "$zip_file" \
+    && unzip -q "$zip_file" -d /tmp \
+    && mv "$unzip_target_dir_prefix"-*/docker-compose/* ./docker
+
+  # Remove the temporary files and directories created above.
+  rm -fr "$zip_file" "$unzip_target_dir_prefix"-*
 
   echo "Generating a release version file for the downloaded bundle..."
 
-  # Create a release version file containing the SHA digest of the last commit
-  # in the main branch of the jore4-docker-compose-bundle repository.
-  curl -s -H "Accept: application/vnd.github.v3+json" \
-    https://api.github.com/repos/HSLdevcom/jore4-docker-compose-bundle/branches/main \
-    | grep '"sha"' \
-    | head -1 \
-    | sed -E 's/.*"sha": "(.*)",/\1/' \
-    > ./docker/RELEASE_VERSION.txt
+  # Create a release version file containing the SHA digest of the referenced
+  # commit.
+  echo "$commit_sha" > ./docker/RELEASE_VERSION.txt
 }
 
 start_all() {
-  download_docker_bundle
+  local commit_sha="${1:-}"
+
+  download_docker_bundle ${commit_sha}
   $DOCKER_COMPOSE_CMD up -d jore4-hasura jore4-testdb
   $DOCKER_COMPOSE_CMD up --build -d jore4-timetables-api
   prepare_timetables_data_inserter
 }
 
 start_deps() {
-  download_docker_bundle
+  local commit_sha="${1:-}"
+
+  download_docker_bundle ${commit_sha}
   # Runs the following services:
   # jore4-hasura - Hasura. We have to start Hasura because it ensures that db migrations are run to the Jore 4 database.
   # jore4-testdb - Jore 4 database. This is the database used by the API.
@@ -108,12 +168,12 @@ if [[ -z ${COMMAND} ]]; then
 fi
 
 if [[ ${COMMAND} == "start" ]]; then
-  start_all
+  start_all ${ARG1}
   exit 0
 fi
 
 if [[ ${COMMAND} == "start:deps" ]]; then
-  start_deps
+  start_deps ${ARG1}
   exit 0
 fi
 
