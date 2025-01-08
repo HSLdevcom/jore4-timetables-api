@@ -44,6 +44,15 @@ download_docker_bundle() {
   local repo_owner="HSLdevcom"
   local gh_common_path="/repos/${repo_owner}/${repo_name}"
 
+  # Check GitHub CLI availability.
+  if ! command -v gh &> /dev/null; then
+    echo "Please install the GitHub CLI (gh) on your machine."
+    exit 1
+  fi
+
+  # Make sure the user is authenticated to GitHub.
+  gh auth status || gh auth login
+
   echo "Using the commit reference '${commit_ref}' to fetch a Docker Compose bundle..."
 
   # First, try to find a commit on GitHub that matches the given reference.
