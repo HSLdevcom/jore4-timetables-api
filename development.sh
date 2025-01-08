@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-set -eu
+set -euo pipefail
 
 cd "$(dirname "$0")" # Setting the working directory as the script directory
 
 DOCKER_COMPOSE_CMD="docker compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.custom.yml"
 
-instruct_and_exit() {
+print_usage() {
   echo "
-  Usage: ${0} <command> [<argument>]
+  Usage: $(basename "$0") <command> [<argument>]
 
   Available commands:
 
@@ -28,7 +28,6 @@ instruct_and_exit() {
 
   stop                       Stop the dependencies and the dockerized application
   "
-  exit 1
 }
 
 # Download Docker Compose bundle from the "jore4-docker-compose-bundle"
@@ -36,7 +35,7 @@ instruct_and_exit() {
 #
 # A commit reference can be given as an argument. It can contain, for example,
 # only a substring of an actual SHA digest.
-download_docker_bundle() {
+download_docker_compose_bundle() {
   local commit_ref="${1:-main}"
 
   local repo_name="jore4-docker-compose-bundle"
@@ -98,19 +97,15 @@ download_docker_bundle() {
 }
 
 start_all() {
-  download_docker_bundle "$@"
   $DOCKER_COMPOSE_CMD up -d jore4-hasura jore4-testdb
   $DOCKER_COMPOSE_CMD up --build -d jore4-timetables-api
-  prepare_timetables_data_inserter
 }
 
 start_deps() {
-  download_docker_bundle "$@"
   # Runs the following services:
   # jore4-hasura - Hasura. We have to start Hasura because it ensures that db migrations are run to the Jore 4 database.
   # jore4-testdb - Jore 4 database. This is the database used by the API.
   $DOCKER_COMPOSE_CMD -f ./docker/docker-compose.test.yml up --build -d jore4-hasura jore4-testdb jore4-hasura-test jore4-testdb-test
-  prepare_timetables_data_inserter
 }
 
 generate_jooq() {
@@ -151,7 +146,8 @@ ensure_hasura_submodule_initialized() {
 COMMAND=${1:-}
 
 if [[ -z ${COMMAND} ]]; then
-  instruct_and_exit
+  print_usage
+  exit 1
 fi
 
 # Shift other arguments after the command so that we can refer to them later
@@ -159,12 +155,16 @@ fi
 shift
 
 if [[ ${COMMAND} == "start" ]]; then
-  start_all "$@"
+  download_docker_compose_bundle "$@"
+  start_all
+  prepare_timetables_data_inserter
   exit 0
 fi
 
 if [[ ${COMMAND} == "start:deps" ]]; then
-  start_deps "$@"
+  download_docker_compose_bundle "$@"
+  start_deps
+  prepare_timetables_data_inserter
   exit 0
 fi
 
@@ -202,4 +202,5 @@ fi
 
 echo ""
 echo "Unknown command: '${COMMAND}'"
-instruct_and_exit
+print_usage
+exit 1
