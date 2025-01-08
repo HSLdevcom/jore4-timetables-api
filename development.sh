@@ -12,15 +12,15 @@ instruct_and_exit() {
 
   Available commands:
 
-  start [<commit_sha>]       Start the dependencies and the dockerized application. A commit SHA can
-                             be given as an argument to fetch a specific version of Docker Compose
-                             bundle. Without argument, the latest commit in the main branch of the
-                             jore4-docker-compose-bundle repository is used.
+  start [<commit_ref>]       Start the dependencies and the dockerized application. A commit
+                             reference can be given as an argument to fetch a specific version of
+                             Docker Compose bundle. Without argument, the latest commit in the main
+                             branch of the jore4-docker-compose-bundle repository is used.
 
-  start:deps [<commit_sha>]  Start the dependencies only. A commit SHA can be given as an argument
-                             to fetch a specific version of Docker Compose bundle. Without argument,
-                             the latest commit in the main branch of the jore4-docker-compose-bundle
-                             repository is used.
+  start:deps [<commit_ref>]  Start the dependencies only. A commit reference can be given as an
+                             argument to fetch a specific version of Docker Compose bundle. Without
+                             argument, the latest commit in the main branch of the
+                             jore4-docker-compose-bundle repository is used.
 
   generate:jooq              Generate jOOQ classes
 
@@ -34,14 +34,13 @@ instruct_and_exit() {
 # Download Docker Compose bundle from the "jore4-docker-compose-bundle"
 # repository. GitHub CLI is required to be installed.
 #
-# A commit SHA can be given as an argument. The given SHA may contain only a
-# substring of the actual value.
+# A commit reference can be given as an argument. It can contain, for example,
+# only a substring of an actual SHA digest.
 download_docker_bundle() {
-  local commit_sha="${1:-}"
+  local commit_ref="${1:-main}"
 
   local repo_name="jore4-docker-compose-bundle"
   local repo_owner="HSLdevcom"
-  local gh_common_path="/repos/${repo_owner}/${repo_name}"
 
   # Check GitHub CLI availability.
   if ! command -v gh &> /dev/null; then
@@ -52,36 +51,20 @@ download_docker_bundle() {
   # Make sure the user is authenticated to GitHub.
   gh auth status || gh auth login
 
-  if [[ -n "$commit_sha" ]]; then
-    # Verify that a commit with SHA actually exists in the repository.
-    echo "Verifying that a commit with SHA '${commit_sha}' exists in the ${repo_owner}/${repo_name} repository..."
+  echo "Using the commit reference '${commit_ref}' to fetch a Docker Compose bundle..."
 
-    # First, try to find a commit on GitHub that starts with the given SHA
-    # digest.
-    # This function exits with an error code if no matching commit is found.
-    local gh_commit_sha
-    gh_commit_sha=$(
-      gh api \
-        -H "Accept: application/vnd.github+json" \
-        -H "X-GitHub-Api-Version: 2022-11-28" \
-        "${gh_common_path}/commits/${commit_sha}" \
-        --jq '.sha'
-    )
+  # First, try to find a commit on GitHub that matches the given reference.
+  # This function exits with an error code if no matching commit is found.
+  local commit_sha
+  commit_sha=$(
+    gh api \
+      -H "Accept: application/vnd.github+json" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      "repos/${repo_owner}/${repo_name}/commits/${commit_ref}" \
+      --jq '.sha'
+  )
 
-    # Replace the commit SHA given as argument with a full SHA digest.
-    commit_sha="$gh_commit_sha"
-  else # when no argument given
-    # Resolve the SHA digest of the last commit in the main branch.
-    commit_sha=$(
-      gh api \
-        -H "Accept: application/vnd.github+json" \
-        -H "X-GitHub-Api-Version: 2022-11-28" \
-        "${gh_common_path}/branches/main" \
-        --jq '.commit.sha'
-    )
-
-    echo "Resolved the SHA digest of the last commit in the main branch: ${commit_sha}"
-  fi
+  echo "Commit with the following SHA digest was found: ${commit_sha}"
 
   local zip_file="/tmp/${repo_name}.zip"
   local unzip_target_dir_prefix="/tmp/${repo_owner}-${repo_name}"
@@ -94,7 +77,7 @@ download_docker_bundle() {
   # Download the latest Docker Compose bundle from the
   # jore4-docker-compose-bundle repository as a ZIP file and extract its
   # contents to a temporary directory.
-  gh api "${gh_common_path}/zipball/${commit_sha}" > "$zip_file" \
+  gh api "repos/${repo_owner}/${repo_name}/zipball/${commit_sha}" > "$zip_file" \
     && unzip -q "$zip_file" -d /tmp
 
   # Clean untracked files from `docker` directory even if they are git-ignored.
@@ -115,18 +98,14 @@ download_docker_bundle() {
 }
 
 start_all() {
-  local commit_sha="${1:-}"
-
-  download_docker_bundle "${commit_sha}"
+  download_docker_bundle "$@"
   $DOCKER_COMPOSE_CMD up -d jore4-hasura jore4-testdb
   $DOCKER_COMPOSE_CMD up --build -d jore4-timetables-api
   prepare_timetables_data_inserter
 }
 
 start_deps() {
-  local commit_sha="${1:-}"
-
-  download_docker_bundle "${commit_sha}"
+  download_docker_bundle "$@"
   # Runs the following services:
   # jore4-hasura - Hasura. We have to start Hasura because it ensures that db migrations are run to the Jore 4 database.
   # jore4-testdb - Jore 4 database. This is the database used by the API.
@@ -170,19 +149,22 @@ ensure_hasura_submodule_initialized() {
 ### Control flow
 
 COMMAND=${1:-}
-ARG1=${2:-}
 
 if [[ -z ${COMMAND} ]]; then
   instruct_and_exit
 fi
 
+# Shift other arguments after the command so that we can refer to them later
+# with "$@".
+shift
+
 if [[ ${COMMAND} == "start" ]]; then
-  start_all "${ARG1}"
+  start_all "$@"
   exit 0
 fi
 
 if [[ ${COMMAND} == "start:deps" ]]; then
-  start_deps "${ARG1}"
+  start_deps "$@"
   exit 0
 fi
 
