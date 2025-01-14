@@ -12,21 +12,33 @@ print_usage() {
 
   Available commands:
 
-  start [<commit_ref>]       Start the dependencies and the dockerized application. A commit
-                             reference can be given as an argument to fetch a specific version of
-                             Docker Compose bundle. Without argument, the latest commit in the main
-                             branch of the jore4-docker-compose-bundle repository is used.
+  start [<commit_ref>]
+    Start the dependencies and the dockerized application.
 
-  start:deps [<commit_ref>]  Start the dependencies only. A commit reference can be given as an
-                             argument to fetch a specific version of Docker Compose bundle. Without
-                             argument, the latest commit in the main branch of the
-                             jore4-docker-compose-bundle repository is used.
+    Optionally, you can pass a commit reference as an argument (like commit SHA
+    or its initial substring) to point to a commit (of the
+    jore4-docker-compose-bundle repository), which determines the Docker Compose
+    bundle version to download. By default, the tip of the main branch is used.
 
-  generate:jooq              Generate jOOQ classes
+  start:deps [<commit_ref>]
+    Start the dependencies only.
 
-  build:data-inserter        Installs required dependencies and builds the timetables data inserter
+    Optionally, you can pass a commit reference as an argument (like commit SHA
+    or its initial substring) to point to a commit (of the
+    jore4-docker-compose-bundle repository), which determines the Docker Compose
+    bundle version to download. By default, the tip of the main branch is used.
 
-  stop                       Stop the dependencies and the dockerized application
+  generate:jooq
+    Generate jOOQ classes.
+
+  build:data-inserter
+    Build the timetables data inserter (git submodule).
+
+  stop
+    Stop the dependencies and the dockerised application.
+
+  remove
+    Remove the dependencies and the dockerised application.
   "
 }
 
