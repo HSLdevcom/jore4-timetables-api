@@ -12,6 +12,10 @@ cd "$(dirname "$0")" # Setting the working directory as the script directory
 # variable.
 DOCKER_COMPOSE_BUNDLE_REF=${BUNDLE_REF:-main}
 
+# Define a Docker Compose project name to distinguish the Docker environment of
+# this project from others.
+export COMPOSE_PROJECT_NAME=jore4-timetables-api
+
 DOCKER_COMPOSE_CMD="docker compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.custom.yml"
 
 print_usage() {
@@ -46,7 +50,7 @@ print_usage() {
     Stop the dependencies and the dockerised application.
 
   remove
-    Remove the dependencies and the dockerised application.
+    Stop and remove the dependencies and the dockerised application.
   "
 }
 
@@ -128,7 +132,15 @@ start_deps() {
   # Runs the following services:
   # jore4-hasura - Hasura. We have to start Hasura because it ensures that db migrations are run to the Jore 4 database.
   # jore4-testdb - Jore 4 database. This is the database used by the API.
-  $DOCKER_COMPOSE_CMD -f ./docker/docker-compose.test.yml up --build -d jore4-hasura jore4-testdb jore4-hasura-test jore4-testdb-test
+  $DOCKER_COMPOSE_CMD -f ./docker/docker-compose.test.yml up -d jore4-hasura jore4-testdb jore4-hasura-test jore4-testdb-test
+}
+
+stop() {
+  docker compose --project-name "$COMPOSE_PROJECT_NAME" stop
+}
+
+remove() {
+  docker compose --project-name "$COMPOSE_PROJECT_NAME" down
 }
 
 wait_for_test_databases_to_be_ready() {
@@ -207,11 +219,11 @@ case $COMMAND in
     ;;
 
   stop)
-    $DOCKER_COMPOSE_CMD down
+    stop
     ;;
 
   remove)
-    $DOCKER_COMPOSE_CMD rm -f
+    remove
     ;;
 
   *)
