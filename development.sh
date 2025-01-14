@@ -160,7 +160,7 @@ ensure_hasura_submodule_initialized() {
 
 COMMAND=${1:-}
 
-if [[ -z ${COMMAND} ]]; then
+if [[ -z $COMMAND ]]; then
   print_usage
   exit 1
 fi
@@ -169,53 +169,49 @@ fi
 # with "$@".
 shift
 
-if [[ ${COMMAND} == "start" ]]; then
-  download_docker_compose_bundle "$@"
-  start_all
-  prepare_timetables_data_inserter
-  exit 0
-fi
+case $COMMAND in
+  start)
+    download_docker_compose_bundle "$@"
+    start_all
+    prepare_timetables_data_inserter
+    ;;
 
-if [[ ${COMMAND} == "start:deps" ]]; then
-  download_docker_compose_bundle "$@"
-  start_deps
-  prepare_timetables_data_inserter
-  exit 0
-fi
+  start:deps)
+    download_docker_compose_bundle "$@"
+    start_deps
+    prepare_timetables_data_inserter
+    ;;
 
-if [[ ${COMMAND} == "build:data-inserter" ]]; then
-  prepare_timetables_data_inserter
-  exit 0
-fi
+  build:data-inserter)
+    prepare_timetables_data_inserter
+    ;;
 
-if [[ ${COMMAND} == "generate:jooq" ]]; then
-  while ! pg_isready -h localhost -p 6432
-  do
-    echo "waiting for Jore 4 db to spin up"
-    sleep 2;
-  done
-  while ! curl --fail http://localhost:3201/healthz --output /dev/null --silent
-  do
-    echo "waiting for hasura db migrations to execute"
-    sleep 2;
-  done
-  generate_jooq
-  exit 0
-fi
+  generate:jooq)
+    while ! pg_isready -h localhost -p 6432
+    do
+      echo "waiting for Jore 4 db to spin up"
+      sleep 2;
+    done
+    while ! curl --fail http://localhost:3201/healthz --output /dev/null --silent
+    do
+      echo "waiting for hasura db migrations to execute"
+      sleep 2;
+    done
+    generate_jooq
+    ;;
 
-if [[ ${COMMAND} == "stop" ]]; then
-  $DOCKER_COMPOSE_CMD down
-  exit 0
-fi
+  stop)
+    $DOCKER_COMPOSE_CMD down
+    ;;
 
-if [[ ${COMMAND} == "remove" ]]; then
-  $DOCKER_COMPOSE_CMD rm -f
-  exit 0
-fi
+  remove)
+    $DOCKER_COMPOSE_CMD rm -f
+    ;;
 
-### Unknown argument was passed.
-
-echo ""
-echo "Unknown command: '${COMMAND}'"
-print_usage
-exit 1
+  *)
+    echo ""
+    echo "Unknown command: '${COMMAND}'"
+    print_usage
+    exit 1
+    ;;
+esac
