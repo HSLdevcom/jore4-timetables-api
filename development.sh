@@ -131,6 +131,17 @@ start_deps() {
   $DOCKER_COMPOSE_CMD -f ./docker/docker-compose.test.yml up --build -d jore4-hasura jore4-testdb jore4-hasura-test jore4-testdb-test
 }
 
+wait_for_test_databases_to_be_ready() {
+  while ! pg_isready -h localhost -p 6432; do
+    echo "waiting for Jore 4 db to spin up"
+    sleep 2;
+  done
+  while ! curl --fail http://localhost:3201/healthz --output /dev/null --silent; do
+    echo "waiting for hasura db migrations to execute"
+    sleep 2;
+  done
+}
+
 generate_jooq() {
   mvn clean generate-sources -Pci
 }
@@ -191,16 +202,7 @@ case $COMMAND in
     ;;
 
   generate:jooq)
-    while ! pg_isready -h localhost -p 6432
-    do
-      echo "waiting for Jore 4 db to spin up"
-      sleep 2;
-    done
-    while ! curl --fail http://localhost:3201/healthz --output /dev/null --silent
-    do
-      echo "waiting for hasura db migrations to execute"
-      sleep 2;
-    done
+    wait_for_test_databases_to_be_ready
     generate_jooq
     ;;
 
