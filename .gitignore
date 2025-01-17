@@ -9,6 +9,7 @@ profiles/dev/config.*.properties
 docker/**
 !docker/docker-compose.custom.yml
 !docker/docker-compose.test.yml
+!docker/.env
 
 # Build target
 target/**
