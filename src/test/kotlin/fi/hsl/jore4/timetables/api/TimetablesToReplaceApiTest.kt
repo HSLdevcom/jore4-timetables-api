@@ -54,14 +54,14 @@ class TimetablesToReplaceApiTest(
     private fun executeToReplaceTimetablesRequest(
         stagingFrameId: UUID,
         targetPriority: Int
-    ): ResultActions {
-        return mockMvc.perform(
-            MockMvcRequestBuilders.get("/timetables/to-replace")
+    ): ResultActions =
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .get("/timetables/to-replace")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("stagingVehicleScheduleFrameId", stagingFrameId.toString())
                 .param("targetPriority", targetPriority.toString())
         )
-    }
 
     @Test
     fun `returns 200 and correct response when called successfully`() {

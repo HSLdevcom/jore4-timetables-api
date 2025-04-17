@@ -45,14 +45,14 @@ class TimetablesToCombineApiTest(
     private fun executeToCombineTimetablesRequest(
         stagingFrameId: UUID,
         targetPriority: Int
-    ): ResultActions {
-        return mockMvc.perform(
-            MockMvcRequestBuilders.get("/timetables/to-combine")
+    ): ResultActions =
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .get("/timetables/to-combine")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("stagingVehicleScheduleFrameId", stagingFrameId.toString())
                 .param("targetPriority", targetPriority.toString())
         )
-    }
 
     @Test
     fun `returns 200 and correct response when called successfully`() {

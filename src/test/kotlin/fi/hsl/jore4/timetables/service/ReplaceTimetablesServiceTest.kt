@@ -27,10 +27,9 @@ class ReplaceTimetablesServiceTest
         var timetablesDataInserterRunner: TimetablesDataInserterRunner,
         val vehicleScheduleFrameRepository: VehicleScheduleFrameRepository
     ) {
-        private fun fetchSingleFrameById(frameId: UUID): VehicleScheduleFrame {
-            return vehicleScheduleFrameRepository.fetchOneByVehicleScheduleFrameId(frameId)
+        private fun fetchSingleFrameById(frameId: UUID): VehicleScheduleFrame =
+            vehicleScheduleFrameRepository.fetchOneByVehicleScheduleFrameId(frameId)
                 ?: throw Exception("Vehicle schedule frame $frameId not found")
-        }
 
         @Nested
         @DisplayName("replaceTimetables")
@@ -362,12 +361,13 @@ class ReplaceTimetablesServiceTest
             ): List<UUID> {
                 timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
 
-                return replaceTimetablesService.fetchVehicleScheduleFramesToReplace(
-                    stagingFrameId,
-                    targetPriority
-                ).map {
-                    it.vehicleScheduleFrameId!! // ID of an existing row, can never be null.
-                }
+                return replaceTimetablesService
+                    .fetchVehicleScheduleFramesToReplace(
+                        stagingFrameId,
+                        targetPriority
+                    ).map {
+                        it.vehicleScheduleFrameId!! // ID of an existing row, can never be null.
+                    }
             }
 
             @BeforeEach
