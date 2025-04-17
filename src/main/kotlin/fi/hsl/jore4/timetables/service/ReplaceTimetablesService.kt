@@ -10,9 +10,15 @@ import java.util.UUID
 
 private val LOGGER = KotlinLogging.logger {}
 
-class InvalidTargetPriorityException(message: String, val targetPriority: TimetablesPriority) : RuntimeException(message)
+class InvalidTargetPriorityException(
+    message: String,
+    val targetPriority: TimetablesPriority
+) : RuntimeException(message)
 
-class StagingVehicleScheduleFrameNotFoundException(message: String, val stagingVehicleScheduleFrameId: UUID) : RuntimeException(message)
+class StagingVehicleScheduleFrameNotFoundException(
+    message: String,
+    val stagingVehicleScheduleFrameId: UUID
+) : RuntimeException(message)
 
 @Service
 class ReplaceTimetablesService(
@@ -23,9 +29,10 @@ class ReplaceTimetablesService(
         stagingVehicleScheduleFrameIds: List<UUID>,
         targetPriority: TimetablesPriority
     ): List<UUID> =
-        stagingVehicleScheduleFrameIds.map {
-            processSingleStagingFrameReplacements(it, targetPriority)
-        }.flatten()
+        stagingVehicleScheduleFrameIds
+            .map {
+                processSingleStagingFrameReplacements(it, targetPriority)
+            }.flatten()
 
     private fun processSingleStagingFrameReplacements(
         stagingVehicleScheduleFrameId: UUID,
@@ -61,12 +68,11 @@ class ReplaceTimetablesService(
     fun fetchVehicleScheduleFramesToReplace(
         stagingVehicleScheduleFrameId: UUID,
         targetPriority: TimetablesPriority
-    ): List<VehicleScheduleFrame> {
-        return vehicleScheduleFrameRepository.fetchVehicleScheduleFramesToReplace(
+    ): List<VehicleScheduleFrame> =
+        vehicleScheduleFrameRepository.fetchVehicleScheduleFramesToReplace(
             stagingVehicleScheduleFrameId,
             targetPriority
         )
-    }
 
     private fun fetchStagingVehicleScheduleFrame(stagingVehicleScheduleFrameId: UUID): VehicleScheduleFrame {
         val stagingFrame = vehicleScheduleFrameRepository.fetchOneByVehicleScheduleFrameId(stagingVehicleScheduleFrameId)

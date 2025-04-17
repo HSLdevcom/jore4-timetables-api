@@ -7,9 +7,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 private val LOGGER = KotlinLogging.logger {}
 
 class TimetablesDataset : MutableMap<String, Any?> by mutableMapOf() {
-    fun toJSONString(): String {
-        return OBJECT_MAPPER.writeValueAsString(this)
-    }
+    fun toJSONString(): String = OBJECT_MAPPER.writeValueAsString(this)
 
     companion object {
         private val OBJECT_MAPPER = ObjectMapper()

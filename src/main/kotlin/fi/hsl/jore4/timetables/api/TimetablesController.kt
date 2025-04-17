@@ -97,7 +97,10 @@ class TimetablesController(
         val toCombineTargetVehicleScheduleFrameId: UUID
     )
 
-    class TargetPriorityParsingException(message: String, val targetPriority: Int) : RuntimeException(message)
+    class TargetPriorityParsingException(
+        message: String,
+        val targetPriority: Int
+    ) : RuntimeException(message)
 
     @GetMapping("to-replace")
     fun getFrameIdsToBeReplaced(
@@ -109,12 +112,14 @@ class TimetablesController(
         LOGGER.info { "ToReplace api, stagingVehicleScheduleFrameId: $stagingVehicleScheduleFrameId, targetPriority: $targetPriority" }
 
         val vehicleScheduleFrameIds =
-            replaceTimetablesService.fetchVehicleScheduleFramesToReplace(
-                stagingVehicleScheduleFrameId,
-                parseTargetPriority(targetPriority)
-            ).mapNotNull { it.vehicleScheduleFrameId }
+            replaceTimetablesService
+                .fetchVehicleScheduleFramesToReplace(
+                    stagingVehicleScheduleFrameId,
+                    parseTargetPriority(targetPriority)
+                ).mapNotNull { it.vehicleScheduleFrameId }
 
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity
+            .status(HttpStatus.OK)
             .body(ToReplaceTimetablesResponseBody(toReplaceVehicleScheduleFrameIds = vehicleScheduleFrameIds))
     }
 
@@ -133,7 +138,8 @@ class TimetablesController(
                 parseTargetPriority(targetPriority)
             )
 
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity
+            .status(HttpStatus.OK)
             .body(
                 ToCombineTimetablesResponseBody(
                     // ID of an existing row, can never be null.

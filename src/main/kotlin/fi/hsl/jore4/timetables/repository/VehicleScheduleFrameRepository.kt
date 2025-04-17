@@ -16,8 +16,10 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Repository
-class VehicleScheduleFrameRepository(private val dsl: DSLContext, config: DefaultConfiguration) :
-    VehicleScheduleFrameDao(config) {
+class VehicleScheduleFrameRepository(
+    private val dsl: DSLContext,
+    config: DefaultConfiguration
+) : VehicleScheduleFrameDao(config) {
     @Transactional(readOnly = true, propagation = Propagation.MANDATORY)
     fun fetchVehicleScheduleFramesToReplace(
         stagingVehicleScheduleFrameId: UUID,
@@ -41,8 +43,7 @@ class VehicleScheduleFrameRepository(private val dsl: DSLContext, config: Defaul
                         .fields(
                             stagingFrameIdName,
                             replacedFrameIdName
-                        )
-                        .`as`(
+                        ).`as`(
                             dsl
                                 .select(
                                     getOverlappingSchedules.CURRENT_VEHICLE_SCHEDULE_FRAME_ID.`as`(
@@ -51,8 +52,7 @@ class VehicleScheduleFrameRepository(private val dsl: DSLContext, config: Defaul
                                     getOverlappingSchedules.OTHER_VEHICLE_SCHEDULE_FRAME_ID.`as`(
                                         replacedVehicleScheduleFrameIdField.name
                                     )
-                                )
-                                .from(
+                                ).from(
                                     getOverlappingSchedules(
                                         arrayOf(stagingVehicleScheduleFrameId),
                                         arrayOf(),
@@ -60,12 +60,10 @@ class VehicleScheduleFrameRepository(private val dsl: DSLContext, config: Defaul
                                     )
                                 )
                         )
-                )
-                .select(
+                ).select(
                     stagingVehicleScheduleFrameIdField,
                     replacedVehicleScheduleFrameIdField
-                )
-                .from(replacedFrame)
+                ).from(replacedFrame)
                 .join(overlappingSchedulesCTE)
                 .on(replacedFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(replacedVehicleScheduleFrameIdField))
                 .join(stagingFrame)
@@ -114,8 +112,7 @@ class VehicleScheduleFrameRepository(private val dsl: DSLContext, config: Defaul
                         .fields(
                             stagingFrameIdName,
                             targetFrameIdName
-                        )
-                        .`as`(
+                        ).`as`(
                             dsl
                                 .select(
                                     getOverlappingSchedules.CURRENT_VEHICLE_SCHEDULE_FRAME_ID.`as`(
@@ -124,8 +121,7 @@ class VehicleScheduleFrameRepository(private val dsl: DSLContext, config: Defaul
                                     getOverlappingSchedules.OTHER_VEHICLE_SCHEDULE_FRAME_ID.`as`(
                                         targetVehicleScheduleFrameIdField.name
                                     )
-                                )
-                                .from(
+                                ).from(
                                     getOverlappingSchedules(
                                         arrayOf(stagingVehicleScheduleFrameId),
                                         arrayOf(),
@@ -133,12 +129,10 @@ class VehicleScheduleFrameRepository(private val dsl: DSLContext, config: Defaul
                                     )
                                 )
                         )
-                )
-                .select(
+                ).select(
                     stagingVehicleScheduleFrameIdField,
                     targetVehicleScheduleFrameIdField
-                )
-                .from(targetFrame)
+                ).from(targetFrame)
                 .join(overlappingSchedulesCTE)
                 .on(targetFrame.VEHICLE_SCHEDULE_FRAME_ID.eq(targetVehicleScheduleFrameIdField))
                 .join(stagingFrame)

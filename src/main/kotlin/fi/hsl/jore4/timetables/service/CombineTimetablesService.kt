@@ -14,15 +14,13 @@ private val LOGGER = KotlinLogging.logger {}
 class TargetFrameNotFoundException(
     message: String,
     val stagingVehicleScheduleFrameId: UUID
-) :
-    RuntimeException(message)
+) : RuntimeException(message)
 
 class MultipleTargetFramesFoundException(
     message: String,
     val stagingVehicleScheduleFrameId: UUID,
     val targetVehicleScheduleFrameIds: List<UUID>
-) :
-    RuntimeException(message)
+) : RuntimeException(message)
 
 @Service
 class CombineTimetablesService(
@@ -101,30 +99,27 @@ class CombineTimetablesService(
         return targetVehicleScheduleFrame
     }
 
-    private fun fetchStagingVehicleScheduleFrame(stagingVehicleScheduleFrameId: UUID): VehicleScheduleFrame {
-        return vehicleScheduleFrameRepository
+    private fun fetchStagingVehicleScheduleFrame(stagingVehicleScheduleFrameId: UUID): VehicleScheduleFrame =
+        vehicleScheduleFrameRepository
             .fetchOneByVehicleScheduleFrameId(stagingVehicleScheduleFrameId)
             ?.takeIf { it.priority == TimetablesPriority.STAGING.value }
             ?: throw StagingVehicleScheduleFrameNotFoundException(
                 "Staging vehicle schedule frame not found",
                 stagingVehicleScheduleFrameId
             )
-    }
 
     private fun moveStagingVehicleServicesToTarget(
         stagingFrame: VehicleScheduleFrame,
         targetFrame: VehicleScheduleFrame
-    ): Int {
-        return vehicleServiceRepository.updateServicesSetVehicleServiceFrameId(
+    ): Int =
+        vehicleServiceRepository.updateServicesSetVehicleServiceFrameId(
             // IDs of existing rows here, can never be null.
             currentFrameId = stagingFrame.vehicleScheduleFrameId!!,
             newFrameId = targetFrame.vehicleScheduleFrameId!!
         )
-    }
 
-    private fun deleteStagingVehicleScheduleFrame(stagingVehicleScheduleFrameId: UUID) {
-        return vehicleScheduleFrameRepository.deleteById(stagingVehicleScheduleFrameId)
-    }
+    private fun deleteStagingVehicleScheduleFrame(stagingVehicleScheduleFrameId: UUID) =
+        vehicleScheduleFrameRepository.deleteById(stagingVehicleScheduleFrameId)
 
     companion object {
         private fun validateTargetPriority(targetPriority: TimetablesPriority) {
