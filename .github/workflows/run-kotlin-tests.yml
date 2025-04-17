@@ -1,4 +1,4 @@
-name: Run java tests
+name: Run kotlin tests
 
 on:
   # this workflow is only called by others, won't be executed on itself
@@ -9,7 +9,7 @@ env:
 
 jobs:
   run-tests:
-    name: Run java tests
+    name: Run kotlin tests
     runs-on: ubuntu-24.04
 
     steps:

@@ -8,12 +8,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  run_java_tests:
-    name: Run Java tests
-    uses: ./.github/workflows/run-java-tests.yml
+  run_kotlin_tests:
+    name: Run kotlin tests
+    uses: ./.github/workflows/run-kotlin-tests.yml
 
   publish_docker_image_to_docker_hub:
-    needs: run_java_tests
+    needs: run_kotlin_tests
     name: Build & Push docker image to Docker Hub
     runs-on: ubuntu-24.04
 
@@ -69,7 +69,7 @@ jobs:
 
   publish_docker_image_to_acr:
     needs:
-      - run_java_tests
+      - run_kotlin_tests
     name: Publish Docker image to ACR
     permissions:
       id-token: write
@@ -85,6 +85,6 @@ jobs:
 
   run_cypress_tests:
     needs:
-      - run_java_tests
+      - run_kotlin_tests
       - publish_docker_image_to_docker_hub
     uses: ./.github/workflows/run-cypress-tests.yml
