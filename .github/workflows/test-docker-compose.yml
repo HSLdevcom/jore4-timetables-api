@@ -3,7 +3,7 @@ name: Test whether the dockerized version works
 on:
   push:
   pull_request:
-    branches: [main]
+    branches: [main, releases/**]
 
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
