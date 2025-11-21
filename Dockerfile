@@ -16,11 +16,13 @@ RUN mvn -Pprod -DskipTests=true clean package spring-boot:repackage
 
 FROM eclipse-temurin:25.0.1_8-jre
 
+RUN apt-get update && apt-get install -y curl
+
 # expose server port
 EXPOSE 8080
 
 # download script for reading Docker secrets
-RUN curl -o /tmp/read-secrets.sh "https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/read-secrets.sh"
+ADD https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/read-secrets.sh /tmp/read-secrets.sh
 
 # copy over helper scripts
 COPY ./script/build-jdbc-urls.sh /tmp/
