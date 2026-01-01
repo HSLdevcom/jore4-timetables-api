@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.7</version>
+        <version>4.0.1</version>
         <relativePath/>
     </parent>
 
@@ -36,10 +36,10 @@
         <ktlint-plugin.version>3.5.0</ktlint-plugin.version>
 
         <!-- Library versions -->
-        <kotlin-logging-jvm.version>7.0.13</kotlin-logging-jvm.version>
+        <kotlin-logging-jvm.version>7.0.14</kotlin-logging-jvm.version>
         <quicktheories.version>0.26</quicktheories.version>
-        <mockk.version>1.14.6</mockk.version>
-        <springmockk.version>4.0.2</springmockk.version>
+        <mockk.version>1.14.7</mockk.version>
+        <springmockk.version>5.0.1</springmockk.version>
 
         <!-- Other properties -->
         <start.class>fi.hsl.jore4.timetables.TimetablesApiApplicationKt</start.class>
