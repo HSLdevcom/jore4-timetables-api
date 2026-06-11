@@ -7,7 +7,7 @@ REST API for Jore4 timetables
 ### Necessary tools
 
 - Maven
-- JDK17+
+- JDK25+
 - Node.js 18.x
 - Yarn 1.x
 

@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.7</version>
+        <version>4.1.0-RC1</version>
         <relativePath/>
     </parent>
 
@@ -19,7 +19,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>17</java.version>
+        <java.version>25</java.version>
 
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
@@ -280,12 +280,14 @@
                 <version>${kotlin.version}</version>
                 <configuration>
                     <compilerPlugins>
-                        <plugin>spring</plugin>
+                        <plugin>all-open</plugin>
                     </compilerPlugins>
-                    <args>
-                        <!-- Enable strict mode for JSR-305 annotations. -->
-                        <arg>-Xjsr305=strict</arg>
-                    </args>
+                    <pluginOptions>
+                        <option>all-open:annotation=org.springframework.scheduling.annotation.Async</option>
+                        <option>all-open:annotation=org.springframework.transaction.annotation.Transactional</option>
+                        <option>all-open:annotation=org.springframework.cache.annotation.Cacheable</option>
+                        <option>all-open:annotation=org.springframework.stereotype.Component</option>
+                    </pluginOptions>
                 </configuration>
                 <executions>
                     <execution>
@@ -558,6 +560,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
 
