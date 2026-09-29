@@ -4,15 +4,26 @@
     "github>HSLdevcom/jore4-tools//renovatebot/jore4-default-preset.json5",
   ],
 
+  // split major updates from the "all dependencies" bundle so risky major bumps
+  // (Java, kotlin-logging, jOOQ, ...) arrive as separate, reviewable PRs
+  separateMajorMinor: true,
+
   // repository-specific additional rules about grouping, exclusions and inclusions
   // Note: if the rule feels generic enough, should consider adding it to the jore4 default preset
   packageRules: [
     {
-      // restrict spring boot updates to <4 versions for now
+      // restrict spring boot updates to <4 versions for now.
+      // Maven depName is "groupId:artifactId", so match with a glob to also catch
+      // spring-boot-starter-parent (a plain "org.springframework.boot" does not match it).
       groupName: "spring boot",
       groupSlug: "spring-boot",
-      matchPackageNames: ["org.springframework.boot"],
+      matchPackageNames: ["org.springframework.boot:**"],
       allowedVersions: "<4",
+    },
+    {
+      // give each major update its own PR instead of the big "all dependencies" bundle
+      matchUpdateTypes: ["major"],
+      groupName: "{{depName}}",
     },
   ],
 }
