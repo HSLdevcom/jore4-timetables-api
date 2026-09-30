@@ -179,7 +179,7 @@ class TimetablesController(
 
                 else -> {
                     LOGGER.error { "Exception during request:$ex" }
-                    LOGGER.error(ex.stackTraceToString())
+                    LOGGER.error { ex.stackTraceToString() }
 
                     PlainStatusExtensions(HttpStatus.CONFLICT)
                 }
