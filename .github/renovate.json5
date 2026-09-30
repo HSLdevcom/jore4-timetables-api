@@ -21,9 +21,10 @@
       allowedVersions: "<4",
     },
     {
-      // give each major update its own PR instead of the big "all dependencies" bundle
+      // give each major update its own PR instead of the big "all dependencies" bundle.
+      // groupName: null removes them from the catch-all group so they are not grouped together.
       matchUpdateTypes: ["major"],
-      groupName: "{{depName}}",
+      groupName: null,
     },
   ],
 }
