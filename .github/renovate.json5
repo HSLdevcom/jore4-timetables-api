@@ -21,6 +21,17 @@
       allowedVersions: "<4",
     },
     {
+      // java-jdk 25 needs Kotlin 2.x, which only comes with Spring Boot 4. Stay on 21 for now
+      // (jOOQ needs 21, Kotlin 1.9.x supports 21 but not 25).
+      matchDepNames: ["java-jdk"],
+      allowedVersions: "<25",
+    },
+    {
+      // springmockk 5 is compiled against Kotlin 2.x; blocked until Spring Boot 4 raises Kotlin.
+      matchPackageNames: ["com.ninja-squad:springmockk"],
+      allowedVersions: "<5",
+    },
+    {
       // give each major update its own PR instead of the big "all dependencies" bundle.
       // groupName: null removes them from the catch-all group so they are not grouped together.
       matchUpdateTypes: ["major"],
