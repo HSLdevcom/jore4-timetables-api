@@ -36,10 +36,10 @@
         <ktlint-plugin.version>3.7.1</ktlint-plugin.version>
 
         <!-- Library versions -->
-        <kotlin-logging-jvm.version>7.0.14</kotlin-logging-jvm.version>
+        <kotlin-logging-jvm.version>8.0.4</kotlin-logging-jvm.version>
         <quicktheories.version>0.26</quicktheories.version>
         <mockk.version>1.14.11</mockk.version>
-        <springmockk.version>4.0.2</springmockk.version>
+        <springmockk.version>5.0.1</springmockk.version>
 
         <!-- Other properties -->
         <start.class>fi.hsl.jore4.timetables.TimetablesApiApplicationKt</start.class>
