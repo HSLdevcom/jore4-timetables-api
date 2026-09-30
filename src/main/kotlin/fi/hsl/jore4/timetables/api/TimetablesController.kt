@@ -152,18 +152,30 @@ class TimetablesController(
     fun handleRuntimeException(ex: RuntimeException): ResponseEntity<JoreErrorResponse> {
         val errorExtensions: JoreErrorExtensions =
             when (ex) {
-                is InvalidTargetPriorityException -> InvalidTargetPriorityExtensions.from(ex)
+                is InvalidTargetPriorityException -> {
+                    InvalidTargetPriorityExtensions.from(ex)
+                }
 
-                is StagingVehicleScheduleFrameNotFoundException -> StagingVehicleScheduleFrameNotFoundExtensions.from(ex)
+                is StagingVehicleScheduleFrameNotFoundException -> {
+                    StagingVehicleScheduleFrameNotFoundExtensions.from(ex)
+                }
 
-                is TargetFrameNotFoundException -> TargetVehicleScheduleFrameNotFoundExtensions.from(ex)
+                is TargetFrameNotFoundException -> {
+                    TargetVehicleScheduleFrameNotFoundExtensions.from(ex)
+                }
 
-                is MultipleTargetFramesFoundException -> MultipleTargetFramesFoundExtensions.from(ex)
+                is MultipleTargetFramesFoundException -> {
+                    MultipleTargetFramesFoundExtensions.from(ex)
+                }
 
-                is TargetPriorityParsingException -> TargetPriorityParsingExtensions.from(ex)
+                is TargetPriorityParsingException -> {
+                    TargetPriorityParsingExtensions.from(ex)
+                }
 
                 // Occurs on Commit / Rollback errors.
-                is TransactionSystemException -> TransactionSystemExtensions.from(ex)
+                is TransactionSystemException -> {
+                    TransactionSystemExtensions.from(ex)
+                }
 
                 else -> {
                     LOGGER.error { "Exception during request:$ex" }
