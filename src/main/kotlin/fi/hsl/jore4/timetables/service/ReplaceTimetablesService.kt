@@ -56,7 +56,7 @@ class ReplaceTimetablesService(
             )
         }
 
-        LOGGER.info("Promoting staging vehicle schedule frame to target priority...")
+        LOGGER.info { "Promoting staging vehicle schedule frame to target priority..." }
         promoteStagingFrameToPriority(stagingFrame, targetPriority)
 
         return replacements.map {

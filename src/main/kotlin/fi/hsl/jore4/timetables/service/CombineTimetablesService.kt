@@ -48,13 +48,13 @@ class CombineTimetablesService(
 
         val targetVehicleScheduleFrame = fetchTargetVehicleScheduleFrame(stagingVehicleScheduleFrame, targetPriority)
 
-        LOGGER.info("Moving staging vehicle services to target...")
+        LOGGER.info { "Moving staging vehicle services to target..." }
         moveStagingVehicleServicesToTarget(
             stagingFrame = stagingVehicleScheduleFrame,
             targetFrame = targetVehicleScheduleFrame
         )
 
-        LOGGER.info("Deleting the empty staging frame...")
+        LOGGER.info { "Deleting the empty staging frame..." }
         deleteStagingVehicleScheduleFrame(stagingVehicleScheduleFrameId)
 
         return targetVehicleScheduleFrame.vehicleScheduleFrameId!! // ID of an existing row, can never be null.
