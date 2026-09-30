@@ -14,11 +14,11 @@ env:
 jobs:
   test-docker-compose:
     name: verify docker-compose setup
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           submodules: recursive
 
