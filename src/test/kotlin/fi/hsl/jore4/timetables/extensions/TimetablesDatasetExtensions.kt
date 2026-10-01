@@ -1,8 +1,8 @@
 package fi.hsl.jore4.timetables.extensions
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
+import tools.jackson.core.type.TypeReference
+import tools.jackson.databind.json.JsonMapper
 
 private val LOGGER = KotlinLogging.logger {}
 
@@ -23,7 +23,7 @@ fun MutableMap<String, Any?>.getNested(propertyPath: String): MutableMap<String,
     return child
 }
 
-private val OBJECT_MAPPER = ObjectMapper()
+private val OBJECT_MAPPER = JsonMapper()
 
 fun MutableMap<String, Any?>.deepClone(): MutableMap<String, Any?> {
     val asString = OBJECT_MAPPER.writeValueAsString(this)

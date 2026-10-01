@@ -78,7 +78,7 @@ class VehicleScheduleFrameRepository(
                 .and(replacedFrame.VALIDITY_START.lessThan(stagingFrame.VALIDITY_START))
 
         return dsl
-            .select()
+            .select(*VEHICLE_SCHEDULE_FRAME.fields())
             // Returns a row for each day type id.
             // We are not interested in those here, just the replaced frame ids.
             .distinctOn(replacedVehicleScheduleFrameIdField)
@@ -142,7 +142,7 @@ class VehicleScheduleFrameRepository(
                 .and(targetFrame.PRIORITY.eq(targetPriority.value))
 
         return dsl
-            .select()
+            .select(*VEHICLE_SCHEDULE_FRAME.fields())
             // Returns a row for each day type id.
             // We are not interested in those here, just the overlapping frame ids.
             .distinctOn(targetVehicleScheduleFrameIdField)

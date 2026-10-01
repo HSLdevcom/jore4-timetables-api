@@ -1,6 +1,5 @@
 package fi.hsl.jore4.timetables.api
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
 import fi.hsl.jore4.timetables.service.InvalidTargetPriorityException
@@ -13,8 +12,8 @@ import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
@@ -23,6 +22,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.transaction.TransactionSystemException
+import tools.jackson.databind.json.JsonMapper
 import java.util.UUID
 
 private val LOGGER = KotlinLogging.logger {}
@@ -270,6 +270,6 @@ class TimetablesReplaceApiTest(
     }
 
     companion object {
-        private val OBJECT_MAPPER = ObjectMapper()
+        private val OBJECT_MAPPER = JsonMapper()
     }
 }
