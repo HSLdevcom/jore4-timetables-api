@@ -12,6 +12,11 @@
   // Note: if the rule feels generic enough, should consider adding it to the jore4 default preset
   packageRules: [
     {
+      // jOOQ 3.20+ Open Source editions require PostgreSQL 17/18; stay on 3.19 until the database is upgraded.
+      matchPackageNames: ["org.jooq:**"],
+      allowedVersions: "<3.20",
+    },
+    {
       // give each major update its own PR instead of the big "all dependencies" bundle.
       // groupName: null removes them from the catch-all group so they are not grouped together.
       matchUpdateTypes: ["major"],

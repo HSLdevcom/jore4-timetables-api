@@ -36,6 +36,8 @@
         <ktlint-plugin.version>3.7.1</ktlint-plugin.version>
 
         <!-- Library versions -->
+        <!-- jOOQ 3.20+ Open Source editions require PostgreSQL 17/18; pin to 3.19 for PostgreSQL 15 support. -->
+        <jooq.version>3.19.39</jooq.version>
         <kotlin-logging-jvm.version>8.0.4</kotlin-logging-jvm.version>
         <quicktheories.version>0.26</quicktheories.version>
         <mockk.version>1.14.11</mockk.version>
