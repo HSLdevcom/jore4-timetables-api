@@ -26,7 +26,7 @@ jobs:
         run: ./development.sh start
 
       - name: Verify that dockerized timetables API is up and running
-        uses: HSLdevcom/jore4-tools/github-actions/healthcheck@healthcheck-v1
+        uses: HSLdevcom/jore4-tools/github-actions/healthcheck@main
         with:
           command:
             "curl --fail http://localhost:3009/actuator/health --output
