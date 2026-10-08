@@ -18,7 +18,7 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class VehicleType : SchemaImpl("vehicle_type", DefaultCatalog.DEFAULT_CATALOG) {
-    public companion object {
+    companion object {
 
         /**
          * The reference instance of <code>vehicle_type</code>

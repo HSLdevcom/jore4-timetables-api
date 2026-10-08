@@ -119,7 +119,7 @@ open class JourneyPatternsInVehicleService(
      * <code>vehicle_service.journey_patterns_in_vehicle_service</code> table
      * reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, JOURNEY_PATTERNS_IN_VEHICLE_SERVICE)
 
     /**
      * Create a <code>vehicle_service.journey_patterns_in_vehicle_service</code>

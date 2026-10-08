@@ -42,7 +42,9 @@ open class VehicleJourneyEndTime : AbstractRoutine<String>("vehicle_journey_end_
     /**
      * Set the <code>vj</code> parameter IN value to the routine
      */
-    fun setVj(value: VehicleJourneyRecord?): Unit = setValue(VehicleJourneyEndTime.VJ, value)
+    fun setVj(value: VehicleJourneyRecord?): Unit {
+        setValue(VehicleJourneyEndTime.VJ, value)
+    }
 
     /**
      * Set the <code>vj</code> parameter to the function to be used with a

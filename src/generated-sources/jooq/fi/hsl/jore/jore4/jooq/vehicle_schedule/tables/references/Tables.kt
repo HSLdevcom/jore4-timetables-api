@@ -17,7 +17,8 @@ import org.jooq.Result
 
 
 /**
- * The table <code>vehicle_schedule.get_overlapping_schedules</code>.
+ * filter_vehicle_schedule_frame_ids uuid[], filter_journey_pattern_ref_ids
+ * uuid[], ignore_priority boolean DEFAULT false
  */
 val GET_OVERLAPPING_SCHEDULES: GetOverlappingSchedules = GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES
 

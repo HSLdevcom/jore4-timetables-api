@@ -20,7 +20,7 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class ReturnValue : SchemaImpl("return_value", DefaultCatalog.DEFAULT_CATALOG) {
-    public companion object {
+    companion object {
 
         /**
          * The reference instance of <code>return_value</code>

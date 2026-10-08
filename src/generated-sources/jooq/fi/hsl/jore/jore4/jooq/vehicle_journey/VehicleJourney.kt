@@ -27,7 +27,7 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class VehicleJourney : SchemaImpl("vehicle_journey", DefaultCatalog.DEFAULT_CATALOG) {
-    public companion object {
+    companion object {
 
         /**
          * The reference instance of <code>vehicle_journey</code>
@@ -36,7 +36,7 @@ open class VehicleJourney : SchemaImpl("vehicle_journey", DefaultCatalog.DEFAULT
     }
 
     /**
-     * The table <code>vehicle_journey.get_vehicle_schedules_on_date</code>.
+     * journey_pattern_uuid uuid, observation_date date
      */
     val GET_VEHICLE_SCHEDULES_ON_DATE: GetVehicleSchedulesOnDate get() = GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE
 

@@ -15,7 +15,7 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class InternalServiceCalendar : SchemaImpl("internal_service_calendar", DefaultCatalog.DEFAULT_CATALOG) {
-    public companion object {
+    companion object {
 
         /**
          * The reference instance of <code>internal_service_calendar</code>

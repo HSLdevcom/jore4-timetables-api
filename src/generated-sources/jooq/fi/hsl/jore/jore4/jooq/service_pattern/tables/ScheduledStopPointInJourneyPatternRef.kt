@@ -130,7 +130,7 @@ open class ScheduledStopPointInJourneyPatternRef(
      * <code>service_pattern.scheduled_stop_point_in_journey_pattern_ref</code>
      * table reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF)
 
     /**
      * Create a

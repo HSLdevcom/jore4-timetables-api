@@ -91,7 +91,7 @@ open class JourneyType(
      * Create an aliased <code>vehicle_journey.journey_type</code> table
      * reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, JOURNEY_TYPE)
 
     /**
      * Create a <code>vehicle_journey.journey_type</code> table reference

@@ -172,7 +172,7 @@ open class SubstituteOperatingDayByLineType(
      * <code>service_calendar.substitute_operating_day_by_line_type</code> table
      * reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE)
 
     /**
      * Create a
@@ -195,22 +195,7 @@ open class SubstituteOperatingDayByLineType(
     }
     override fun getSchema(): Schema? = if (aliased()) null else ServiceCalendar.SERVICE_CALENDAR
     override fun getPrimaryKey(): UniqueKey<SubstituteOperatingDayByLineTypeRecord> = SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_PKEY
-    override fun getReferences(): List<ForeignKey<SubstituteOperatingDayByLineTypeRecord, *>> = listOf(SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_SUBSTITUTE_PERIOD_FKEY)
-
-    private lateinit var _typeOfLine: TypeOfLinePath
-
-    /**
-     * Get the implicit join path to the <code>route.type_of_line</code> table.
-     */
-    fun typeOfLine(): TypeOfLinePath {
-        if (!this::_typeOfLine.isInitialized)
-            _typeOfLine = TypeOfLinePath(this, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY, null)
-
-        return _typeOfLine;
-    }
-
-    val typeOfLine: TypeOfLinePath
-        get(): TypeOfLinePath = typeOfLine()
+    override fun getReferences(): List<ForeignKey<SubstituteOperatingDayByLineTypeRecord, *>> = listOf(SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_SUBSTITUTE_PERIOD_FKEY, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY)
 
     private lateinit var _substituteOperatingPeriod: SubstituteOperatingPeriodPath
 
@@ -227,6 +212,21 @@ open class SubstituteOperatingDayByLineType(
 
     val substituteOperatingPeriod: SubstituteOperatingPeriodPath
         get(): SubstituteOperatingPeriodPath = substituteOperatingPeriod()
+
+    private lateinit var _typeOfLine: TypeOfLinePath
+
+    /**
+     * Get the implicit join path to the <code>route.type_of_line</code> table.
+     */
+    fun typeOfLine(): TypeOfLinePath {
+        if (!this::_typeOfLine.isInitialized)
+            _typeOfLine = TypeOfLinePath(this, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY, null)
+
+        return _typeOfLine;
+    }
+
+    val typeOfLine: TypeOfLinePath
+        get(): TypeOfLinePath = typeOfLine()
     override fun `as`(alias: String): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(DSL.name(alias), this)
     override fun `as`(alias: Name): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(alias, this)
     override fun `as`(alias: Table<*>): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(alias.qualifiedName, this)

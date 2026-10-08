@@ -125,7 +125,7 @@ open class Block(
     /**
      * Create an aliased <code>vehicle_service.block</code> table reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, BLOCK)
 
     /**
      * Create a <code>vehicle_service.block</code> table reference

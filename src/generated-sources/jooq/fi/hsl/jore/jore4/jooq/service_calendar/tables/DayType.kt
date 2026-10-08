@@ -110,7 +110,7 @@ open class DayType(
     /**
      * Create an aliased <code>service_calendar.day_type</code> table reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, DAY_TYPE)
 
     /**
      * Create a <code>service_calendar.day_type</code> table reference

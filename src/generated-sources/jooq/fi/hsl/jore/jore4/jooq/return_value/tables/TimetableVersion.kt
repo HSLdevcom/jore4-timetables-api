@@ -144,7 +144,7 @@ open class TimetableVersion(
      * Create an aliased <code>return_value.timetable_version</code> table
      * reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, TIMETABLE_VERSION)
 
     /**
      * Create a <code>return_value.timetable_version</code> table reference

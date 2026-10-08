@@ -124,7 +124,7 @@ open class VehicleService(
      * Create an aliased <code>vehicle_service.vehicle_service</code> table
      * reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, VEHICLE_SERVICE_)
 
     /**
      * Create a <code>vehicle_service.vehicle_service</code> table reference

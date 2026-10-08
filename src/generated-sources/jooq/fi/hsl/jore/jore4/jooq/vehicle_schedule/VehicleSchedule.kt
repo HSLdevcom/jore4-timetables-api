@@ -26,7 +26,7 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class VehicleSchedule : SchemaImpl("vehicle_schedule", DefaultCatalog.DEFAULT_CATALOG) {
-    public companion object {
+    companion object {
 
         /**
          * The reference instance of <code>vehicle_schedule</code>
@@ -35,7 +35,8 @@ open class VehicleSchedule : SchemaImpl("vehicle_schedule", DefaultCatalog.DEFAU
     }
 
     /**
-     * The table <code>vehicle_schedule.get_overlapping_schedules</code>.
+     * filter_vehicle_schedule_frame_ids uuid[], filter_journey_pattern_ref_ids
+     * uuid[], ignore_priority boolean DEFAULT false
      */
     val GET_OVERLAPPING_SCHEDULES: GetOverlappingSchedules get() = GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES
 

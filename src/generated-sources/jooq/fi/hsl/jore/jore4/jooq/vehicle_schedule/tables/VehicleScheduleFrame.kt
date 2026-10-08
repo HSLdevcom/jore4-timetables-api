@@ -159,7 +159,7 @@ open class VehicleScheduleFrame(
      * Create an aliased <code>vehicle_schedule.vehicle_schedule_frame</code>
      * table reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, VEHICLE_SCHEDULE_FRAME)
 
     /**
      * Create a <code>vehicle_schedule.vehicle_schedule_frame</code> table

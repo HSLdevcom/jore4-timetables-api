@@ -130,7 +130,7 @@ open class VehicleSchedule(
      * Create an aliased <code>return_value.vehicle_schedule</code> table
      * reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, VEHICLE_SCHEDULE)
 
     /**
      * Create a <code>return_value.vehicle_schedule</code> table reference

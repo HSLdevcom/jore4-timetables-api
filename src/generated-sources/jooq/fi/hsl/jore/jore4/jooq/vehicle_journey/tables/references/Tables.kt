@@ -19,7 +19,7 @@ import org.jooq.Result
 
 
 /**
- * The table <code>vehicle_journey.get_vehicle_schedules_on_date</code>.
+ * journey_pattern_uuid uuid, observation_date date
  */
 val GET_VEHICLE_SCHEDULES_ON_DATE: GetVehicleSchedulesOnDate = GetVehicleSchedulesOnDate.GET_VEHICLE_SCHEDULES_ON_DATE
 

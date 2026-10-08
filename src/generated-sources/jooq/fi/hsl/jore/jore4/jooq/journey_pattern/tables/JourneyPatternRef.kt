@@ -167,7 +167,7 @@ open class JourneyPatternRef(
      * Create an aliased <code>journey_pattern.journey_pattern_ref</code> table
      * reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, JOURNEY_PATTERN_REF)
 
     /**
      * Create a <code>journey_pattern.journey_pattern_ref</code> table reference
@@ -188,22 +188,7 @@ open class JourneyPatternRef(
     }
     override fun getSchema(): Schema? = if (aliased()) null else JourneyPattern.JOURNEY_PATTERN
     override fun getPrimaryKey(): UniqueKey<JourneyPatternRefRecord> = JOURNEY_PATTERN_REF_PKEY
-    override fun getReferences(): List<ForeignKey<JourneyPatternRefRecord, *>> = listOf(JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY)
-
-    private lateinit var _typeOfLine: TypeOfLinePath
-
-    /**
-     * Get the implicit join path to the <code>route.type_of_line</code> table.
-     */
-    fun typeOfLine(): TypeOfLinePath {
-        if (!this::_typeOfLine.isInitialized)
-            _typeOfLine = TypeOfLinePath(this, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY, null)
-
-        return _typeOfLine;
-    }
-
-    val typeOfLine: TypeOfLinePath
-        get(): TypeOfLinePath = typeOfLine()
+    override fun getReferences(): List<ForeignKey<JourneyPatternRefRecord, *>> = listOf(JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY)
 
     private lateinit var _direction: DirectionPath
 
@@ -219,6 +204,21 @@ open class JourneyPatternRef(
 
     val direction: DirectionPath
         get(): DirectionPath = direction()
+
+    private lateinit var _typeOfLine: TypeOfLinePath
+
+    /**
+     * Get the implicit join path to the <code>route.type_of_line</code> table.
+     */
+    fun typeOfLine(): TypeOfLinePath {
+        if (!this::_typeOfLine.isInitialized)
+            _typeOfLine = TypeOfLinePath(this, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY, null)
+
+        return _typeOfLine;
+    }
+
+    val typeOfLine: TypeOfLinePath
+        get(): TypeOfLinePath = typeOfLine()
 
     private lateinit var _scheduledStopPointInJourneyPatternRef: ScheduledStopPointInJourneyPatternRefPath
 

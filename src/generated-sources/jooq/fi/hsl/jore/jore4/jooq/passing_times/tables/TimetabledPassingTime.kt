@@ -136,7 +136,7 @@ open class TimetabledPassingTime(
      * Create an aliased <code>passing_times.timetabled_passing_time</code>
      * table reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, TIMETABLED_PASSING_TIME)
 
     /**
      * Create a <code>passing_times.timetabled_passing_time</code> table
@@ -158,23 +158,7 @@ open class TimetabledPassingTime(
     }
     override fun getSchema(): Schema? = if (aliased()) null else PassingTimes.PASSING_TIMES
     override fun getPrimaryKey(): UniqueKey<TimetabledPassingTimeRecord> = TIMETABLED_PASSING_TIME_PKEY
-    override fun getReferences(): List<ForeignKey<TimetabledPassingTimeRecord, *>> = listOf(TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_VEHICLE_JOURNEY_ID_FKEY, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_SCHEDULED_STOP_POINT_IN_JOURNEY_PA_FKEY)
-
-    private lateinit var _vehicleJourney: VehicleJourneyPath
-
-    /**
-     * Get the implicit join path to the
-     * <code>vehicle_journey.vehicle_journey</code> table.
-     */
-    fun vehicleJourney(): VehicleJourneyPath {
-        if (!this::_vehicleJourney.isInitialized)
-            _vehicleJourney = VehicleJourneyPath(this, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_VEHICLE_JOURNEY_ID_FKEY, null)
-
-        return _vehicleJourney;
-    }
-
-    val vehicleJourney: VehicleJourneyPath
-        get(): VehicleJourneyPath = vehicleJourney()
+    override fun getReferences(): List<ForeignKey<TimetabledPassingTimeRecord, *>> = listOf(TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_SCHEDULED_STOP_POINT_IN_JOURNEY_PA_FKEY, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_VEHICLE_JOURNEY_ID_FKEY)
 
     private lateinit var _scheduledStopPointInJourneyPatternRef: ScheduledStopPointInJourneyPatternRefPath
 
@@ -192,6 +176,22 @@ open class TimetabledPassingTime(
 
     val scheduledStopPointInJourneyPatternRef: ScheduledStopPointInJourneyPatternRefPath
         get(): ScheduledStopPointInJourneyPatternRefPath = scheduledStopPointInJourneyPatternRef()
+
+    private lateinit var _vehicleJourney: VehicleJourneyPath
+
+    /**
+     * Get the implicit join path to the
+     * <code>vehicle_journey.vehicle_journey</code> table.
+     */
+    fun vehicleJourney(): VehicleJourneyPath {
+        if (!this::_vehicleJourney.isInitialized)
+            _vehicleJourney = VehicleJourneyPath(this, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_VEHICLE_JOURNEY_ID_FKEY, null)
+
+        return _vehicleJourney;
+    }
+
+    val vehicleJourney: VehicleJourneyPath
+        get(): VehicleJourneyPath = vehicleJourney()
     override fun `as`(alias: String): TimetabledPassingTime = TimetabledPassingTime(DSL.name(alias), this)
     override fun `as`(alias: Name): TimetabledPassingTime = TimetabledPassingTime(alias, this)
     override fun `as`(alias: Table<*>): TimetabledPassingTime = TimetabledPassingTime(alias.qualifiedName, this)

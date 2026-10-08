@@ -92,7 +92,7 @@ open class TypeOfLine(
     /**
      * Create an aliased <code>route.type_of_line</code> table reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, TYPE_OF_LINE)
 
     /**
      * Create a <code>route.type_of_line</code> table reference

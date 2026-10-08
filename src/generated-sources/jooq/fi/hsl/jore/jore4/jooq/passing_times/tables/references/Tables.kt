@@ -17,7 +17,7 @@ import org.jooq.Result
 
 
 /**
- * The table <code>passing_times.get_passing_time_order_validity_data</code>.
+ * filter_vehicle_journey_ids uuid[], filter_journey_pattern_ref_ids uuid[]
  */
 val GET_PASSING_TIME_ORDER_VALIDITY_DATA: GetPassingTimeOrderValidityData = GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA
 

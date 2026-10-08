@@ -29,7 +29,7 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class ServiceCalendar : SchemaImpl("service_calendar", DefaultCatalog.DEFAULT_CATALOG) {
-    public companion object {
+    companion object {
 
         /**
          * The reference instance of <code>service_calendar</code>
@@ -50,7 +50,7 @@ open class ServiceCalendar : SchemaImpl("service_calendar", DefaultCatalog.DEFAU
     val DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK: DayTypeActiveOnDayOfWeek get() = DayTypeActiveOnDayOfWeek.DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK
 
     /**
-     * The table <code>service_calendar.get_active_day_types_for_date</code>.
+     * observation_date date
      */
     val GET_ACTIVE_DAY_TYPES_FOR_DATE: GetActiveDayTypesForDate get() = GetActiveDayTypesForDate.GET_ACTIVE_DAY_TYPES_FOR_DATE
 

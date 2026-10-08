@@ -9,7 +9,6 @@ import fi.hsl.jore.jore4.jooq.journey_pattern.tables.JourneyPatternRef.JourneyPa
 import fi.hsl.jore.jore4.jooq.route.Route
 import fi.hsl.jore.jore4.jooq.route.keys.DIRECTION_PKEY
 import fi.hsl.jore.jore4.jooq.route.keys.DIRECTION__DIRECTION_THE_OPPOSITE_OF_DIRECTION_FKEY
-import fi.hsl.jore.jore4.jooq.route.tables.Direction.DirectionPath
 import fi.hsl.jore.jore4.jooq.route.tables.records.DirectionRecord
 
 import kotlin.collections.Collection
@@ -99,7 +98,7 @@ open class Direction(
     /**
      * Create an aliased <code>route.direction</code> table reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, DIRECTION)
 
     /**
      * Create a <code>route.direction</code> table reference

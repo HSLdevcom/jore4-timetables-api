@@ -26,7 +26,7 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class PassingTimes : SchemaImpl("passing_times", DefaultCatalog.DEFAULT_CATALOG) {
-    public companion object {
+    companion object {
 
         /**
          * The reference instance of <code>passing_times</code>
@@ -35,8 +35,7 @@ open class PassingTimes : SchemaImpl("passing_times", DefaultCatalog.DEFAULT_CAT
     }
 
     /**
-     * The table
-     * <code>passing_times.get_passing_time_order_validity_data</code>.
+     * filter_vehicle_journey_ids uuid[], filter_journey_pattern_ref_ids uuid[]
      */
     val GET_PASSING_TIME_ORDER_VALIDITY_DATA: GetPassingTimeOrderValidityData get() = GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA
 

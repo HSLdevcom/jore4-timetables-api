@@ -113,7 +113,7 @@ open class SubstituteOperatingPeriod(
      * Create an aliased
      * <code>service_calendar.substitute_operating_period</code> table reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, SUBSTITUTE_OPERATING_PERIOD)
 
     /**
      * Create a <code>service_calendar.substitute_operating_period</code> table

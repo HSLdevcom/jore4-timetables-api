@@ -45,7 +45,9 @@ open class GetSubstituteOperatingPeriodBeginDate : AbstractRoutine<LocalDate>("g
      * Set the <code>substitute_operating_period_uuid</code> parameter IN value
      * to the routine
      */
-    fun setSubstituteOperatingPeriodUuid(value: UUID?): Unit = setValue(GetSubstituteOperatingPeriodBeginDate.SUBSTITUTE_OPERATING_PERIOD_UUID, value)
+    fun setSubstituteOperatingPeriodUuid(value: UUID?): Unit {
+        setValue(GetSubstituteOperatingPeriodBeginDate.SUBSTITUTE_OPERATING_PERIOD_UUID, value)
+    }
 
     /**
      * Set the <code>substitute_operating_period_uuid</code> parameter to the

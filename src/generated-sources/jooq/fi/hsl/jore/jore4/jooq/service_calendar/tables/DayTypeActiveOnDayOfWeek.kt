@@ -106,7 +106,7 @@ open class DayTypeActiveOnDayOfWeek(
      * <code>service_calendar.day_type_active_on_day_of_week</code> table
      * reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK)
 
     /**
      * Create a <code>service_calendar.day_type_active_on_day_of_week</code>

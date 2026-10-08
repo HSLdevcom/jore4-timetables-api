@@ -32,8 +32,8 @@ import org.jooq.Result
 val BLOCK: Block = Block.BLOCK
 
 /**
- * The table
- * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>.
+ * journey_pattern_ids uuid[], start_date date, end_date date, observation_date
+ * date
  */
 val GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS: GetTimetableVersionsByJourneyPatternIds = GetTimetableVersionsByJourneyPatternIds.GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS
 
@@ -89,8 +89,7 @@ fun GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS(
 )
 
 /**
- * The table
- * <code>vehicle_service.get_timetables_and_substitute_operating_days</code>.
+ * journey_pattern_ids uuid[], start_date date, end_date date
  */
 val GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS: GetTimetablesAndSubstituteOperatingDays = GetTimetablesAndSubstituteOperatingDays.GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS
 
@@ -138,7 +137,7 @@ fun GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS(
 )
 
 /**
- * The table <code>vehicle_service.get_vehicle_service_timing_data</code>.
+ * vehicle_service_ids uuid[]
  */
 val GET_VEHICLE_SERVICE_TIMING_DATA: GetVehicleServiceTimingData = GetVehicleServiceTimingData.GET_VEHICLE_SERVICE_TIMING_DATA
 

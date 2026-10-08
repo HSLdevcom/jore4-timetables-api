@@ -113,7 +113,7 @@ open class VehicleType(
     /**
      * Create an aliased <code>vehicle_type.vehicle_type</code> table reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, VEHICLE_TYPE_)
 
     /**
      * Create a <code>vehicle_type.vehicle_type</code> table reference

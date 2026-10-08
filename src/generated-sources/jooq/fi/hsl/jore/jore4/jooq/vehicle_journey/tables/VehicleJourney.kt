@@ -181,7 +181,7 @@ open class VehicleJourney(
      * Create an aliased <code>vehicle_journey.vehicle_journey</code> table
      * reference
      */
-    constructor(alias: Name): this(alias, null)
+    constructor(alias: Name): this(alias, VEHICLE_JOURNEY_)
 
     /**
      * Create a <code>vehicle_journey.vehicle_journey</code> table reference
@@ -202,23 +202,7 @@ open class VehicleJourney(
     }
     override fun getSchema(): Schema? = if (aliased()) null else fi.hsl.jore.jore4.jooq.vehicle_journey.VehicleJourney.VEHICLE_JOURNEY
     override fun getPrimaryKey(): UniqueKey<VehicleJourneyRecord> = VEHICLE_JOURNEY_PKEY
-    override fun getReferences(): List<ForeignKey<VehicleJourneyRecord, *>> = listOf(VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_PATTERN_REF_ID_FKEY, VEHICLE_JOURNEY__VEHICLE_JOURNEY_BLOCK_ID_FKEY, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_TYPE_FKEY)
-
-    private lateinit var _journeyPatternRef: JourneyPatternRefPath
-
-    /**
-     * Get the implicit join path to the
-     * <code>journey_pattern.journey_pattern_ref</code> table.
-     */
-    fun journeyPatternRef(): JourneyPatternRefPath {
-        if (!this::_journeyPatternRef.isInitialized)
-            _journeyPatternRef = JourneyPatternRefPath(this, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_PATTERN_REF_ID_FKEY, null)
-
-        return _journeyPatternRef;
-    }
-
-    val journeyPatternRef: JourneyPatternRefPath
-        get(): JourneyPatternRefPath = journeyPatternRef()
+    override fun getReferences(): List<ForeignKey<VehicleJourneyRecord, *>> = listOf(VEHICLE_JOURNEY__VEHICLE_JOURNEY_BLOCK_ID_FKEY, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_PATTERN_REF_ID_FKEY, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_TYPE_FKEY)
 
     private lateinit var _block: BlockPath
 
@@ -235,6 +219,22 @@ open class VehicleJourney(
 
     val block: BlockPath
         get(): BlockPath = block()
+
+    private lateinit var _journeyPatternRef: JourneyPatternRefPath
+
+    /**
+     * Get the implicit join path to the
+     * <code>journey_pattern.journey_pattern_ref</code> table.
+     */
+    fun journeyPatternRef(): JourneyPatternRefPath {
+        if (!this::_journeyPatternRef.isInitialized)
+            _journeyPatternRef = JourneyPatternRefPath(this, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_PATTERN_REF_ID_FKEY, null)
+
+        return _journeyPatternRef;
+    }
+
+    val journeyPatternRef: JourneyPatternRefPath
+        get(): JourneyPatternRefPath = journeyPatternRef()
 
     private lateinit var _journeyType: JourneyTypePath
 

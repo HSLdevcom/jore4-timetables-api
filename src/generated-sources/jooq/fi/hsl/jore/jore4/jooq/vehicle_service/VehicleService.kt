@@ -31,7 +31,7 @@ import org.jooq.impl.SchemaImpl
  */
 @Suppress("UNCHECKED_CAST")
 open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT_CATALOG) {
-    public companion object {
+    companion object {
 
         /**
          * The reference instance of <code>vehicle_service</code>
@@ -49,8 +49,8 @@ open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT
     val BLOCK: Block get() = Block.BLOCK
 
     /**
-     * The table
-     * <code>vehicle_service.get_timetable_versions_by_journey_pattern_ids</code>.
+     * journey_pattern_ids uuid[], start_date date, end_date date,
+     * observation_date date
      */
     val GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS: GetTimetableVersionsByJourneyPatternIds get() = GetTimetableVersionsByJourneyPatternIds.GET_TIMETABLE_VERSIONS_BY_JOURNEY_PATTERN_IDS
 
@@ -106,8 +106,7 @@ open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT
     )
 
     /**
-     * The table
-     * <code>vehicle_service.get_timetables_and_substitute_operating_days</code>.
+     * journey_pattern_ids uuid[], start_date date, end_date date
      */
     val GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS: GetTimetablesAndSubstituteOperatingDays get() = GetTimetablesAndSubstituteOperatingDays.GET_TIMETABLES_AND_SUBSTITUTE_OPERATING_DAYS
 
@@ -157,7 +156,7 @@ open class VehicleService : SchemaImpl("vehicle_service", DefaultCatalog.DEFAULT
     )
 
     /**
-     * The table <code>vehicle_service.get_vehicle_service_timing_data</code>.
+     * vehicle_service_ids uuid[]
      */
     val GET_VEHICLE_SERVICE_TIMING_DATA: GetVehicleServiceTimingData get() = GetVehicleServiceTimingData.GET_VEHICLE_SERVICE_TIMING_DATA
 
