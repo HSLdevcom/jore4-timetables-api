@@ -19,21 +19,30 @@ import org.jooq.impl.UpdatableRecordImpl
  * service on a given day, it does not include any BLOCKs. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=3:5:965 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class VehicleServiceRecord private constructor() : UpdatableRecordImpl<VehicleServiceRecord>(VehicleService.VEHICLE_SERVICE_) {
 
     open var vehicleServiceId: UUID?
         set(value): Unit = set(0, value)
         get(): UUID? = get(0) as UUID?
 
+    /**
+     * The DAY TYPE for the VEHICLE SERVICE.
+     */
     open var dayTypeId: UUID
         set(value): Unit = set(1, value)
         get(): UUID = get(1) as UUID
 
+    /**
+     * Human-readable name for the VEHICLE SCHEDULE FRAME
+     */
     open var vehicleScheduleFrameId: UUID
         set(value): Unit = set(2, value)
         get(): UUID = get(2) as UUID
 
+    /**
+     * Name for vehicle service.
+     */
     open var nameI18n: JSONB?
         set(value): Unit = set(3, value)
         get(): JSONB? = get(3) as JSONB?
@@ -52,7 +61,7 @@ open class VehicleServiceRecord private constructor() : UpdatableRecordImpl<Vehi
         this.dayTypeId = dayTypeId
         this.vehicleScheduleFrameId = vehicleScheduleFrameId
         this.nameI18n = nameI18n
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -64,7 +73,7 @@ open class VehicleServiceRecord private constructor() : UpdatableRecordImpl<Vehi
             this.dayTypeId = value.dayTypeId
             this.vehicleScheduleFrameId = value.vehicleScheduleFrameId
             this.nameI18n = value.nameI18n
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

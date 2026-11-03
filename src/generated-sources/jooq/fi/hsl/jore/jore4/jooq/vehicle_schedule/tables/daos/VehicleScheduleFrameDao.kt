@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository
  * SCHEDULEs to which the same set of VALIDITY CONDITIONs have been assigned.
  * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:7:2:993 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class VehicleScheduleFrameDao(configuration: Configuration?) : AbstractSpringDAOImpl<VehicleScheduleFrameRecord, fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.pojos.VehicleScheduleFrame, UUID>(VehicleScheduleFrame.VEHICLE_SCHEDULE_FRAME, fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.pojos.VehicleScheduleFrame::class.java, configuration) {
 

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository
 /**
  * The route directions from Transmodel
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class DirectionDao(configuration: Configuration?) : AbstractSpringDAOImpl<DirectionRecord, fi.hsl.jore.jore4.jooq.route.tables.pojos.Direction, String>(Direction.DIRECTION, fi.hsl.jore.jore4.jooq.route.tables.pojos.Direction::class.java, configuration) {
 

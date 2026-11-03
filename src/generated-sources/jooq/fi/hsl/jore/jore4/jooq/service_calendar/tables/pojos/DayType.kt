@@ -15,10 +15,20 @@ import org.jooq.JSONB
  * transport operation. For example: weekday in school holidays. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=1:6:3:299 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class DayType(
     var dayTypeId: UUID? = null,
+
+    /**
+     * The label for the DAY TYPE. Used for identifying the DAY TYPE when
+     * importing data from Hastus. Includes both basic (e.g. "Monday-Thursday")
+     * and special ("Easter Sunday") day types
+     */
     var label: String,
+
+    /**
+     * Human-readable name for the DAY TYPE
+     */
     var nameI18n: JSONB
 ): Serializable {
 

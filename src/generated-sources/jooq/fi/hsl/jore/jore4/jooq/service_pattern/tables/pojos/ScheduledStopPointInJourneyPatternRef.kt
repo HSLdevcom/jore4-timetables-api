@@ -12,12 +12,29 @@ import java.util.UUID
  * Reference the a SCHEDULED STOP POINT within a JOURNEY PATTERN. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class ScheduledStopPointInJourneyPatternRef(
     var scheduledStopPointInJourneyPatternRefId: UUID? = null,
+
+    /**
+     * JOURNEY PATTERN to which the SCHEDULED STOP POINT belongs
+     */
     var journeyPatternRefId: UUID,
+
+    /**
+     * The label of the SCHEDULED STOP POINT
+     */
     var scheduledStopPointLabel: String,
+
+    /**
+     * The order of the SCHEDULED STOP POINT within the JOURNEY PATTERN.
+     */
     var scheduledStopPointSequence: Int,
+
+    /**
+     * The label of the timing place associated with the referenced scheduled
+     * stop point in journey pattern
+     */
     var timingPlaceLabel: String? = null
 ): Serializable {
 

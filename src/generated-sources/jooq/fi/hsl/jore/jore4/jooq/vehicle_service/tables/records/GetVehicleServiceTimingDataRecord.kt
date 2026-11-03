@@ -13,9 +13,12 @@ import org.jooq.types.YearToSecond
 
 
 /**
- * vehicle_service_ids uuid[]
+ * A helper function for sequential integrity validation.
+ * For given vehicle_services, returns the blocks, journeys and timetabled
+ * passing times that they contain,
+ * and start and end times for each level.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class GetVehicleServiceTimingDataRecord private constructor() : TableRecordImpl<GetVehicleServiceTimingDataRecord>(GetVehicleServiceTimingData.GET_VEHICLE_SERVICE_TIMING_DATA) {
 
     open var vehicleServiceId: UUID?
@@ -112,7 +115,7 @@ open class GetVehicleServiceTimingDataRecord private constructor() : TableRecord
         this.timetabledPassingTimeId = timetabledPassingTimeId
         this.stopDepartureTime = stopDepartureTime
         this.stopArrivalTime = stopArrivalTime
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -138,7 +141,7 @@ open class GetVehicleServiceTimingDataRecord private constructor() : TableRecord
             this.timetabledPassingTimeId = value.timetabledPassingTimeId
             this.stopDepartureTime = value.stopDepartureTime
             this.stopArrivalTime = value.stopArrivalTime
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

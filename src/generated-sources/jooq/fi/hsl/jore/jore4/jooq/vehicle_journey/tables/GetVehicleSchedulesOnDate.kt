@@ -27,9 +27,26 @@ import org.jooq.impl.TableImpl
 
 
 /**
- * journey_pattern_uuid uuid, observation_date date
+ * Returns all valid highest priority vehicle schedules for a journey pattern on
+ * an observation date. Uses return_value.vehicle_schedule as the return value
+ * which is on the vehicle_journey level, but has some enriched data e.g.
+ * priority, validity range etc. This function returns all the vehicle journeys
+ * for
+ * vehicle_schedule_frames with the enriched data, but also calculates the
+ * correct vehicle_journeys for substitute_operating_day_by_line_type and leaves
+ * out
+ * all the vehicle_journeys that are out of the begin_time, end_time range. If a
+ * substitute_operating_day_by_line_type is valid for journey pattern but has
+ * the time range does not return any vehicle journeys (or if the
+ * substitute_operating_day_by_line_type substitute_operating_day_of_week is
+ * NULL) we return
+ * a row which does not have vehicle_journey set. This is an indicator that the
+ * day type does not have operation on the given day. This is of course
+ * overruled
+ * by special priority schedules, it being a higher priority.
+
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class GetVehicleSchedulesOnDate(
     alias: Name,
     path: Table<out Record>?,
@@ -46,7 +63,7 @@ open class GetVehicleSchedulesOnDate(
     parentPath,
     aliased,
     parameters,
-    DSL.comment("journey_pattern_uuid uuid, observation_date date"),
+    DSL.comment("Returns all valid highest priority vehicle schedules for a journey pattern on an observation date. Uses return_value.vehicle_schedule as the return value\nwhich is on the vehicle_journey level, but has some enriched data e.g. priority, validity range etc. This function returns all the vehicle journeys for\nvehicle_schedule_frames with the enriched data, but also calculates the correct vehicle_journeys for substitute_operating_day_by_line_type and leaves out\nall the vehicle_journeys that are out of the begin_time, end_time range. If a substitute_operating_day_by_line_type is valid for journey pattern but has\nthe time range does not return any vehicle journeys (or if the substitute_operating_day_by_line_type substitute_operating_day_of_week is NULL) we return\na row which does not have vehicle_journey set. This is an indicator that the day type does not have operation on the given day. This is of course overruled\nby special priority schedules, it being a higher priority.\n"),
     TableOptions.function(),
     where,
 ) {

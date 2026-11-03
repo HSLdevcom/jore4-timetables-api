@@ -16,11 +16,23 @@ import org.jooq.JSONB
  * service on a given day, it does not include any BLOCKs. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=3:5:965 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class VehicleService(
     var vehicleServiceId: UUID? = null,
+
+    /**
+     * The DAY TYPE for the VEHICLE SERVICE.
+     */
     var dayTypeId: UUID,
+
+    /**
+     * Human-readable name for the VEHICLE SCHEDULE FRAME
+     */
     var vehicleScheduleFrameId: UUID,
+
+    /**
+     * Name for vehicle service.
+     */
     var nameI18n: JSONB? = null
 ): Serializable {
 

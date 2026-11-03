@@ -26,9 +26,20 @@ import org.jooq.impl.TableImpl
 
 
 /**
- * journey_pattern_ids uuid[], start_date date, end_date date
+ * Uses return_value.timetable_version as return value. Returns all the
+ * corresponding data from
+ * vehicle_schedule.vehicle_schedule_frame and
+ * service_calendar.substitute_operating_day_by_line_type that matches the given
+ * timerange and journey_pattern,
+ * but leaves out staging priorities completely.
+ * This function will also match the day type for the substitute day by using
+ * the superseded date.
+ * In the return values, either the vehicle_schedule_frame_id OR
+ * substitute_operating_day_by_line_type_id will be NULL.
+ * Also the in_effect value is defaulted here to false and the real value will
+ * be calculated in the get_timetable_versions_by_journey_pattern_ids function.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class GetTimetablesAndSubstituteOperatingDays(
     alias: Name,
     path: Table<out Record>?,
@@ -45,7 +56,7 @@ open class GetTimetablesAndSubstituteOperatingDays(
     parentPath,
     aliased,
     parameters,
-    DSL.comment("journey_pattern_ids uuid[], start_date date, end_date date"),
+    DSL.comment("Uses return_value.timetable_version as return value. Returns all the corresponding data from\nvehicle_schedule.vehicle_schedule_frame and service_calendar.substitute_operating_day_by_line_type that matches the given timerange and journey_pattern,\nbut leaves out staging priorities completely.\nThis function will also match the day type for the substitute day by using the superseded date.\nIn the return values, either the vehicle_schedule_frame_id OR substitute_operating_day_by_line_type_id will be NULL.\nAlso the in_effect value is defaulted here to false and the real value will be calculated in the get_timetable_versions_by_journey_pattern_ids function."),
     TableOptions.function(),
     where,
 ) {

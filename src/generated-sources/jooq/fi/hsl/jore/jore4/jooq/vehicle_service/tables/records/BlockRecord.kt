@@ -20,25 +20,37 @@ import org.jooq.types.YearToSecond
  * of a BLOCK has to be covered by DUTies. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=3:5:958 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class BlockRecord private constructor() : UpdatableRecordImpl<BlockRecord>(Block.BLOCK) {
 
     open var blockId: UUID?
         set(value): Unit = set(0, value)
         get(): UUID? = get(0) as UUID?
 
+    /**
+     * The VEHICLE SERVICE to which this BLOCK belongs.
+     */
     open var vehicleServiceId: UUID
         set(value): Unit = set(1, value)
         get(): UUID = get(1) as UUID
 
+    /**
+     * Preparation time before start of vehicle service block.
+     */
     open var preparingTime: YearToSecond?
         set(value): Unit = set(2, value)
         get(): YearToSecond? = get(2) as YearToSecond?
 
+    /**
+     * Finishing time after end of vehicle service block.
+     */
     open var finishingTime: YearToSecond?
         set(value): Unit = set(3, value)
         get(): YearToSecond? = get(3) as YearToSecond?
 
+    /**
+     * Reference to vehicle_type.vehicle_type.
+     */
     open var vehicleTypeId: UUID?
         set(value): Unit = set(4, value)
         get(): UUID? = get(4) as UUID?
@@ -58,7 +70,7 @@ open class BlockRecord private constructor() : UpdatableRecordImpl<BlockRecord>(
         this.preparingTime = preparingTime
         this.finishingTime = finishingTime
         this.vehicleTypeId = vehicleTypeId
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -71,7 +83,7 @@ open class BlockRecord private constructor() : UpdatableRecordImpl<BlockRecord>(
             this.preparingTime = value.preparingTime
             this.finishingTime = value.finishingTime
             this.vehicleTypeId = value.vehicleTypeId
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

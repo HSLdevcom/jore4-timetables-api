@@ -13,7 +13,7 @@ import org.jooq.impl.UpdatableRecordImpl
 /**
  * Enum table for defining allowed journey types.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class JourneyTypeRecord private constructor() : UpdatableRecordImpl<JourneyTypeRecord>(JourneyType.JOURNEY_TYPE) {
 
     open var type: String
@@ -31,7 +31,7 @@ open class JourneyTypeRecord private constructor() : UpdatableRecordImpl<Journey
      */
     constructor(type: String): this() {
         this.type = type
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -40,7 +40,7 @@ open class JourneyTypeRecord private constructor() : UpdatableRecordImpl<Journey
     constructor(value: fi.hsl.jore.jore4.jooq.vehicle_journey.tables.pojos.JourneyType?): this() {
         if (value != null) {
             this.type = value.type
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

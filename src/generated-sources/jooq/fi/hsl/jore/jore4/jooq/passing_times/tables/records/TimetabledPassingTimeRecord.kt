@@ -19,25 +19,43 @@ import org.jooq.types.YearToSecond
  * certain DAY TYPE. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=3:4:946 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class TimetabledPassingTimeRecord private constructor() : UpdatableRecordImpl<TimetabledPassingTimeRecord>(TimetabledPassingTime.TIMETABLED_PASSING_TIME) {
 
     open var timetabledPassingTimeId: UUID?
         set(value): Unit = set(0, value)
         get(): UUID? = get(0) as UUID?
 
+    /**
+     * The VEHICLE JOURNEY to which this TIMETABLED PASSING TIME belongs
+     */
     open var vehicleJourneyId: UUID
         set(value): Unit = set(1, value)
         get(): UUID = get(1) as UUID
 
+    /**
+     * The SCHEDULED STOP POINT of the JOURNEY PATTERN where the vehicle passes
+     */
     open var scheduledStopPointInJourneyPatternRefId: UUID
         set(value): Unit = set(2, value)
         get(): UUID = get(2) as UUID
 
+    /**
+     * The time when the vehicle arrives to the SCHEDULED STOP POINT. Measured
+     * as interval counted from the midnight of the OPERATING DAY. When NULL,
+     * only the departure time is defined for the passing time. E.g. in case
+     * this is the first SCHEDULED STOP POINT of the journey.
+     */
     open var arrivalTime: YearToSecond?
         set(value): Unit = set(3, value)
         get(): YearToSecond? = get(3) as YearToSecond?
 
+    /**
+     * The time when the vehicle departs from the SCHEDULED STOP POINT. Measured
+     * as interval counted from the midnight of the OPERATING DAY. When NULL,
+     * only the arrival time is defined for the passing time. E.g. in case this
+     * is the last SCHEDULED STOP POINT of the journey.
+     */
     open var departureTime: YearToSecond?
         set(value): Unit = set(4, value)
         get(): YearToSecond? = get(4) as YearToSecond?
@@ -57,7 +75,7 @@ open class TimetabledPassingTimeRecord private constructor() : UpdatableRecordIm
         this.scheduledStopPointInJourneyPatternRefId = scheduledStopPointInJourneyPatternRefId
         this.arrivalTime = arrivalTime
         this.departureTime = departureTime
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -70,7 +88,7 @@ open class TimetabledPassingTimeRecord private constructor() : UpdatableRecordIm
             this.scheduledStopPointInJourneyPatternRefId = value.scheduledStopPointInJourneyPatternRefId
             this.arrivalTime = value.arrivalTime
             this.departureTime = value.departureTime
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

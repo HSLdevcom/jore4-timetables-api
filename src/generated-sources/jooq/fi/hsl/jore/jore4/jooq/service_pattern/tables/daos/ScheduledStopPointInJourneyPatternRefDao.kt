@@ -20,7 +20,7 @@ import org.springframework.stereotype.Repository
  * Reference the a SCHEDULED STOP POINT within a JOURNEY PATTERN. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class ScheduledStopPointInJourneyPatternRefDao(configuration: Configuration?) : AbstractSpringDAOImpl<ScheduledStopPointInJourneyPatternRefRecord, fi.hsl.jore.jore4.jooq.service_pattern.tables.pojos.ScheduledStopPointInJourneyPatternRef, UUID>(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF, fi.hsl.jore.jore4.jooq.service_pattern.tables.pojos.ScheduledStopPointInJourneyPatternRef::class.java, configuration) {
 

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository
 /**
  * Type of line. https://www.transmodel-cen.eu/model/index.htm?goto=2:1:3:424
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class TypeOfLineDao(configuration: Configuration?) : AbstractSpringDAOImpl<TypeOfLineRecord, fi.hsl.jore.jore4.jooq.route.tables.pojos.TypeOfLine, String>(TypeOfLine.TYPE_OF_LINE, fi.hsl.jore.jore4.jooq.route.tables.pojos.TypeOfLine::class.java, configuration) {
 

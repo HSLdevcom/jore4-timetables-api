@@ -10,9 +10,17 @@ import java.io.Serializable
 /**
  * The route directions from Transmodel
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class Direction(
+
+    /**
+     * The name of the route direction
+     */
     var direction: String,
+
+    /**
+     * The opposite direction
+     */
     var theOppositeOfDirection: String? = null
 ): Serializable {
 

@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository
  * -&gt; block -&gt; vehicle_journey -&gt; journey_pattern_ref.
  *  Kept up to date with triggers, should not be updated manually.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class JourneyPatternsInVehicleServiceDao(configuration: Configuration?) : AbstractSpringDAOImpl<JourneyPatternsInVehicleServiceRecord, fi.hsl.jore.jore4.jooq.vehicle_service.tables.pojos.JourneyPatternsInVehicleService, Record2<UUID?, UUID?>>(JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE, fi.hsl.jore.jore4.jooq.vehicle_service.tables.pojos.JourneyPatternsInVehicleService::class.java, configuration) {
 

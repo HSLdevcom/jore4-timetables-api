@@ -25,10 +25,10 @@ import org.jooq.QueryPart
 import org.jooq.Record
 import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.Select
 import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
+import org.jooq.TableLike
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl
 /**
  * The route directions from Transmodel
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class Direction(
     alias: Name,
     path: Table<out Record>?,
@@ -121,20 +121,11 @@ open class Direction(
     override fun getPrimaryKey(): UniqueKey<DirectionRecord> = DIRECTION_PKEY
     override fun getReferences(): List<ForeignKey<DirectionRecord, *>> = listOf(DIRECTION__DIRECTION_THE_OPPOSITE_OF_DIRECTION_FKEY)
 
-    private lateinit var _direction: DirectionPath
-
     /**
      * Get the implicit join path to the <code>route.direction</code> table.
      */
-    fun direction(): DirectionPath {
-        if (!this::_direction.isInitialized)
-            _direction = DirectionPath(this, DIRECTION__DIRECTION_THE_OPPOSITE_OF_DIRECTION_FKEY, null)
-
-        return _direction;
-    }
-
-    val direction: DirectionPath
-        get(): DirectionPath = direction()
+    fun direction(): DirectionPath = direction
+    val direction: DirectionPath by lazy { DirectionPath(this, DIRECTION__DIRECTION_THE_OPPOSITE_OF_DIRECTION_FKEY, null) }
 
     private lateinit var _journeyPatternRef: JourneyPatternRefPath
 
@@ -173,7 +164,7 @@ open class Direction(
     /**
      * Create an inline derived table from this table
      */
-    override fun where(condition: Condition?): Direction = Direction(qualifiedName, if (aliased()) this else null, condition)
+    override fun where(condition: Condition?): Direction = Direction(qualifiedName, if (aliased()) this else null, Internal.condition(this, condition))
 
     /**
      * Create an inline derived table from this table
@@ -213,10 +204,10 @@ open class Direction(
     /**
      * Create an inline derived table from this table
      */
-    override fun whereExists(select: Select<*>): Direction = where(DSL.exists(select))
+    override fun whereExists(select: TableLike<*>): Direction = where(DSL.exists(select))
 
     /**
      * Create an inline derived table from this table
      */
-    override fun whereNotExists(select: Select<*>): Direction = where(DSL.notExists(select))
+    override fun whereNotExists(select: TableLike<*>): Direction = where(DSL.notExists(select))
 }

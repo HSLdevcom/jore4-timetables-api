@@ -15,10 +15,21 @@ import java.util.UUID
  * -&gt; block -&gt; vehicle_journey -&gt; journey_pattern_ref.
  *  Kept up to date with triggers, should not be updated manually.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class JourneyPatternsInVehicleService(
     var vehicleServiceId: UUID,
+
+    /**
+     * The journey_pattern_id from journey_pattern.journey_pattern_ref.
+     *  No foreign key reference is set because the target column is not unique.
+     */
     var journeyPatternId: UUID,
+
+    /**
+     * The amount of unique references between the journey_pattern and
+     * vehicle_service.
+     *   When this reaches 0 the row will be deleted.
+     */
     var referenceCount: Int
 ): Serializable {
 

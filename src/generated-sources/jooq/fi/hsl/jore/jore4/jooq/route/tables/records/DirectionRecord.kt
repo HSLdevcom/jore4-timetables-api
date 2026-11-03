@@ -13,13 +13,19 @@ import org.jooq.impl.UpdatableRecordImpl
 /**
  * The route directions from Transmodel
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class DirectionRecord private constructor() : UpdatableRecordImpl<DirectionRecord>(Direction.DIRECTION) {
 
+    /**
+     * The name of the route direction
+     */
     open var direction: String
         set(value): Unit = set(0, value)
         get(): String = get(0) as String
 
+    /**
+     * The opposite direction
+     */
     open var theOppositeOfDirection: String?
         set(value): Unit = set(1, value)
         get(): String? = get(1) as String?
@@ -36,7 +42,7 @@ open class DirectionRecord private constructor() : UpdatableRecordImpl<Direction
     constructor(direction: String, theOppositeOfDirection: String? = null): this() {
         this.direction = direction
         this.theOppositeOfDirection = theOppositeOfDirection
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -46,7 +52,7 @@ open class DirectionRecord private constructor() : UpdatableRecordImpl<Direction
         if (value != null) {
             this.direction = value.direction
             this.theOppositeOfDirection = value.theOppositeOfDirection
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

@@ -28,10 +28,10 @@ import org.jooq.QueryPart
 import org.jooq.Record
 import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.Select
 import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
+import org.jooq.TableLike
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl
  * Reference the a SCHEDULED STOP POINT within a JOURNEY PATTERN. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class ScheduledStopPointInJourneyPatternRef(
     alias: Name,
     path: Table<out Record>?,
@@ -155,21 +155,12 @@ open class ScheduledStopPointInJourneyPatternRef(
     override fun getPrimaryKey(): UniqueKey<ScheduledStopPointInJourneyPatternRefRecord> = SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF_PKEY
     override fun getReferences(): List<ForeignKey<ScheduledStopPointInJourneyPatternRefRecord, *>> = listOf(SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY)
 
-    private lateinit var _journeyPatternRef: JourneyPatternRefPath
-
     /**
      * Get the implicit join path to the
      * <code>journey_pattern.journey_pattern_ref</code> table.
      */
-    fun journeyPatternRef(): JourneyPatternRefPath {
-        if (!this::_journeyPatternRef.isInitialized)
-            _journeyPatternRef = JourneyPatternRefPath(this, SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY, null)
-
-        return _journeyPatternRef;
-    }
-
-    val journeyPatternRef: JourneyPatternRefPath
-        get(): JourneyPatternRefPath = journeyPatternRef()
+    fun journeyPatternRef(): JourneyPatternRefPath = journeyPatternRef
+    val journeyPatternRef: JourneyPatternRefPath by lazy { JourneyPatternRefPath(this, SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF__SCHEDULED_STOP_POINT_IN_JOURNEY_PAT_JOURNEY_PATTERN_REF_ID_FKEY, null) }
 
     private lateinit var _timetabledPassingTime: TimetabledPassingTimePath
 
@@ -208,7 +199,7 @@ open class ScheduledStopPointInJourneyPatternRef(
     /**
      * Create an inline derived table from this table
      */
-    override fun where(condition: Condition?): ScheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef(qualifiedName, if (aliased()) this else null, condition)
+    override fun where(condition: Condition?): ScheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRef(qualifiedName, if (aliased()) this else null, Internal.condition(this, condition))
 
     /**
      * Create an inline derived table from this table
@@ -248,10 +239,10 @@ open class ScheduledStopPointInJourneyPatternRef(
     /**
      * Create an inline derived table from this table
      */
-    override fun whereExists(select: Select<*>): ScheduledStopPointInJourneyPatternRef = where(DSL.exists(select))
+    override fun whereExists(select: TableLike<*>): ScheduledStopPointInJourneyPatternRef = where(DSL.exists(select))
 
     /**
      * Create an inline derived table from this table
      */
-    override fun whereNotExists(select: Select<*>): ScheduledStopPointInJourneyPatternRef = where(DSL.notExists(select))
+    override fun whereNotExists(select: TableLike<*>): ScheduledStopPointInJourneyPatternRef = where(DSL.notExists(select))
 }

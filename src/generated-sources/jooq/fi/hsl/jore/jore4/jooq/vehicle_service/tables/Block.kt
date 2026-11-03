@@ -30,10 +30,10 @@ import org.jooq.QueryPart
 import org.jooq.Record
 import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.Select
 import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
+import org.jooq.TableLike
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
@@ -50,7 +50,7 @@ import org.jooq.types.YearToSecond
  * of a BLOCK has to be covered by DUTies. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=3:5:958 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class Block(
     alias: Name,
     path: Table<out Record>?,
@@ -148,37 +148,19 @@ open class Block(
     override fun getPrimaryKey(): UniqueKey<BlockRecord> = BLOCK_PKEY
     override fun getReferences(): List<ForeignKey<BlockRecord, *>> = listOf(BLOCK__BLOCK_VEHICLE_SERVICE_ID_FKEY, BLOCK__VEHICLE_TYPE_FKEY)
 
-    private lateinit var _vehicleService: VehicleServicePath
-
     /**
      * Get the implicit join path to the
      * <code>vehicle_service.vehicle_service</code> table.
      */
-    fun vehicleService(): VehicleServicePath {
-        if (!this::_vehicleService.isInitialized)
-            _vehicleService = VehicleServicePath(this, BLOCK__BLOCK_VEHICLE_SERVICE_ID_FKEY, null)
-
-        return _vehicleService;
-    }
-
-    val vehicleService: VehicleServicePath
-        get(): VehicleServicePath = vehicleService()
-
-    private lateinit var _vehicleType: VehicleTypePath
+    fun vehicleService(): VehicleServicePath = vehicleService
+    val vehicleService: VehicleServicePath by lazy { VehicleServicePath(this, BLOCK__BLOCK_VEHICLE_SERVICE_ID_FKEY, null) }
 
     /**
      * Get the implicit join path to the <code>vehicle_type.vehicle_type</code>
      * table.
      */
-    fun vehicleType(): VehicleTypePath {
-        if (!this::_vehicleType.isInitialized)
-            _vehicleType = VehicleTypePath(this, BLOCK__VEHICLE_TYPE_FKEY, null)
-
-        return _vehicleType;
-    }
-
-    val vehicleType: VehicleTypePath
-        get(): VehicleTypePath = vehicleType()
+    fun vehicleType(): VehicleTypePath = vehicleType
+    val vehicleType: VehicleTypePath by lazy { VehicleTypePath(this, BLOCK__VEHICLE_TYPE_FKEY, null) }
 
     private lateinit var _vehicleJourney: VehicleJourneyPath
 
@@ -217,7 +199,7 @@ open class Block(
     /**
      * Create an inline derived table from this table
      */
-    override fun where(condition: Condition?): Block = Block(qualifiedName, if (aliased()) this else null, condition)
+    override fun where(condition: Condition?): Block = Block(qualifiedName, if (aliased()) this else null, Internal.condition(this, condition))
 
     /**
      * Create an inline derived table from this table
@@ -257,10 +239,10 @@ open class Block(
     /**
      * Create an inline derived table from this table
      */
-    override fun whereExists(select: Select<*>): Block = where(DSL.exists(select))
+    override fun whereExists(select: TableLike<*>): Block = where(DSL.exists(select))
 
     /**
      * Create an inline derived table from this table
      */
-    override fun whereNotExists(select: Select<*>): Block = where(DSL.notExists(select))
+    override fun whereNotExists(select: TableLike<*>): Block = where(DSL.notExists(select))
 }

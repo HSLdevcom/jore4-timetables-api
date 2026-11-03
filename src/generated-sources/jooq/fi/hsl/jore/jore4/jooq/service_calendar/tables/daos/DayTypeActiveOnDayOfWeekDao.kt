@@ -20,7 +20,7 @@ import org.springframework.stereotype.Repository
 /**
  * Tells on which days of week a particular DAY TYPE is active
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class DayTypeActiveOnDayOfWeekDao(configuration: Configuration?) : AbstractSpringDAOImpl<DayTypeActiveOnDayOfWeekRecord, fi.hsl.jore.jore4.jooq.service_calendar.tables.pojos.DayTypeActiveOnDayOfWeek, Record2<UUID?, Int?>>(DayTypeActiveOnDayOfWeek.DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK, fi.hsl.jore.jore4.jooq.service_calendar.tables.pojos.DayTypeActiveOnDayOfWeek::class.java, configuration) {
 

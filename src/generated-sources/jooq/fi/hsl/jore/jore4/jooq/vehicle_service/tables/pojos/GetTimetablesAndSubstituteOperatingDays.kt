@@ -10,9 +10,20 @@ import java.util.UUID
 
 
 /**
- * journey_pattern_ids uuid[], start_date date, end_date date
+ * Uses return_value.timetable_version as return value. Returns all the
+ * corresponding data from
+ * vehicle_schedule.vehicle_schedule_frame and
+ * service_calendar.substitute_operating_day_by_line_type that matches the given
+ * timerange and journey_pattern,
+ * but leaves out staging priorities completely.
+ * This function will also match the day type for the substitute day by using
+ * the superseded date.
+ * In the return values, either the vehicle_schedule_frame_id OR
+ * substitute_operating_day_by_line_type_id will be NULL.
+ * Also the in_effect value is defaulted here to false and the real value will
+ * be calculated in the get_timetable_versions_by_journey_pattern_ids function.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class GetTimetablesAndSubstituteOperatingDays(
     var vehicleScheduleFrameId: UUID? = null,
     var substituteOperatingDayByLineTypeId: UUID? = null,

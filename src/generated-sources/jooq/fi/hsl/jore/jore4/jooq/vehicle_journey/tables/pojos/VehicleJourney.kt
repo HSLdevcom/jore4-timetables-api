@@ -16,25 +16,75 @@ import org.jooq.types.YearToSecond
  * start point to the end point of a JOURNEY PATTERN on a specified ROUTE.
  * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:1:1:831 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class VehicleJourney(
     var vehicleJourneyId: UUID? = null,
+
+    /**
+     * The JOURNEY PATTERN on which the VEHICLE JOURNEY travels
+     */
     var journeyPatternRefId: UUID,
+
+    /**
+     * The BLOCK to which this VEHICLE JOURNEY belongs
+     */
     var blockId: UUID,
+
+    /**
+     * Name that user can give to the vehicle journey.
+     */
     var journeyNameI18n: JSONB? = null,
+
+    /**
+     * Turnaround time is the time taken by a vehicle to proceed from the end of
+     * a ROUTE to the start of another.
+     */
     var turnaroundTime: YearToSecond? = null,
+
+    /**
+     * LAYOVER TIMEs describe a certain time allowance that may be given at the
+     * end of each VEHICLE JOURNEY, before starting the next one, to compensate
+     * delays or for other purposes (e.g. rest time for the driver). This
+     * “layover time” can be regarded as a buffer time, which may or may not be
+     * actually consumed in real time operation.
+     */
     var layoverTime: YearToSecond? = null,
+
+    /**
+     * STANDARD | DRY_RUN | SERVICE_JOURNEY
+     */
     var journeyType: String? = null,
+
+    /**
+     * Displayed name of the journey.
+     */
     var displayedName: String? = null,
     @Suppress("INAPPLICABLE_JVM_NAME")
     @set:JvmName("setIsVehicleTypeMandatory")
+
+    /**
+     * It is required to use the same vehicle type as required in vehicle
+     * service.
+     */
     var isVehicleTypeMandatory: Boolean? = null,
     @Suppress("INAPPLICABLE_JVM_NAME")
     @set:JvmName("setIsBackupJourney")
+
+    /**
+     * Is the journey a backup journey.
+     */
     var isBackupJourney: Boolean? = null,
     @Suppress("INAPPLICABLE_JVM_NAME")
     @set:JvmName("setIsExtraJourney")
+
+    /**
+     * Is the journey an extra journey.
+     */
     var isExtraJourney: Boolean? = null,
+
+    /**
+     * The contract number for this vehicle journey.
+     */
     var contractNumber: String
 ): Serializable {
 

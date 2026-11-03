@@ -25,9 +25,18 @@ import org.jooq.impl.TableImpl
 
 
 /**
- * filter_vehicle_journey_ids uuid[], filter_journey_pattern_ref_ids uuid[]
+ * 
+ *   For vehicle journey passing time sequences in given vehicle journeys and/or
+ * journey patterns,
+ *   returns information on the sequence and its validity:
+ *   id of the vehicle journey, ids of first and last passing times in the
+ * sequence,
+ *   and whether all passing times for the vehicle journey are in stop point
+ * sequence order, that is,
+ *   in same order by passing_time as their corresponding stop points
+ * (scheduled_stop_point_in_journey_pattern_ref).
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class GetPassingTimeOrderValidityData(
     alias: Name,
     path: Table<out Record>?,
@@ -44,7 +53,7 @@ open class GetPassingTimeOrderValidityData(
     parentPath,
     aliased,
     parameters,
-    DSL.comment("filter_vehicle_journey_ids uuid[], filter_journey_pattern_ref_ids uuid[]"),
+    DSL.comment("\n  For vehicle journey passing time sequences in given vehicle journeys and/or journey patterns,\n  returns information on the sequence and its validity:\n  id of the vehicle journey, ids of first and last passing times in the sequence,\n  and whether all passing times for the vehicle journey are in stop point sequence order, that is,\n  in same order by passing_time as their corresponding stop points (scheduled_stop_point_in_journey_pattern_ref)."),
     TableOptions.function(),
     where,
 ) {

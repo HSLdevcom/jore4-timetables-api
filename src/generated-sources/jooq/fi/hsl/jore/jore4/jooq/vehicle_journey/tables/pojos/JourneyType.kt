@@ -10,7 +10,7 @@ import java.io.Serializable
 /**
  * Enum table for defining allowed journey types.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class JourneyType(
     var type: String
 ): Serializable {

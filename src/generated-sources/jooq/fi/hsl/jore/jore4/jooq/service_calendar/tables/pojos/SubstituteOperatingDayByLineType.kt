@@ -17,15 +17,52 @@ import org.jooq.types.YearToSecond
  * that public transit does not occur on certain date. Substitute operating days
  * are always bound to a type of line.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class SubstituteOperatingDayByLineType(
     var substituteOperatingDayByLineTypeId: UUID? = null,
+
+    /**
+     * The type of line this substitute operating day is bound to.
+     */
     var typeOfLine: String,
+
+    /**
+     * The date of operating day being superseded.
+     */
     var supersededDate: LocalDate,
+
+    /**
+     * The ISO day of week (1=Monday, ... , 7=Sunday) of the day type used as
+     * the basis for operating day substitution. A NULL value indicates that
+     * there is no public transit at all, i.e. no vehicle journeys are operated
+     * within the given time period.
+     */
     var substituteDayOfWeek: Int? = null,
+
+    /**
+     * The time from which the substituting public transit comes into effect. If
+     * NULL, the substitution is in effect from the start of the operating day.
+     * When substitute_day_of_week is not NULL (reference day case), vehicle
+     * journeys prior to this time are not operated. When substitute_day_of_week
+     * is NULL (no traffic case), the vehicle journeys before this time are
+     * operated as usual.
+     */
     var beginTime: YearToSecond? = null,
+
+    /**
+     * The time (exclusive) until which the substituting public transit is
+     * valid. If NULL, the substitution is in effect until the end of the
+     * operating day. When substitute_day_of_week is not NULL (reference day
+     * case), vehicle journeys starting from this time are not operated. When
+     * substitute_day_of_week is NULL (no traffic case), the vehicle journeys
+     * starting from this time are operated as usual.
+     */
     var endTime: YearToSecond? = null,
     var timezone: String? = null,
+
+    /**
+     * The id of the substitute operating period
+     */
     var substituteOperatingPeriodId: UUID,
     var createdAt: OffsetDateTime? = null
 ): Serializable {

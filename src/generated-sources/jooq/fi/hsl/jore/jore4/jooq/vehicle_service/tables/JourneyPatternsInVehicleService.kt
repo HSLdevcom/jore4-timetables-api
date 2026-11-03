@@ -26,10 +26,10 @@ import org.jooq.QueryPart
 import org.jooq.Record
 import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.Select
 import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
+import org.jooq.TableLike
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
@@ -45,7 +45,7 @@ import org.jooq.impl.TableImpl
  * -&gt; block -&gt; vehicle_journey -&gt; journey_pattern_ref.
  *  Kept up to date with triggers, should not be updated manually.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class JourneyPatternsInVehicleService(
     alias: Name,
     path: Table<out Record>?,
@@ -143,21 +143,12 @@ open class JourneyPatternsInVehicleService(
     override fun getPrimaryKey(): UniqueKey<JourneyPatternsInVehicleServiceRecord> = JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_PKEY
     override fun getReferences(): List<ForeignKey<JourneyPatternsInVehicleServiceRecord, *>> = listOf(JOURNEY_PATTERNS_IN_VEHICLE_SERVICE__JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_VEHICLE_SERVICE_ID_FKEY)
 
-    private lateinit var _vehicleService: VehicleServicePath
-
     /**
      * Get the implicit join path to the
      * <code>vehicle_service.vehicle_service</code> table.
      */
-    fun vehicleService(): VehicleServicePath {
-        if (!this::_vehicleService.isInitialized)
-            _vehicleService = VehicleServicePath(this, JOURNEY_PATTERNS_IN_VEHICLE_SERVICE__JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_VEHICLE_SERVICE_ID_FKEY, null)
-
-        return _vehicleService;
-    }
-
-    val vehicleService: VehicleServicePath
-        get(): VehicleServicePath = vehicleService()
+    fun vehicleService(): VehicleServicePath = vehicleService
+    val vehicleService: VehicleServicePath by lazy { VehicleServicePath(this, JOURNEY_PATTERNS_IN_VEHICLE_SERVICE__JOURNEY_PATTERNS_IN_VEHICLE_SERVICE_VEHICLE_SERVICE_ID_FKEY, null) }
     override fun `as`(alias: String): JourneyPatternsInVehicleService = JourneyPatternsInVehicleService(DSL.name(alias), this)
     override fun `as`(alias: Name): JourneyPatternsInVehicleService = JourneyPatternsInVehicleService(alias, this)
     override fun `as`(alias: Table<*>): JourneyPatternsInVehicleService = JourneyPatternsInVehicleService(alias.qualifiedName, this)
@@ -180,7 +171,7 @@ open class JourneyPatternsInVehicleService(
     /**
      * Create an inline derived table from this table
      */
-    override fun where(condition: Condition?): JourneyPatternsInVehicleService = JourneyPatternsInVehicleService(qualifiedName, if (aliased()) this else null, condition)
+    override fun where(condition: Condition?): JourneyPatternsInVehicleService = JourneyPatternsInVehicleService(qualifiedName, if (aliased()) this else null, Internal.condition(this, condition))
 
     /**
      * Create an inline derived table from this table
@@ -220,10 +211,10 @@ open class JourneyPatternsInVehicleService(
     /**
      * Create an inline derived table from this table
      */
-    override fun whereExists(select: Select<*>): JourneyPatternsInVehicleService = where(DSL.exists(select))
+    override fun whereExists(select: TableLike<*>): JourneyPatternsInVehicleService = where(DSL.exists(select))
 
     /**
      * Create an inline derived table from this table
      */
-    override fun whereNotExists(select: Select<*>): JourneyPatternsInVehicleService = where(DSL.notExists(select))
+    override fun whereNotExists(select: TableLike<*>): JourneyPatternsInVehicleService = where(DSL.notExists(select))
 }

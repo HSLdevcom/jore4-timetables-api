@@ -19,17 +19,26 @@ import org.jooq.impl.UpdatableRecordImpl
  * -&gt; block -&gt; vehicle_journey -&gt; journey_pattern_ref.
  *  Kept up to date with triggers, should not be updated manually.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class JourneyPatternsInVehicleServiceRecord private constructor() : UpdatableRecordImpl<JourneyPatternsInVehicleServiceRecord>(JourneyPatternsInVehicleService.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE) {
 
     open var vehicleServiceId: UUID
         set(value): Unit = set(0, value)
         get(): UUID = get(0) as UUID
 
+    /**
+     * The journey_pattern_id from journey_pattern.journey_pattern_ref.
+     *  No foreign key reference is set because the target column is not unique.
+     */
     open var journeyPatternId: UUID
         set(value): Unit = set(1, value)
         get(): UUID = get(1) as UUID
 
+    /**
+     * The amount of unique references between the journey_pattern and
+     * vehicle_service.
+     *   When this reaches 0 the row will be deleted.
+     */
     open var referenceCount: Int
         set(value): Unit = set(2, value)
         get(): Int = get(2) as Int
@@ -47,7 +56,7 @@ open class JourneyPatternsInVehicleServiceRecord private constructor() : Updatab
         this.vehicleServiceId = vehicleServiceId
         this.journeyPatternId = journeyPatternId
         this.referenceCount = referenceCount
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -58,7 +67,7 @@ open class JourneyPatternsInVehicleServiceRecord private constructor() : Updatab
             this.vehicleServiceId = value.vehicleServiceId
             this.journeyPatternId = value.journeyPatternId
             this.referenceCount = value.referenceCount
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

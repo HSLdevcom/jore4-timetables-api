@@ -23,7 +23,7 @@ import org.springframework.stereotype.Repository
  * certain DAY TYPE. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=3:4:946 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class TimetabledPassingTimeDao(configuration: Configuration?) : AbstractSpringDAOImpl<TimetabledPassingTimeRecord, fi.hsl.jore.jore4.jooq.passing_times.tables.pojos.TimetabledPassingTime, UUID>(TimetabledPassingTime.TIMETABLED_PASSING_TIME, fi.hsl.jore.jore4.jooq.passing_times.tables.pojos.TimetabledPassingTime::class.java, configuration) {
 

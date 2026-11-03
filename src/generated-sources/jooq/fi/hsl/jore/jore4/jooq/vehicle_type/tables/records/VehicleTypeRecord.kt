@@ -20,21 +20,30 @@ import org.jooq.impl.UpdatableRecordImpl
  * and daily assignment (in contrast to logical vehicles cplanning). Each
  * VEHICLE shall be classified as of a particular VEHICLE TYPE.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class VehicleTypeRecord private constructor() : UpdatableRecordImpl<VehicleTypeRecord>(VehicleType.VEHICLE_TYPE_) {
 
     open var vehicleTypeId: UUID?
         set(value): Unit = set(0, value)
         get(): UUID? = get(0) as UUID?
 
+    /**
+     * Label of the vehicle type.
+     */
     open var label: String
         set(value): Unit = set(1, value)
         get(): String = get(1) as String
 
+    /**
+     * Description of the vehicle type.
+     */
     open var descriptionI18n: JSONB?
         set(value): Unit = set(2, value)
         get(): JSONB? = get(2) as JSONB?
 
+    /**
+     * ID used in Hastus to represent the vehicle type.
+     */
     open var hslId: Short
         set(value): Unit = set(3, value)
         get(): Short = get(3) as Short
@@ -53,7 +62,7 @@ open class VehicleTypeRecord private constructor() : UpdatableRecordImpl<Vehicle
         this.label = label
         this.descriptionI18n = descriptionI18n
         this.hslId = hslId
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -65,7 +74,7 @@ open class VehicleTypeRecord private constructor() : UpdatableRecordImpl<Vehicle
             this.label = value.label
             this.descriptionI18n = value.descriptionI18n
             this.hslId = value.hslId
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

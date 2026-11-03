@@ -13,9 +13,13 @@ import org.jooq.impl.UpdatableRecordImpl
 /**
  * Type of line. https://www.transmodel-cen.eu/model/index.htm?goto=2:1:3:424
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class TypeOfLineRecord private constructor() : UpdatableRecordImpl<TypeOfLineRecord>(TypeOfLine.TYPE_OF_LINE) {
 
+    /**
+     * GTFS route type:
+     * https://developers.google.com/transit/gtfs/reference/extended-route-types
+     */
     open var typeOfLine: String
         set(value): Unit = set(0, value)
         get(): String = get(0) as String
@@ -31,7 +35,7 @@ open class TypeOfLineRecord private constructor() : UpdatableRecordImpl<TypeOfLi
      */
     constructor(typeOfLine: String): this() {
         this.typeOfLine = typeOfLine
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -40,7 +44,7 @@ open class TypeOfLineRecord private constructor() : UpdatableRecordImpl<TypeOfLi
     constructor(value: fi.hsl.jore.jore4.jooq.route.tables.pojos.TypeOfLine?): this() {
         if (value != null) {
             this.typeOfLine = value.typeOfLine
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

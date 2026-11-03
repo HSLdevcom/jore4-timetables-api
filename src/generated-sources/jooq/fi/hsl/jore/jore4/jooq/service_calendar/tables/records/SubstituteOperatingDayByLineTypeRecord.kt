@@ -20,29 +20,57 @@ import org.jooq.types.YearToSecond
  * that public transit does not occur on certain date. Substitute operating days
  * are always bound to a type of line.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class SubstituteOperatingDayByLineTypeRecord private constructor() : UpdatableRecordImpl<SubstituteOperatingDayByLineTypeRecord>(SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE) {
 
     open var substituteOperatingDayByLineTypeId: UUID?
         set(value): Unit = set(0, value)
         get(): UUID? = get(0) as UUID?
 
+    /**
+     * The type of line this substitute operating day is bound to.
+     */
     open var typeOfLine: String
         set(value): Unit = set(1, value)
         get(): String = get(1) as String
 
+    /**
+     * The date of operating day being superseded.
+     */
     open var supersededDate: LocalDate
         set(value): Unit = set(2, value)
         get(): LocalDate = get(2) as LocalDate
 
+    /**
+     * The ISO day of week (1=Monday, ... , 7=Sunday) of the day type used as
+     * the basis for operating day substitution. A NULL value indicates that
+     * there is no public transit at all, i.e. no vehicle journeys are operated
+     * within the given time period.
+     */
     open var substituteDayOfWeek: Int?
         set(value): Unit = set(3, value)
         get(): Int? = get(3) as Int?
 
+    /**
+     * The time from which the substituting public transit comes into effect. If
+     * NULL, the substitution is in effect from the start of the operating day.
+     * When substitute_day_of_week is not NULL (reference day case), vehicle
+     * journeys prior to this time are not operated. When substitute_day_of_week
+     * is NULL (no traffic case), the vehicle journeys before this time are
+     * operated as usual.
+     */
     open var beginTime: YearToSecond?
         set(value): Unit = set(4, value)
         get(): YearToSecond? = get(4) as YearToSecond?
 
+    /**
+     * The time (exclusive) until which the substituting public transit is
+     * valid. If NULL, the substitution is in effect until the end of the
+     * operating day. When substitute_day_of_week is not NULL (reference day
+     * case), vehicle journeys starting from this time are not operated. When
+     * substitute_day_of_week is NULL (no traffic case), the vehicle journeys
+     * starting from this time are operated as usual.
+     */
     open var endTime: YearToSecond?
         set(value): Unit = set(5, value)
         get(): YearToSecond? = get(5) as YearToSecond?
@@ -51,6 +79,9 @@ open class SubstituteOperatingDayByLineTypeRecord private constructor() : Updata
         set(value): Unit = set(6, value)
         get(): String? = get(6) as String?
 
+    /**
+     * The id of the substitute operating period
+     */
     open var substituteOperatingPeriodId: UUID
         set(value): Unit = set(7, value)
         get(): UUID = get(7) as UUID
@@ -78,7 +109,7 @@ open class SubstituteOperatingDayByLineTypeRecord private constructor() : Updata
         this.timezone = timezone
         this.substituteOperatingPeriodId = substituteOperatingPeriodId
         this.createdAt = createdAt
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -95,7 +126,7 @@ open class SubstituteOperatingDayByLineTypeRecord private constructor() : Updata
             this.timezone = value.timezone
             this.substituteOperatingPeriodId = value.substituteOperatingPeriodId
             this.createdAt = value.createdAt
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

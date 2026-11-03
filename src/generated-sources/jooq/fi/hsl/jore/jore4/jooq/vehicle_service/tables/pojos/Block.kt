@@ -17,12 +17,28 @@ import org.jooq.types.YearToSecond
  * of a BLOCK has to be covered by DUTies. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=3:5:958 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class Block(
     var blockId: UUID? = null,
+
+    /**
+     * The VEHICLE SERVICE to which this BLOCK belongs.
+     */
     var vehicleServiceId: UUID,
+
+    /**
+     * Preparation time before start of vehicle service block.
+     */
     var preparingTime: YearToSecond? = null,
+
+    /**
+     * Finishing time after end of vehicle service block.
+     */
     var finishingTime: YearToSecond? = null,
+
+    /**
+     * Reference to vehicle_type.vehicle_type.
+     */
     var vehicleTypeId: UUID? = null
 ): Serializable {
 

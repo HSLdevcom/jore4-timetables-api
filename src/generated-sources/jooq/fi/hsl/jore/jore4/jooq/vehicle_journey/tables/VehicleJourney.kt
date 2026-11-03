@@ -32,10 +32,10 @@ import org.jooq.QueryPart
 import org.jooq.Record
 import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.Select
 import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
+import org.jooq.TableLike
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
@@ -50,7 +50,7 @@ import org.jooq.types.YearToSecond
  * start point to the end point of a JOURNEY PATTERN on a specified ROUTE.
  * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:1:1:831 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class VehicleJourney(
     alias: Name,
     path: Table<out Record>?,
@@ -204,53 +204,26 @@ open class VehicleJourney(
     override fun getPrimaryKey(): UniqueKey<VehicleJourneyRecord> = VEHICLE_JOURNEY_PKEY
     override fun getReferences(): List<ForeignKey<VehicleJourneyRecord, *>> = listOf(VEHICLE_JOURNEY__VEHICLE_JOURNEY_BLOCK_ID_FKEY, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_PATTERN_REF_ID_FKEY, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_TYPE_FKEY)
 
-    private lateinit var _block: BlockPath
-
     /**
      * Get the implicit join path to the <code>vehicle_service.block</code>
      * table.
      */
-    fun block(): BlockPath {
-        if (!this::_block.isInitialized)
-            _block = BlockPath(this, VEHICLE_JOURNEY__VEHICLE_JOURNEY_BLOCK_ID_FKEY, null)
-
-        return _block;
-    }
-
-    val block: BlockPath
-        get(): BlockPath = block()
-
-    private lateinit var _journeyPatternRef: JourneyPatternRefPath
+    fun block(): BlockPath = block
+    val block: BlockPath by lazy { BlockPath(this, VEHICLE_JOURNEY__VEHICLE_JOURNEY_BLOCK_ID_FKEY, null) }
 
     /**
      * Get the implicit join path to the
      * <code>journey_pattern.journey_pattern_ref</code> table.
      */
-    fun journeyPatternRef(): JourneyPatternRefPath {
-        if (!this::_journeyPatternRef.isInitialized)
-            _journeyPatternRef = JourneyPatternRefPath(this, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_PATTERN_REF_ID_FKEY, null)
-
-        return _journeyPatternRef;
-    }
-
-    val journeyPatternRef: JourneyPatternRefPath
-        get(): JourneyPatternRefPath = journeyPatternRef()
-
-    private lateinit var _journeyType: JourneyTypePath
+    fun journeyPatternRef(): JourneyPatternRefPath = journeyPatternRef
+    val journeyPatternRef: JourneyPatternRefPath by lazy { JourneyPatternRefPath(this, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_PATTERN_REF_ID_FKEY, null) }
 
     /**
      * Get the implicit join path to the
      * <code>vehicle_journey.journey_type</code> table.
      */
-    fun journeyType(): JourneyTypePath {
-        if (!this::_journeyType.isInitialized)
-            _journeyType = JourneyTypePath(this, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_TYPE_FKEY, null)
-
-        return _journeyType;
-    }
-
-    val journeyType: JourneyTypePath
-        get(): JourneyTypePath = journeyType()
+    fun journeyType(): JourneyTypePath = journeyType
+    val journeyType: JourneyTypePath by lazy { JourneyTypePath(this, VEHICLE_JOURNEY__VEHICLE_JOURNEY_JOURNEY_TYPE_FKEY, null) }
 
     private lateinit var _timetabledPassingTime: TimetabledPassingTimePath
 
@@ -289,7 +262,7 @@ open class VehicleJourney(
     /**
      * Create an inline derived table from this table
      */
-    override fun where(condition: Condition?): VehicleJourney = VehicleJourney(qualifiedName, if (aliased()) this else null, condition)
+    override fun where(condition: Condition?): VehicleJourney = VehicleJourney(qualifiedName, if (aliased()) this else null, Internal.condition(this, condition))
 
     /**
      * Create an inline derived table from this table
@@ -329,10 +302,10 @@ open class VehicleJourney(
     /**
      * Create an inline derived table from this table
      */
-    override fun whereExists(select: Select<*>): VehicleJourney = where(DSL.exists(select))
+    override fun whereExists(select: TableLike<*>): VehicleJourney = where(DSL.exists(select))
 
     /**
      * Create an inline derived table from this table
      */
-    override fun whereNotExists(select: Select<*>): VehicleJourney = where(DSL.notExists(select))
+    override fun whereNotExists(select: TableLike<*>): VehicleJourney = where(DSL.notExists(select))
 }

@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository
  * and daily assignment (in contrast to logical vehicles cplanning). Each
  * VEHICLE shall be classified as of a particular VEHICLE TYPE.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class VehicleTypeDao(configuration: Configuration?) : AbstractSpringDAOImpl<VehicleTypeRecord, fi.hsl.jore.jore4.jooq.vehicle_type.tables.pojos.VehicleType, UUID>(VehicleType.VEHICLE_TYPE_, fi.hsl.jore.jore4.jooq.vehicle_type.tables.pojos.VehicleType::class.java, configuration) {
 

@@ -39,7 +39,7 @@ import org.jooq.impl.TableRecordImpl
  * priority in this case.
 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class TimetableVersionRecord private constructor() : TableRecordImpl<TimetableVersionRecord>(TimetableVersion.TIMETABLE_VERSION) {
 
     open var vehicleScheduleFrameId: UUID?
@@ -81,7 +81,7 @@ open class TimetableVersionRecord private constructor() : TableRecordImpl<Timeta
         this.priority = priority
         this.inEffect = inEffect
         this.dayTypeId = dayTypeId
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -96,7 +96,7 @@ open class TimetableVersionRecord private constructor() : TableRecordImpl<Timeta
             this.priority = value.priority
             this.inEffect = value.inEffect
             this.dayTypeId = value.dayTypeId
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

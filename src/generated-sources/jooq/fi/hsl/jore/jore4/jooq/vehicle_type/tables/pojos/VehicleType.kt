@@ -17,11 +17,23 @@ import org.jooq.JSONB
  * and daily assignment (in contrast to logical vehicles cplanning). Each
  * VEHICLE shall be classified as of a particular VEHICLE TYPE.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class VehicleType(
     var vehicleTypeId: UUID? = null,
+
+    /**
+     * Label of the vehicle type.
+     */
     var label: String,
+
+    /**
+     * Description of the vehicle type.
+     */
     var descriptionI18n: JSONB? = null,
+
+    /**
+     * ID used in Hastus to represent the vehicle type.
+     */
     var hslId: Short
 ): Serializable {
 

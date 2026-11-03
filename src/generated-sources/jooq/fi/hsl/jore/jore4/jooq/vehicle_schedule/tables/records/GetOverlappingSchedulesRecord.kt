@@ -12,10 +12,19 @@ import org.jooq.impl.TableRecordImpl
 
 
 /**
- * filter_vehicle_schedule_frame_ids uuid[], filter_journey_pattern_ref_ids
- * uuid[], ignore_priority boolean DEFAULT false
+ * Returns information on all schedules that are overlapping.
+ *   Two vehicle_schedule_frames will be considered overlapping if they have:
+ *   - are valid on the same day (validity_range, active_on_day_of_week)
+ *   - have any vehicle_journeys for same journey_patterns
+ * 
+ *   By default (ignore_priority = false) the schedules must also have same
+ * priority to be considered overlapping.
+ *   Schedules with priority Draft or Staging are exempt from this constraint.
+ *   To bypass these priority checks completely, ignore_priority = true can be
+ * used.
+
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class GetOverlappingSchedulesRecord private constructor() : TableRecordImpl<GetOverlappingSchedulesRecord>(GetOverlappingSchedules.GET_OVERLAPPING_SCHEDULES) {
 
     open var currentVehicleScheduleFrameId: UUID?
@@ -62,7 +71,7 @@ open class GetOverlappingSchedulesRecord private constructor() : TableRecordImpl
         this.currentValidityRange = currentValidityRange
         this.otherValidityRange = otherValidityRange
         this.validityIntersection = validityIntersection
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -78,7 +87,7 @@ open class GetOverlappingSchedulesRecord private constructor() : TableRecordImpl
             this.currentValidityRange = value.currentValidityRange
             this.otherValidityRange = value.otherValidityRange
             this.validityIntersection = value.validityIntersection
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

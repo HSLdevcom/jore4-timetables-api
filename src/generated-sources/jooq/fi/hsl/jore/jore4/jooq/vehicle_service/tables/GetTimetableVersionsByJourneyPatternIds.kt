@@ -26,10 +26,27 @@ import org.jooq.impl.TableImpl
 
 
 /**
- * journey_pattern_ids uuid[], start_date date, end_date date, observation_date
- * date
+ * Uses the return_value.timetable_version as the return value. This function
+ * will get
+ * all the data needed for timetable versions including
+ * substitute_operating_days. After the data is fetched this function will
+ * determine what versions are `in effect` on the given observation date
+ * The logic for this is that:
+ * * All the special priorities (priority 25) are always in effect on their
+ * validity period.
+ * * All the substitute priorities (priority 23) are in effect on their validity
+ * period and if there is no other version in effect with the exact same day
+ * type.
+ * * All the temporary priorities (priority 20) are in effect on their validity
+ * period and if there is no other version in effect with the exact same day
+ * type.
+ * * All the standard priorities (priority 20) are in effect on their validity
+ * period and if there is no other version in effect with the exact same day
+ * type.
+ * * Draft priorities will not be set in effect, nor they will affect other
+ * priorities
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class GetTimetableVersionsByJourneyPatternIds(
     alias: Name,
     path: Table<out Record>?,
@@ -46,7 +63,7 @@ open class GetTimetableVersionsByJourneyPatternIds(
     parentPath,
     aliased,
     parameters,
-    DSL.comment("journey_pattern_ids uuid[], start_date date, end_date date, observation_date date"),
+    DSL.comment("Uses the return_value.timetable_version as the return value. This function will get\nall the data needed for timetable versions including substitute_operating_days. After the data is fetched this function will determine what versions are `in effect` on the given observation date\nThe logic for this is that:\n* All the special priorities (priority 25) are always in effect on their validity period.\n* All the substitute priorities (priority 23) are in effect on their validity period and if there is no other version in effect with the exact same day type.\n* All the temporary priorities (priority 20) are in effect on their validity period and if there is no other version in effect with the exact same day type.\n* All the standard priorities (priority 20) are in effect on their validity period and if there is no other version in effect with the exact same day type.\n* Draft priorities will not be set in effect, nor they will affect other priorities"),
     TableOptions.function(),
     where,
 ) {

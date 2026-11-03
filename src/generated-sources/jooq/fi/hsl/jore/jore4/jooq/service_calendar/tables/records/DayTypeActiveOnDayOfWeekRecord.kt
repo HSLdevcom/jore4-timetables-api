@@ -15,13 +15,19 @@ import org.jooq.impl.UpdatableRecordImpl
 /**
  * Tells on which days of week a particular DAY TYPE is active
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class DayTypeActiveOnDayOfWeekRecord private constructor() : UpdatableRecordImpl<DayTypeActiveOnDayOfWeekRecord>(DayTypeActiveOnDayOfWeek.DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK) {
 
+    /**
+     * The DAY TYPE for which we define the activeness
+     */
     open var dayTypeId: UUID
         set(value): Unit = set(0, value)
         get(): UUID = get(0) as UUID
 
+    /**
+     * ISO week day definition (1 = Monday, 7 = Sunday)
+     */
     open var dayOfWeek: Int
         set(value): Unit = set(1, value)
         get(): Int = get(1) as Int
@@ -38,7 +44,7 @@ open class DayTypeActiveOnDayOfWeekRecord private constructor() : UpdatableRecor
     constructor(dayTypeId: UUID, dayOfWeek: Int): this() {
         this.dayTypeId = dayTypeId
         this.dayOfWeek = dayOfWeek
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -48,7 +54,7 @@ open class DayTypeActiveOnDayOfWeekRecord private constructor() : UpdatableRecor
         if (value != null) {
             this.dayTypeId = value.dayTypeId
             this.dayOfWeek = value.dayOfWeek
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

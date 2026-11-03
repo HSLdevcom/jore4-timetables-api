@@ -18,41 +18,73 @@ import org.jooq.impl.UpdatableRecordImpl
  * Reference to a given snapshot of a JOURNEY PATTERN for a given operating day.
  * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class JourneyPatternRefRecord private constructor() : UpdatableRecordImpl<JourneyPatternRefRecord>(JourneyPatternRef.JOURNEY_PATTERN_REF) {
 
     open var journeyPatternRefId: UUID?
         set(value): Unit = set(0, value)
         get(): UUID? = get(0) as UUID?
 
+    /**
+     * The ID of the referenced JOURNEY PATTERN
+     */
     open var journeyPatternId: UUID
         set(value): Unit = set(1, value)
         get(): UUID = get(1) as UUID
 
+    /**
+     * The user-given point of time used to pick one journey pattern (with route
+     * and scheduled stop points) among possibly many variants. The selected,
+     * unambiguous journey pattern variant is used as a basis for schedule
+     * planning.
+     */
     open var observationTimestamp: OffsetDateTime
         set(value): Unit = set(2, value)
         get(): OffsetDateTime = get(2) as OffsetDateTime
 
+    /**
+     * The timestamp when the snapshot was taken
+     */
     open var snapshotTimestamp: OffsetDateTime
         set(value): Unit = set(3, value)
         get(): OffsetDateTime = get(3) as OffsetDateTime
 
+    /**
+     * The type of line (GTFS route type):
+     * https://developers.google.com/transit/gtfs/reference/extended-route-types
+     */
     open var typeOfLine: String
         set(value): Unit = set(4, value)
         get(): String = get(4) as String
 
+    /**
+     * The label of the route associated with the referenced journey pattern
+     */
     open var routeLabel: String
         set(value): Unit = set(5, value)
         get(): String = get(5) as String
 
+    /**
+     * The direction of the route associated with the referenced journey pattern
+     */
     open var routeDirection: String
         set(value): Unit = set(6, value)
         get(): String = get(6) as String
 
+    /**
+     * The start date of the validity period of the route associated with the
+     * referenced journey pattern. If NULL, then the start of the validity
+     * period is unbounded (-infinity).
+     */
     open var routeValidityStart: LocalDate?
         set(value): Unit = set(7, value)
         get(): LocalDate? = get(7) as LocalDate?
 
+    /**
+     * The end date of the validity period of the route associated with the
+     * referenced journey pattern. If NULL, then the end of the validity period
+     * is unbounded (infinity).
+     */
     open var routeValidityEnd: LocalDate?
         set(value): Unit = set(8, value)
         get(): LocalDate? = get(8) as LocalDate?
@@ -76,7 +108,7 @@ open class JourneyPatternRefRecord private constructor() : UpdatableRecordImpl<J
         this.routeDirection = routeDirection
         this.routeValidityStart = routeValidityStart
         this.routeValidityEnd = routeValidityEnd
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -93,7 +125,7 @@ open class JourneyPatternRefRecord private constructor() : UpdatableRecordImpl<J
             this.routeDirection = value.routeDirection
             this.routeValidityStart = value.routeValidityStart
             this.routeValidityEnd = value.routeValidityEnd
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

@@ -23,7 +23,7 @@ import org.springframework.stereotype.Repository
  * start point to the end point of a JOURNEY PATTERN on a specified ROUTE.
  * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:1:1:831 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class VehicleJourneyDao(configuration: Configuration?) : AbstractSpringDAOImpl<VehicleJourneyRecord, fi.hsl.jore.jore4.jooq.vehicle_journey.tables.pojos.VehicleJourney, UUID>(VehicleJourney.VEHICLE_JOURNEY_, fi.hsl.jore.jore4.jooq.vehicle_journey.tables.pojos.VehicleJourney::class.java, configuration) {
 

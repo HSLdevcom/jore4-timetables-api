@@ -20,7 +20,7 @@ import org.jooq.impl.TableRecordImpl
  * substitute_operating_day_by_line_type_id and also enriched with data, which
  * are used in the UI side.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class VehicleScheduleRecord private constructor() : TableRecordImpl<VehicleScheduleRecord>(VehicleSchedule.VEHICLE_SCHEDULE) {
 
     open var vehicleJourneyId: UUID?
@@ -67,7 +67,7 @@ open class VehicleScheduleRecord private constructor() : TableRecordImpl<Vehicle
         this.vehicleScheduleFrameId = vehicleScheduleFrameId
         this.substituteOperatingDayByLineTypeId = substituteOperatingDayByLineTypeId
         this.createdAt = createdAt
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -83,7 +83,7 @@ open class VehicleScheduleRecord private constructor() : TableRecordImpl<Vehicle
             this.vehicleScheduleFrameId = value.vehicleScheduleFrameId
             this.substituteOperatingDayByLineTypeId = value.substituteOperatingDayByLineTypeId
             this.createdAt = value.createdAt
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

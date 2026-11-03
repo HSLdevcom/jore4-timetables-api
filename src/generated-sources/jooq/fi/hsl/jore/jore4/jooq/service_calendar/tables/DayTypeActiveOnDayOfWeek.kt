@@ -26,10 +26,10 @@ import org.jooq.QueryPart
 import org.jooq.Record
 import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.Select
 import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
+import org.jooq.TableLike
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl
 /**
  * Tells on which days of week a particular DAY TYPE is active
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class DayTypeActiveOnDayOfWeek(
     alias: Name,
     path: Table<out Record>?,
@@ -130,21 +130,12 @@ open class DayTypeActiveOnDayOfWeek(
     override fun getPrimaryKey(): UniqueKey<DayTypeActiveOnDayOfWeekRecord> = DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_PKEY
     override fun getReferences(): List<ForeignKey<DayTypeActiveOnDayOfWeekRecord, *>> = listOf(DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK__DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_DAY_TYPE_ID_FKEY)
 
-    private lateinit var _dayType: DayTypePath
-
     /**
      * Get the implicit join path to the <code>service_calendar.day_type</code>
      * table.
      */
-    fun dayType(): DayTypePath {
-        if (!this::_dayType.isInitialized)
-            _dayType = DayTypePath(this, DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK__DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_DAY_TYPE_ID_FKEY, null)
-
-        return _dayType;
-    }
-
-    val dayType: DayTypePath
-        get(): DayTypePath = dayType()
+    fun dayType(): DayTypePath = dayType
+    val dayType: DayTypePath by lazy { DayTypePath(this, DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK__DAY_TYPE_ACTIVE_ON_DAY_OF_WEEK_DAY_TYPE_ID_FKEY, null) }
     override fun `as`(alias: String): DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek(DSL.name(alias), this)
     override fun `as`(alias: Name): DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek(alias, this)
     override fun `as`(alias: Table<*>): DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek(alias.qualifiedName, this)
@@ -167,7 +158,7 @@ open class DayTypeActiveOnDayOfWeek(
     /**
      * Create an inline derived table from this table
      */
-    override fun where(condition: Condition?): DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek(qualifiedName, if (aliased()) this else null, condition)
+    override fun where(condition: Condition?): DayTypeActiveOnDayOfWeek = DayTypeActiveOnDayOfWeek(qualifiedName, if (aliased()) this else null, Internal.condition(this, condition))
 
     /**
      * Create an inline derived table from this table
@@ -207,10 +198,10 @@ open class DayTypeActiveOnDayOfWeek(
     /**
      * Create an inline derived table from this table
      */
-    override fun whereExists(select: Select<*>): DayTypeActiveOnDayOfWeek = where(DSL.exists(select))
+    override fun whereExists(select: TableLike<*>): DayTypeActiveOnDayOfWeek = where(DSL.exists(select))
 
     /**
      * Create an inline derived table from this table
      */
-    override fun whereNotExists(select: Select<*>): DayTypeActiveOnDayOfWeek = where(DSL.notExists(select))
+    override fun whereNotExists(select: TableLike<*>): DayTypeActiveOnDayOfWeek = where(DSL.notExists(select))
 }

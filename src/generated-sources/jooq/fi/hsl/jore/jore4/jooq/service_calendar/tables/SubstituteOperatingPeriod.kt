@@ -27,10 +27,10 @@ import org.jooq.QueryPart
 import org.jooq.Record
 import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.Select
 import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
+import org.jooq.TableLike
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl
  * Models substitute operating period that consists of substitute operating days
  * by line types.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class SubstituteOperatingPeriod(
     alias: Name,
     path: Table<out Record>?,
@@ -174,7 +174,7 @@ open class SubstituteOperatingPeriod(
     /**
      * Create an inline derived table from this table
      */
-    override fun where(condition: Condition?): SubstituteOperatingPeriod = SubstituteOperatingPeriod(qualifiedName, if (aliased()) this else null, condition)
+    override fun where(condition: Condition?): SubstituteOperatingPeriod = SubstituteOperatingPeriod(qualifiedName, if (aliased()) this else null, Internal.condition(this, condition))
 
     /**
      * Create an inline derived table from this table
@@ -214,10 +214,10 @@ open class SubstituteOperatingPeriod(
     /**
      * Create an inline derived table from this table
      */
-    override fun whereExists(select: Select<*>): SubstituteOperatingPeriod = where(DSL.exists(select))
+    override fun whereExists(select: TableLike<*>): SubstituteOperatingPeriod = where(DSL.exists(select))
 
     /**
      * Create an inline derived table from this table
      */
-    override fun whereNotExists(select: Select<*>): SubstituteOperatingPeriod = where(DSL.notExists(select))
+    override fun whereNotExists(select: TableLike<*>): SubstituteOperatingPeriod = where(DSL.notExists(select))
 }

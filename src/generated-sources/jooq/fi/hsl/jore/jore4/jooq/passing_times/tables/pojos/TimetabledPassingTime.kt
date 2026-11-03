@@ -16,12 +16,34 @@ import org.jooq.types.YearToSecond
  * certain DAY TYPE. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=3:4:946 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class TimetabledPassingTime(
     var timetabledPassingTimeId: UUID? = null,
+
+    /**
+     * The VEHICLE JOURNEY to which this TIMETABLED PASSING TIME belongs
+     */
     var vehicleJourneyId: UUID,
+
+    /**
+     * The SCHEDULED STOP POINT of the JOURNEY PATTERN where the vehicle passes
+     */
     var scheduledStopPointInJourneyPatternRefId: UUID,
+
+    /**
+     * The time when the vehicle arrives to the SCHEDULED STOP POINT. Measured
+     * as interval counted from the midnight of the OPERATING DAY. When NULL,
+     * only the departure time is defined for the passing time. E.g. in case
+     * this is the first SCHEDULED STOP POINT of the journey.
+     */
     var arrivalTime: YearToSecond? = null,
+
+    /**
+     * The time when the vehicle departs from the SCHEDULED STOP POINT. Measured
+     * as interval counted from the midnight of the OPERATING DAY. When NULL,
+     * only the arrival time is defined for the passing time. E.g. in case this
+     * is the last SCHEDULED STOP POINT of the journey.
+     */
     var departureTime: YearToSecond? = null
 ): Serializable {
 

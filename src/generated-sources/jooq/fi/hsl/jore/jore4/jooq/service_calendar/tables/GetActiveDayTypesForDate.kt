@@ -27,9 +27,12 @@ import org.jooq.impl.TableImpl
 
 
 /**
- * observation_date date
+ * Finds all the day types that are active on the given observation date.
+ * There might be multiple filter conditions in the future: day of week, day of
+ * year, etc.
+ * See: https://www.transmodel-cen.eu/model/index.htm?goto=1:6:3:294 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class GetActiveDayTypesForDate(
     alias: Name,
     path: Table<out Record>?,
@@ -46,7 +49,7 @@ open class GetActiveDayTypesForDate(
     parentPath,
     aliased,
     parameters,
-    DSL.comment("observation_date date"),
+    DSL.comment("Finds all the day types that are active on the given observation date.\nThere might be multiple filter conditions in the future: day of week, day of year, etc.\nSee: https://www.transmodel-cen.eu/model/index.htm?goto=1:6:3:294 "),
     TableOptions.function(),
     where,
 ) {

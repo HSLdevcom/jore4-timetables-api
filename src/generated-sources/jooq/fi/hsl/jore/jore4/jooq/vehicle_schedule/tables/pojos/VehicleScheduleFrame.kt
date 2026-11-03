@@ -17,15 +17,49 @@ import org.jooq.JSONB
  * SCHEDULEs to which the same set of VALIDITY CONDITIONs have been assigned.
  * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:7:2:993 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class VehicleScheduleFrame(
     var vehicleScheduleFrameId: UUID? = null,
+
+    /**
+     * Human-readable name for the VEHICLE SCHEDULE FRAME
+     */
     var nameI18n: JSONB? = null,
+
+    /**
+     * OPERATING DAY when the VEHICLE SCHEDULE FRAME validity starts
+     * (inclusive). Null if always has been valid.
+     */
     var validityStart: LocalDate,
+
+    /**
+     * OPERATING DAY when the VEHICLE SCHEDULE FRAME validity ends (inclusive).
+     * Null if always will be valid.
+     */
     var validityEnd: LocalDate,
+
+    /**
+     * The priority of the timetable definition. The definition may be
+     * overridden by higher priority definitions.
+     */
     var priority: Int,
+
+    /**
+     * Label for the vehicle schedule frame. Comes from BookingRecord vsc_name
+     * field from Hastus.
+     */
     var label: String,
+
+    /**
+     * Booking label for the vehicle schedule frame. Comes from BookingRecord
+     * vsc_booking field from Hastus.
+     */
     var bookingLabel: String? = null,
+
+    /**
+     * Booking description for the vehicle schedule frame. Comes from
+     * BookingRecord vsc_booking_desc field from Hastus.
+     */
     var bookingDescriptionI18n: JSONB? = null,
     var createdAt: OffsetDateTime? = null
 ): Serializable {

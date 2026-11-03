@@ -20,37 +20,64 @@ import org.jooq.impl.UpdatableRecordImpl
  * SCHEDULEs to which the same set of VALIDITY CONDITIONs have been assigned.
  * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:7:2:993 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class VehicleScheduleFrameRecord private constructor() : UpdatableRecordImpl<VehicleScheduleFrameRecord>(VehicleScheduleFrame.VEHICLE_SCHEDULE_FRAME) {
 
     open var vehicleScheduleFrameId: UUID?
         set(value): Unit = set(0, value)
         get(): UUID? = get(0) as UUID?
 
+    /**
+     * Human-readable name for the VEHICLE SCHEDULE FRAME
+     */
     open var nameI18n: JSONB?
         set(value): Unit = set(1, value)
         get(): JSONB? = get(1) as JSONB?
 
+    /**
+     * OPERATING DAY when the VEHICLE SCHEDULE FRAME validity starts
+     * (inclusive). Null if always has been valid.
+     */
     open var validityStart: LocalDate
         set(value): Unit = set(2, value)
         get(): LocalDate = get(2) as LocalDate
 
+    /**
+     * OPERATING DAY when the VEHICLE SCHEDULE FRAME validity ends (inclusive).
+     * Null if always will be valid.
+     */
     open var validityEnd: LocalDate
         set(value): Unit = set(3, value)
         get(): LocalDate = get(3) as LocalDate
 
+    /**
+     * The priority of the timetable definition. The definition may be
+     * overridden by higher priority definitions.
+     */
     open var priority: Int
         set(value): Unit = set(4, value)
         get(): Int = get(4) as Int
 
+    /**
+     * Label for the vehicle schedule frame. Comes from BookingRecord vsc_name
+     * field from Hastus.
+     */
     open var label: String
         set(value): Unit = set(5, value)
         get(): String = get(5) as String
 
+    /**
+     * Booking label for the vehicle schedule frame. Comes from BookingRecord
+     * vsc_booking field from Hastus.
+     */
     open var bookingLabel: String?
         set(value): Unit = set(6, value)
         get(): String? = get(6) as String?
 
+    /**
+     * Booking description for the vehicle schedule frame. Comes from
+     * BookingRecord vsc_booking_desc field from Hastus.
+     */
     open var bookingDescriptionI18n: JSONB?
         set(value): Unit = set(7, value)
         get(): JSONB? = get(7) as JSONB?
@@ -78,7 +105,7 @@ open class VehicleScheduleFrameRecord private constructor() : UpdatableRecordImp
         this.bookingLabel = bookingLabel
         this.bookingDescriptionI18n = bookingDescriptionI18n
         this.createdAt = createdAt
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -95,7 +122,7 @@ open class VehicleScheduleFrameRecord private constructor() : UpdatableRecordImp
             this.bookingLabel = value.bookingLabel
             this.bookingDescriptionI18n = value.bookingDescriptionI18n
             this.createdAt = value.createdAt
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

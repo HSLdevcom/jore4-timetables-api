@@ -22,7 +22,7 @@ import org.springframework.stereotype.Repository
  * transport operation. For example: weekday in school holidays. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=1:6:3:299 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class DayTypeDao(configuration: Configuration?) : AbstractSpringDAOImpl<DayTypeRecord, fi.hsl.jore.jore4.jooq.service_calendar.tables.pojos.DayType, UUID>(DayType.DAY_TYPE, fi.hsl.jore.jore4.jooq.service_calendar.tables.pojos.DayType::class.java, configuration) {
 

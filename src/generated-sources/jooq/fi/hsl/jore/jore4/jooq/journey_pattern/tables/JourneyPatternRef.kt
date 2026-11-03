@@ -34,10 +34,10 @@ import org.jooq.QueryPart
 import org.jooq.Record
 import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.Select
 import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
+import org.jooq.TableLike
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
@@ -50,7 +50,7 @@ import org.jooq.impl.TableImpl
  * Reference to a given snapshot of a JOURNEY PATTERN for a given operating day.
  * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class JourneyPatternRef(
     alias: Name,
     path: Table<out Record>?,
@@ -190,35 +190,17 @@ open class JourneyPatternRef(
     override fun getPrimaryKey(): UniqueKey<JourneyPatternRefRecord> = JOURNEY_PATTERN_REF_PKEY
     override fun getReferences(): List<ForeignKey<JourneyPatternRefRecord, *>> = listOf(JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY)
 
-    private lateinit var _direction: DirectionPath
-
     /**
      * Get the implicit join path to the <code>route.direction</code> table.
      */
-    fun direction(): DirectionPath {
-        if (!this::_direction.isInitialized)
-            _direction = DirectionPath(this, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY, null)
-
-        return _direction;
-    }
-
-    val direction: DirectionPath
-        get(): DirectionPath = direction()
-
-    private lateinit var _typeOfLine: TypeOfLinePath
+    fun direction(): DirectionPath = direction
+    val direction: DirectionPath by lazy { DirectionPath(this, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_ROUTE_DIRECTION_FKEY, null) }
 
     /**
      * Get the implicit join path to the <code>route.type_of_line</code> table.
      */
-    fun typeOfLine(): TypeOfLinePath {
-        if (!this::_typeOfLine.isInitialized)
-            _typeOfLine = TypeOfLinePath(this, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY, null)
-
-        return _typeOfLine;
-    }
-
-    val typeOfLine: TypeOfLinePath
-        get(): TypeOfLinePath = typeOfLine()
+    fun typeOfLine(): TypeOfLinePath = typeOfLine
+    val typeOfLine: TypeOfLinePath by lazy { TypeOfLinePath(this, JOURNEY_PATTERN_REF__JOURNEY_PATTERN_REF_TYPE_OF_LINE_FKEY, null) }
 
     private lateinit var _scheduledStopPointInJourneyPatternRef: ScheduledStopPointInJourneyPatternRefPath
 
@@ -274,7 +256,7 @@ open class JourneyPatternRef(
     /**
      * Create an inline derived table from this table
      */
-    override fun where(condition: Condition?): JourneyPatternRef = JourneyPatternRef(qualifiedName, if (aliased()) this else null, condition)
+    override fun where(condition: Condition?): JourneyPatternRef = JourneyPatternRef(qualifiedName, if (aliased()) this else null, Internal.condition(this, condition))
 
     /**
      * Create an inline derived table from this table
@@ -314,10 +296,10 @@ open class JourneyPatternRef(
     /**
      * Create an inline derived table from this table
      */
-    override fun whereExists(select: Select<*>): JourneyPatternRef = where(DSL.exists(select))
+    override fun whereExists(select: TableLike<*>): JourneyPatternRef = where(DSL.exists(select))
 
     /**
      * Create an inline derived table from this table
      */
-    override fun whereNotExists(select: Select<*>): JourneyPatternRef = where(DSL.notExists(select))
+    override fun whereNotExists(select: TableLike<*>): JourneyPatternRef = where(DSL.notExists(select))
 }

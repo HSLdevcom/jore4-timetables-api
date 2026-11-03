@@ -16,25 +16,38 @@ import org.jooq.impl.UpdatableRecordImpl
  * Reference the a SCHEDULED STOP POINT within a JOURNEY PATTERN. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class ScheduledStopPointInJourneyPatternRefRecord private constructor() : UpdatableRecordImpl<ScheduledStopPointInJourneyPatternRefRecord>(ScheduledStopPointInJourneyPatternRef.SCHEDULED_STOP_POINT_IN_JOURNEY_PATTERN_REF) {
 
     open var scheduledStopPointInJourneyPatternRefId: UUID?
         set(value): Unit = set(0, value)
         get(): UUID? = get(0) as UUID?
 
+    /**
+     * JOURNEY PATTERN to which the SCHEDULED STOP POINT belongs
+     */
     open var journeyPatternRefId: UUID
         set(value): Unit = set(1, value)
         get(): UUID = get(1) as UUID
 
+    /**
+     * The label of the SCHEDULED STOP POINT
+     */
     open var scheduledStopPointLabel: String
         set(value): Unit = set(2, value)
         get(): String = get(2) as String
 
+    /**
+     * The order of the SCHEDULED STOP POINT within the JOURNEY PATTERN.
+     */
     open var scheduledStopPointSequence: Int
         set(value): Unit = set(3, value)
         get(): Int = get(3) as Int
 
+    /**
+     * The label of the timing place associated with the referenced scheduled
+     * stop point in journey pattern
+     */
     open var timingPlaceLabel: String?
         set(value): Unit = set(4, value)
         get(): String? = get(4) as String?
@@ -55,7 +68,7 @@ open class ScheduledStopPointInJourneyPatternRefRecord private constructor() : U
         this.scheduledStopPointLabel = scheduledStopPointLabel
         this.scheduledStopPointSequence = scheduledStopPointSequence
         this.timingPlaceLabel = timingPlaceLabel
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -69,7 +82,7 @@ open class ScheduledStopPointInJourneyPatternRefRecord private constructor() : U
             this.scheduledStopPointLabel = value.scheduledStopPointLabel
             this.scheduledStopPointSequence = value.scheduledStopPointSequence
             this.timingPlaceLabel = value.timingPlaceLabel
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

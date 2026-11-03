@@ -18,17 +18,25 @@ import org.jooq.impl.UpdatableRecordImpl
  * transport operation. For example: weekday in school holidays. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=1:6:3:299 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class DayTypeRecord private constructor() : UpdatableRecordImpl<DayTypeRecord>(DayType.DAY_TYPE) {
 
     open var dayTypeId: UUID?
         set(value): Unit = set(0, value)
         get(): UUID? = get(0) as UUID?
 
+    /**
+     * The label for the DAY TYPE. Used for identifying the DAY TYPE when
+     * importing data from Hastus. Includes both basic (e.g. "Monday-Thursday")
+     * and special ("Easter Sunday") day types
+     */
     open var label: String
         set(value): Unit = set(1, value)
         get(): String = get(1) as String
 
+    /**
+     * Human-readable name for the DAY TYPE
+     */
     open var nameI18n: JSONB
         set(value): Unit = set(2, value)
         get(): JSONB = get(2) as JSONB
@@ -46,7 +54,7 @@ open class DayTypeRecord private constructor() : UpdatableRecordImpl<DayTypeReco
         this.dayTypeId = dayTypeId
         this.label = label
         this.nameI18n = nameI18n
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -57,7 +65,7 @@ open class DayTypeRecord private constructor() : UpdatableRecordImpl<DayTypeReco
             this.dayTypeId = value.dayTypeId
             this.label = value.label
             this.nameI18n = value.nameI18n
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

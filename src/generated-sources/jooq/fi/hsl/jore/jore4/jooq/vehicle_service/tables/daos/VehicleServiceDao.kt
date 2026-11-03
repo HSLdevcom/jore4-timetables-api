@@ -23,7 +23,7 @@ import org.springframework.stereotype.Repository
  * service on a given day, it does not include any BLOCKs. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=3:5:965 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class VehicleServiceDao(configuration: Configuration?) : AbstractSpringDAOImpl<VehicleServiceRecord, fi.hsl.jore.jore4.jooq.vehicle_service.tables.pojos.VehicleService, UUID>(VehicleService.VEHICLE_SERVICE_, fi.hsl.jore.jore4.jooq.vehicle_service.tables.pojos.VehicleService::class.java, configuration) {
 

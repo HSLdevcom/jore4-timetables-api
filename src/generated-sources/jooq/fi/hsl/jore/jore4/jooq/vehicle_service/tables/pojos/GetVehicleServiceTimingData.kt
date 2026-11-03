@@ -11,9 +11,12 @@ import org.jooq.types.YearToSecond
 
 
 /**
- * vehicle_service_ids uuid[]
+ * A helper function for sequential integrity validation.
+ * For given vehicle_services, returns the blocks, journeys and timetabled
+ * passing times that they contain,
+ * and start and end times for each level.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class GetVehicleServiceTimingData(
     var vehicleServiceId: UUID? = null,
     var serviceStart: YearToSecond? = null,

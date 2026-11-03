@@ -12,9 +12,18 @@ import org.jooq.impl.TableRecordImpl
 
 
 /**
- * filter_vehicle_journey_ids uuid[], filter_journey_pattern_ref_ids uuid[]
+ * 
+ *   For vehicle journey passing time sequences in given vehicle journeys and/or
+ * journey patterns,
+ *   returns information on the sequence and its validity:
+ *   id of the vehicle journey, ids of first and last passing times in the
+ * sequence,
+ *   and whether all passing times for the vehicle journey are in stop point
+ * sequence order, that is,
+ *   in same order by passing_time as their corresponding stop points
+ * (scheduled_stop_point_in_journey_pattern_ref).
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class GetPassingTimeOrderValidityDataRecord private constructor() : TableRecordImpl<GetPassingTimeOrderValidityDataRecord>(GetPassingTimeOrderValidityData.GET_PASSING_TIME_ORDER_VALIDITY_DATA) {
 
     open var vehicleJourneyId: UUID?
@@ -46,7 +55,7 @@ open class GetPassingTimeOrderValidityDataRecord private constructor() : TableRe
         this.lastPassingTimeId = lastPassingTimeId
         this.stopOrderIsValid = stopOrderIsValid
         this.coherentJourneyPatternRefs = coherentJourneyPatternRefs
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -59,7 +68,7 @@ open class GetPassingTimeOrderValidityDataRecord private constructor() : TableRe
             this.lastPassingTimeId = value.lastPassingTimeId
             this.stopOrderIsValid = value.stopOrderIsValid
             this.coherentJourneyPatternRefs = value.coherentJourneyPatternRefs
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

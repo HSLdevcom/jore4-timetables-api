@@ -36,7 +36,7 @@ import java.util.UUID
  * priority in this case.
 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class TimetableVersion(
     var vehicleScheduleFrameId: UUID? = null,
     var substituteOperatingDayByLineTypeId: UUID? = null,

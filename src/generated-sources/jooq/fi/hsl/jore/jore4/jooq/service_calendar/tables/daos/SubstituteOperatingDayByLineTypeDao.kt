@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository
  * that public transit does not occur on certain date. Substitute operating days
  * are always bound to a type of line.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class SubstituteOperatingDayByLineTypeDao(configuration: Configuration?) : AbstractSpringDAOImpl<SubstituteOperatingDayByLineTypeRecord, fi.hsl.jore.jore4.jooq.service_calendar.tables.pojos.SubstituteOperatingDayByLineType, UUID>(SubstituteOperatingDayByLineType.SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE, fi.hsl.jore.jore4.jooq.service_calendar.tables.pojos.SubstituteOperatingDayByLineType::class.java, configuration) {
 

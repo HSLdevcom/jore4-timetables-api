@@ -20,7 +20,7 @@ import org.springframework.stereotype.Repository
  * Models substitute operating period that consists of substitute operating days
  * by line types.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class SubstituteOperatingPeriodDao(configuration: Configuration?) : AbstractSpringDAOImpl<SubstituteOperatingPeriodRecord, fi.hsl.jore.jore4.jooq.service_calendar.tables.pojos.SubstituteOperatingPeriod, UUID>(SubstituteOperatingPeriod.SUBSTITUTE_OPERATING_PERIOD, fi.hsl.jore.jore4.jooq.service_calendar.tables.pojos.SubstituteOperatingPeriod::class.java, configuration) {
 

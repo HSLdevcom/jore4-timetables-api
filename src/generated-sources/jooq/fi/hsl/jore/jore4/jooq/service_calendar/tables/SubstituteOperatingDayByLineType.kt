@@ -30,10 +30,10 @@ import org.jooq.QueryPart
 import org.jooq.Record
 import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.Select
 import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
+import org.jooq.TableLike
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
@@ -48,7 +48,7 @@ import org.jooq.types.YearToSecond
  * that public transit does not occur on certain date. Substitute operating days
  * are always bound to a type of line.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class SubstituteOperatingDayByLineType(
     alias: Name,
     path: Table<out Record>?,
@@ -197,36 +197,18 @@ open class SubstituteOperatingDayByLineType(
     override fun getPrimaryKey(): UniqueKey<SubstituteOperatingDayByLineTypeRecord> = SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_PKEY
     override fun getReferences(): List<ForeignKey<SubstituteOperatingDayByLineTypeRecord, *>> = listOf(SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_SUBSTITUTE_PERIOD_FKEY, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY)
 
-    private lateinit var _substituteOperatingPeriod: SubstituteOperatingPeriodPath
-
     /**
      * Get the implicit join path to the
      * <code>service_calendar.substitute_operating_period</code> table.
      */
-    fun substituteOperatingPeriod(): SubstituteOperatingPeriodPath {
-        if (!this::_substituteOperatingPeriod.isInitialized)
-            _substituteOperatingPeriod = SubstituteOperatingPeriodPath(this, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_SUBSTITUTE_PERIOD_FKEY, null)
-
-        return _substituteOperatingPeriod;
-    }
-
-    val substituteOperatingPeriod: SubstituteOperatingPeriodPath
-        get(): SubstituteOperatingPeriodPath = substituteOperatingPeriod()
-
-    private lateinit var _typeOfLine: TypeOfLinePath
+    fun substituteOperatingPeriod(): SubstituteOperatingPeriodPath = substituteOperatingPeriod
+    val substituteOperatingPeriod: SubstituteOperatingPeriodPath by lazy { SubstituteOperatingPeriodPath(this, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_SUBSTITUTE_PERIOD_FKEY, null) }
 
     /**
      * Get the implicit join path to the <code>route.type_of_line</code> table.
      */
-    fun typeOfLine(): TypeOfLinePath {
-        if (!this::_typeOfLine.isInitialized)
-            _typeOfLine = TypeOfLinePath(this, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY, null)
-
-        return _typeOfLine;
-    }
-
-    val typeOfLine: TypeOfLinePath
-        get(): TypeOfLinePath = typeOfLine()
+    fun typeOfLine(): TypeOfLinePath = typeOfLine
+    val typeOfLine: TypeOfLinePath by lazy { TypeOfLinePath(this, SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE__SUBSTITUTE_OPERATING_DAY_BY_LINE_TYPE_TYPE_OF_LINE_FKEY, null) }
     override fun `as`(alias: String): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(DSL.name(alias), this)
     override fun `as`(alias: Name): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(alias, this)
     override fun `as`(alias: Table<*>): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(alias.qualifiedName, this)
@@ -249,7 +231,7 @@ open class SubstituteOperatingDayByLineType(
     /**
      * Create an inline derived table from this table
      */
-    override fun where(condition: Condition?): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(qualifiedName, if (aliased()) this else null, condition)
+    override fun where(condition: Condition?): SubstituteOperatingDayByLineType = SubstituteOperatingDayByLineType(qualifiedName, if (aliased()) this else null, Internal.condition(this, condition))
 
     /**
      * Create an inline derived table from this table
@@ -289,10 +271,10 @@ open class SubstituteOperatingDayByLineType(
     /**
      * Create an inline derived table from this table
      */
-    override fun whereExists(select: Select<*>): SubstituteOperatingDayByLineType = where(DSL.exists(select))
+    override fun whereExists(select: TableLike<*>): SubstituteOperatingDayByLineType = where(DSL.exists(select))
 
     /**
      * Create an inline derived table from this table
      */
-    override fun whereNotExists(select: Select<*>): SubstituteOperatingDayByLineType = where(DSL.notExists(select))
+    override fun whereNotExists(select: TableLike<*>): SubstituteOperatingDayByLineType = where(DSL.notExists(select))
 }

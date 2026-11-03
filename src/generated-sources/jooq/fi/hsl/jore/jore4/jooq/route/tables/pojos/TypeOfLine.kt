@@ -10,8 +10,13 @@ import java.io.Serializable
 /**
  * Type of line. https://www.transmodel-cen.eu/model/index.htm?goto=2:1:3:424
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class TypeOfLine(
+
+    /**
+     * GTFS route type:
+     * https://developers.google.com/transit/gtfs/reference/extended-route-types
+     */
     var typeOfLine: String
 ): Serializable {
 

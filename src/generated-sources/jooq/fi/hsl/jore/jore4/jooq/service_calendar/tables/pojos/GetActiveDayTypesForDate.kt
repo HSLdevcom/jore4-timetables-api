@@ -11,9 +11,12 @@ import org.jooq.JSONB
 
 
 /**
- * observation_date date
+ * Finds all the day types that are active on the given observation date.
+ * There might be multiple filter conditions in the future: day of week, day of
+ * year, etc.
+ * See: https://www.transmodel-cen.eu/model/index.htm?goto=1:6:3:294 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class GetActiveDayTypesForDate(
     var dayTypeId: UUID? = null,
     var label: String,

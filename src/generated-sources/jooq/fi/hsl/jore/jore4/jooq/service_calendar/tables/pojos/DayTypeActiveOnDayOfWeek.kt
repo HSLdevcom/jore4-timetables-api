@@ -11,9 +11,17 @@ import java.util.UUID
 /**
  * Tells on which days of week a particular DAY TYPE is active
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class DayTypeActiveOnDayOfWeek(
+
+    /**
+     * The DAY TYPE for which we define the activeness
+     */
     var dayTypeId: UUID,
+
+    /**
+     * ISO week day definition (1 = Monday, 7 = Sunday)
+     */
     var dayOfWeek: Int
 ): Serializable {
 

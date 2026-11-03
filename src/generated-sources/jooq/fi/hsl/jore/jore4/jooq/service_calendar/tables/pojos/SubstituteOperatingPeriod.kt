@@ -12,12 +12,21 @@ import java.util.UUID
  * Models substitute operating period that consists of substitute operating days
  * by line types.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class SubstituteOperatingPeriod(
     var substituteOperatingPeriodId: UUID? = null,
+
+    /**
+     * Substitute operating period's name
+     */
     var periodName: String,
     @Suppress("INAPPLICABLE_JVM_NAME")
     @set:JvmName("setIsPreset")
+
+    /**
+     * Flag indicating whether operating period is preset or not. Preset
+     * operating periods have restrictions on the UI
+     */
     var isPreset: Boolean? = null
 ): Serializable {
 

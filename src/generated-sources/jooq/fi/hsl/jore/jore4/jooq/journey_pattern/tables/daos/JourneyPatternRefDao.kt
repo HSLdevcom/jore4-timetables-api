@@ -22,7 +22,7 @@ import org.springframework.stereotype.Repository
  * Reference to a given snapshot of a JOURNEY PATTERN for a given operating day.
  * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class JourneyPatternRefDao(configuration: Configuration?) : AbstractSpringDAOImpl<JourneyPatternRefRecord, fi.hsl.jore.jore4.jooq.journey_pattern.tables.pojos.JourneyPatternRef, UUID>(JourneyPatternRef.JOURNEY_PATTERN_REF, fi.hsl.jore.jore4.jooq.journey_pattern.tables.pojos.JourneyPatternRef::class.java, configuration) {
 

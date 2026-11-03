@@ -16,17 +16,24 @@ import org.jooq.impl.UpdatableRecordImpl
  * Models substitute operating period that consists of substitute operating days
  * by line types.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class SubstituteOperatingPeriodRecord private constructor() : UpdatableRecordImpl<SubstituteOperatingPeriodRecord>(SubstituteOperatingPeriod.SUBSTITUTE_OPERATING_PERIOD) {
 
     open var substituteOperatingPeriodId: UUID?
         set(value): Unit = set(0, value)
         get(): UUID? = get(0) as UUID?
 
+    /**
+     * Substitute operating period's name
+     */
     open var periodName: String
         set(value): Unit = set(1, value)
         get(): String = get(1) as String
 
+    /**
+     * Flag indicating whether operating period is preset or not. Preset
+     * operating periods have restrictions on the UI
+     */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @set:JvmName("setIsPreset")
     open var isPreset: Boolean?
@@ -46,7 +53,7 @@ open class SubstituteOperatingPeriodRecord private constructor() : UpdatableReco
         this.substituteOperatingPeriodId = substituteOperatingPeriodId
         this.periodName = periodName
         this.isPreset = isPreset
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -57,7 +64,7 @@ open class SubstituteOperatingPeriodRecord private constructor() : UpdatableReco
             this.substituteOperatingPeriodId = value.substituteOperatingPeriodId
             this.periodName = value.periodName
             this.isPreset = value.isPreset
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }

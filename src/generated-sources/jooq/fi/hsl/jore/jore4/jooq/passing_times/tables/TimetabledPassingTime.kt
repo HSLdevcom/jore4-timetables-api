@@ -28,10 +28,10 @@ import org.jooq.QueryPart
 import org.jooq.Record
 import org.jooq.SQL
 import org.jooq.Schema
-import org.jooq.Select
 import org.jooq.Stringly
 import org.jooq.Table
 import org.jooq.TableField
+import org.jooq.TableLike
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
@@ -47,7 +47,7 @@ import org.jooq.types.YearToSecond
  * certain DAY TYPE. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=3:4:946 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class TimetabledPassingTime(
     alias: Name,
     path: Table<out Record>?,
@@ -160,38 +160,20 @@ open class TimetabledPassingTime(
     override fun getPrimaryKey(): UniqueKey<TimetabledPassingTimeRecord> = TIMETABLED_PASSING_TIME_PKEY
     override fun getReferences(): List<ForeignKey<TimetabledPassingTimeRecord, *>> = listOf(TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_SCHEDULED_STOP_POINT_IN_JOURNEY_PA_FKEY, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_VEHICLE_JOURNEY_ID_FKEY)
 
-    private lateinit var _scheduledStopPointInJourneyPatternRef: ScheduledStopPointInJourneyPatternRefPath
-
     /**
      * Get the implicit join path to the
      * <code>service_pattern.scheduled_stop_point_in_journey_pattern_ref</code>
      * table.
      */
-    fun scheduledStopPointInJourneyPatternRef(): ScheduledStopPointInJourneyPatternRefPath {
-        if (!this::_scheduledStopPointInJourneyPatternRef.isInitialized)
-            _scheduledStopPointInJourneyPatternRef = ScheduledStopPointInJourneyPatternRefPath(this, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_SCHEDULED_STOP_POINT_IN_JOURNEY_PA_FKEY, null)
-
-        return _scheduledStopPointInJourneyPatternRef;
-    }
-
-    val scheduledStopPointInJourneyPatternRef: ScheduledStopPointInJourneyPatternRefPath
-        get(): ScheduledStopPointInJourneyPatternRefPath = scheduledStopPointInJourneyPatternRef()
-
-    private lateinit var _vehicleJourney: VehicleJourneyPath
+    fun scheduledStopPointInJourneyPatternRef(): ScheduledStopPointInJourneyPatternRefPath = scheduledStopPointInJourneyPatternRef
+    val scheduledStopPointInJourneyPatternRef: ScheduledStopPointInJourneyPatternRefPath by lazy { ScheduledStopPointInJourneyPatternRefPath(this, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_SCHEDULED_STOP_POINT_IN_JOURNEY_PA_FKEY, null) }
 
     /**
      * Get the implicit join path to the
      * <code>vehicle_journey.vehicle_journey</code> table.
      */
-    fun vehicleJourney(): VehicleJourneyPath {
-        if (!this::_vehicleJourney.isInitialized)
-            _vehicleJourney = VehicleJourneyPath(this, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_VEHICLE_JOURNEY_ID_FKEY, null)
-
-        return _vehicleJourney;
-    }
-
-    val vehicleJourney: VehicleJourneyPath
-        get(): VehicleJourneyPath = vehicleJourney()
+    fun vehicleJourney(): VehicleJourneyPath = vehicleJourney
+    val vehicleJourney: VehicleJourneyPath by lazy { VehicleJourneyPath(this, TIMETABLED_PASSING_TIME__TIMETABLED_PASSING_TIME_VEHICLE_JOURNEY_ID_FKEY, null) }
     override fun `as`(alias: String): TimetabledPassingTime = TimetabledPassingTime(DSL.name(alias), this)
     override fun `as`(alias: Name): TimetabledPassingTime = TimetabledPassingTime(alias, this)
     override fun `as`(alias: Table<*>): TimetabledPassingTime = TimetabledPassingTime(alias.qualifiedName, this)
@@ -214,7 +196,7 @@ open class TimetabledPassingTime(
     /**
      * Create an inline derived table from this table
      */
-    override fun where(condition: Condition?): TimetabledPassingTime = TimetabledPassingTime(qualifiedName, if (aliased()) this else null, condition)
+    override fun where(condition: Condition?): TimetabledPassingTime = TimetabledPassingTime(qualifiedName, if (aliased()) this else null, Internal.condition(this, condition))
 
     /**
      * Create an inline derived table from this table
@@ -254,10 +236,10 @@ open class TimetabledPassingTime(
     /**
      * Create an inline derived table from this table
      */
-    override fun whereExists(select: Select<*>): TimetabledPassingTime = where(DSL.exists(select))
+    override fun whereExists(select: TableLike<*>): TimetabledPassingTime = where(DSL.exists(select))
 
     /**
      * Create an inline derived table from this table
      */
-    override fun whereNotExists(select: Select<*>): TimetabledPassingTime = where(DSL.notExists(select))
+    override fun whereNotExists(select: TableLike<*>): TimetabledPassingTime = where(DSL.notExists(select))
 }

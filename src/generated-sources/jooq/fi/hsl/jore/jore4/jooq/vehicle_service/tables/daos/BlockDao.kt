@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository
  * of a BLOCK has to be covered by DUTies. Transmodel:
  * https://www.transmodel-cen.eu/model/index.htm?goto=3:5:958 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class BlockDao(configuration: Configuration?) : AbstractSpringDAOImpl<BlockRecord, fi.hsl.jore.jore4.jooq.vehicle_service.tables.pojos.Block, UUID>(Block.BLOCK, fi.hsl.jore.jore4.jooq.vehicle_service.tables.pojos.Block::class.java, configuration) {
 

@@ -14,16 +14,56 @@ import java.util.UUID
  * Reference to a given snapshot of a JOURNEY PATTERN for a given operating day.
  * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:729 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class JourneyPatternRef(
     var journeyPatternRefId: UUID? = null,
+
+    /**
+     * The ID of the referenced JOURNEY PATTERN
+     */
     var journeyPatternId: UUID,
+
+    /**
+     * The user-given point of time used to pick one journey pattern (with route
+     * and scheduled stop points) among possibly many variants. The selected,
+     * unambiguous journey pattern variant is used as a basis for schedule
+     * planning.
+     */
     var observationTimestamp: OffsetDateTime,
+
+    /**
+     * The timestamp when the snapshot was taken
+     */
     var snapshotTimestamp: OffsetDateTime,
+
+    /**
+     * The type of line (GTFS route type):
+     * https://developers.google.com/transit/gtfs/reference/extended-route-types
+     */
     var typeOfLine: String,
+
+    /**
+     * The label of the route associated with the referenced journey pattern
+     */
     var routeLabel: String,
+
+    /**
+     * The direction of the route associated with the referenced journey pattern
+     */
     var routeDirection: String,
+
+    /**
+     * The start date of the validity period of the route associated with the
+     * referenced journey pattern. If NULL, then the start of the validity
+     * period is unbounded (-infinity).
+     */
     var routeValidityStart: LocalDate? = null,
+
+    /**
+     * The end date of the validity period of the route associated with the
+     * referenced journey pattern. If NULL, then the end of the validity period
+     * is unbounded (infinity).
+     */
     var routeValidityEnd: LocalDate? = null
 ): Serializable {
 

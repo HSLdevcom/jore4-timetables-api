@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository
 /**
  * Enum table for defining allowed journey types.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Repository
 open class JourneyTypeDao(configuration: Configuration?) : AbstractSpringDAOImpl<JourneyTypeRecord, fi.hsl.jore.jore4.jooq.vehicle_journey.tables.pojos.JourneyType, String>(JourneyType.JOURNEY_TYPE, fi.hsl.jore.jore4.jooq.vehicle_journey.tables.pojos.JourneyType::class.java, configuration) {
 

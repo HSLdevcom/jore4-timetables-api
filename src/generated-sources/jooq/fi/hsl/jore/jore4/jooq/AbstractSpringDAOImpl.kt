@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 /**
  * Spring specific {@link DAOImpl} override.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 @Transactional(readOnly = true)
 abstract class AbstractSpringDAOImpl<R : UpdatableRecord<R>, P : Any, T>(table: Table<R>, type: Class<P>, configuration: Configuration?) : DAOImpl<R, P, T>(table, type, configuration) {
 

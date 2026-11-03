@@ -17,7 +17,7 @@ import java.util.UUID
  * substitute_operating_day_by_line_type_id and also enriched with data, which
  * are used in the UI side.
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 data class VehicleSchedule(
     var vehicleJourneyId: UUID? = null,
     var validityStart: LocalDate,

@@ -19,59 +19,98 @@ import org.jooq.types.YearToSecond
  * start point to the end point of a JOURNEY PATTERN on a specified ROUTE.
  * Transmodel: https://www.transmodel-cen.eu/model/index.htm?goto=3:1:1:831 
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("warnings")
 open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<VehicleJourneyRecord>(VehicleJourney.VEHICLE_JOURNEY_) {
 
     open var vehicleJourneyId: UUID?
         set(value): Unit = set(0, value)
         get(): UUID? = get(0) as UUID?
 
+    /**
+     * The JOURNEY PATTERN on which the VEHICLE JOURNEY travels
+     */
     open var journeyPatternRefId: UUID
         set(value): Unit = set(1, value)
         get(): UUID = get(1) as UUID
 
+    /**
+     * The BLOCK to which this VEHICLE JOURNEY belongs
+     */
     open var blockId: UUID
         set(value): Unit = set(2, value)
         get(): UUID = get(2) as UUID
 
+    /**
+     * Name that user can give to the vehicle journey.
+     */
     open var journeyNameI18n: JSONB?
         set(value): Unit = set(3, value)
         get(): JSONB? = get(3) as JSONB?
 
+    /**
+     * Turnaround time is the time taken by a vehicle to proceed from the end of
+     * a ROUTE to the start of another.
+     */
     open var turnaroundTime: YearToSecond?
         set(value): Unit = set(4, value)
         get(): YearToSecond? = get(4) as YearToSecond?
 
+    /**
+     * LAYOVER TIMEs describe a certain time allowance that may be given at the
+     * end of each VEHICLE JOURNEY, before starting the next one, to compensate
+     * delays or for other purposes (e.g. rest time for the driver). This
+     * “layover time” can be regarded as a buffer time, which may or may not be
+     * actually consumed in real time operation.
+     */
     open var layoverTime: YearToSecond?
         set(value): Unit = set(5, value)
         get(): YearToSecond? = get(5) as YearToSecond?
 
+    /**
+     * STANDARD | DRY_RUN | SERVICE_JOURNEY
+     */
     open var journeyType: String?
         set(value): Unit = set(6, value)
         get(): String? = get(6) as String?
 
+    /**
+     * Displayed name of the journey.
+     */
     open var displayedName: String?
         set(value): Unit = set(7, value)
         get(): String? = get(7) as String?
 
+    /**
+     * It is required to use the same vehicle type as required in vehicle
+     * service.
+     */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @set:JvmName("setIsVehicleTypeMandatory")
     open var isVehicleTypeMandatory: Boolean?
         set(value): Unit = set(8, value)
         get(): Boolean? = get(8) as Boolean?
 
+    /**
+     * Is the journey a backup journey.
+     */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @set:JvmName("setIsBackupJourney")
     open var isBackupJourney: Boolean?
         set(value): Unit = set(9, value)
         get(): Boolean? = get(9) as Boolean?
 
+    /**
+     * Is the journey an extra journey.
+     */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @set:JvmName("setIsExtraJourney")
     open var isExtraJourney: Boolean?
         set(value): Unit = set(10, value)
         get(): Boolean? = get(10) as Boolean?
 
+    /**
+     * The contract number for this vehicle journey.
+     */
     open var contractNumber: String
         set(value): Unit = set(11, value)
         get(): String = get(11) as String
@@ -98,7 +137,7 @@ open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<Vehi
         this.isBackupJourney = isBackupJourney
         this.isExtraJourney = isExtraJourney
         this.contractNumber = contractNumber
-        resetChangedOnNotNull()
+        resetTouchedOnNotNull()
     }
 
     /**
@@ -118,7 +157,7 @@ open class VehicleJourneyRecord private constructor() : UpdatableRecordImpl<Vehi
             this.isBackupJourney = value.isBackupJourney
             this.isExtraJourney = value.isExtraJourney
             this.contractNumber = value.contractNumber
-            resetChangedOnNotNull()
+            resetTouchedOnNotNull()
         }
     }
 }
