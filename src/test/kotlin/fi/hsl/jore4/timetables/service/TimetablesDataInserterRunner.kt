@@ -5,6 +5,7 @@ import fi.hsl.jore4.timetables.config.DatabaseProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service
 import java.io.File
+import java.io.Reader
 import java.net.URI
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
@@ -16,13 +17,10 @@ class TimetablesDataInserterRunner(
     val databaseConfiguration: DatabaseProperties
 ) {
     fun truncateAndInsertDataset(datasetJson: String): String {
-        val inserterWorkDirectory =
-            Paths
-                .get("jore4-hasura/test/hasura")
-                .toAbsolutePath()
-                .toString()
+        val inserterWorkDirectory = Paths.get("jore4-hasura/test/hasura").toAbsolutePath().toString()
+
         // Note: this performs DB truncation internally.
-        val command = "yarn --silent timetables-data-inserter:cli insert hsl ${buildDatabaseArguments()}"
+        val command = "yarn timetables-data-inserter:cli insert hsl ${buildDatabaseArguments()}"
 
         val process =
             ProcessBuilder(*command.split(" ").toTypedArray())
@@ -30,7 +28,8 @@ class TimetablesDataInserterRunner(
                 .redirectError(ProcessBuilder.Redirect.INHERIT)
                 .start()
 
-        process.outputStream.bufferedWriter().use { writer ->
+        process.outputStream.use {
+            val writer = it.bufferedWriter()
             writer.write(datasetJson)
             writer.flush()
         }
@@ -40,10 +39,11 @@ class TimetablesDataInserterRunner(
             throw RuntimeException("Running timetables-data-inserter timed out.")
         }
 
-        val output =
-            process.inputStream.bufferedReader().use { reader ->
-                reader.readText()
-            }
+        val exitValue = process.exitValue()
+        val output = process.inputStream.bufferedReader().use(Reader::readText)
+        if (exitValue != 0) {
+            throw RuntimeException("Running timetables-data-inserter failed with exit code $exitValue. Process output:\n$output")
+        }
 
         return output
     }

@@ -8,7 +8,7 @@ REST API for Jore4 timetables
 
 - Maven
 - JDK25+
-- Node.js 24.x
+- Node.js 26.x
 - Yarn 4.x
 
 Uses maven to build the project, use `mvn install` to build the server. You can also run the generated .jar file locally to test the server on port 8080.

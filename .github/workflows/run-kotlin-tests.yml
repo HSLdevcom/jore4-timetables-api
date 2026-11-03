@@ -21,6 +21,16 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Install Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: 'jore4-hasura/test/hasura/package.json'
+          cache: 'yarn'
+          cache-dependency-path: 'jore4-hasura/test/hasura/yarn.lock'
+
       - name: Start dependencies (blocking until up)
         run: ./development.sh start:deps
 

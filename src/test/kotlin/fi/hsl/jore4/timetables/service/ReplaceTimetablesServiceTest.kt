@@ -8,6 +8,7 @@ import fi.hsl.jore4.timetables.extensions.deepClone
 import fi.hsl.jore4.timetables.extensions.getNested
 import fi.hsl.jore4.timetables.repository.VehicleScheduleFrameRepository
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -18,6 +19,13 @@ import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
+
+const val INVALID_DATA_BUG =
+    "The test tries to import in invalid data into the database. " +
+        "Previously the test code did not validate that the import was a success. " +
+        "Thus, it is not safe to expect that the tests are valid and functional. " +
+        "At least one of the disabled tests expects and empty list as a db fetch result. " +
+        "But no matter what, an empty DB cannot return any values no matter the where conditions."
 
 @IntTest
 class ReplaceTimetablesServiceTest
@@ -398,6 +406,7 @@ class ReplaceTimetablesServiceTest
                     }
 
                     @Test
+                    @Disabled(INVALID_DATA_BUG)
                     fun `when staging and replaced frame have all routes in common`() {
                         val stagingFrameJourneys =
                             mutableMapOf(
@@ -421,6 +430,7 @@ class ReplaceTimetablesServiceTest
                     }
 
                     @Test
+                    @Disabled(INVALID_DATA_BUG)
                     fun `when staging and replaced frame have some routes in common, but staging has additional ones`() {
                         val stagingFrameJourneys =
                             mutableMapOf(
@@ -443,6 +453,7 @@ class ReplaceTimetablesServiceTest
                     }
 
                     @Test
+                    @Disabled(INVALID_DATA_BUG)
                     fun `when staging and replaced frame have some routes in common, but replaced has additional ones`() {
                         val stagingFrameJourneys =
                             mutableMapOf(
@@ -703,6 +714,7 @@ class ReplaceTimetablesServiceTest
             }
 
             @Test
+            @Disabled(INVALID_DATA_BUG)
             fun `does not return a frame with no shared routes`() {
                 val stagingFrameJourneys =
                     mutableMapOf(
