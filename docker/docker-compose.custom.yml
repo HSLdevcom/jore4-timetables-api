@@ -5,7 +5,6 @@ services:
   jore4-timetables-api:
     build:
       context: ".."
-      network: host
     ports:
       - "127.0.0.1:3009:8080"
     networks:
