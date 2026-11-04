@@ -29,10 +29,9 @@ class ReplaceTimetablesService(
         stagingVehicleScheduleFrameIds: List<UUID>,
         targetPriority: TimetablesPriority
     ): List<UUID> =
-        stagingVehicleScheduleFrameIds
-            .map {
-                processSingleStagingFrameReplacements(it, targetPriority)
-            }.flatten()
+        stagingVehicleScheduleFrameIds.flatMap {
+            processSingleStagingFrameReplacements(it, targetPriority)
+        }
 
     private fun processSingleStagingFrameReplacements(
         stagingVehicleScheduleFrameId: UUID,

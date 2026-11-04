@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -32,7 +33,7 @@ private val LOGGER = KotlinLogging.logger {}
 @SpringBootTest
 @ActiveProfiles("test")
 class TimetablesReplaceApiTest(
-    @Autowired val mockMvc: MockMvc
+    @param:Autowired val mockMvc: MockMvc
 ) {
     @MockkBean
     private lateinit var replaceTimetablesService: ReplaceTimetablesService
@@ -87,7 +88,7 @@ class TimetablesReplaceApiTest(
                       "replacedVehicleScheduleFrameIds": $defaultReplacedFrameIds
                     }
                     """.trimIndent(),
-                    true
+                    JsonCompareMode.STRICT
                 )
             )
 
@@ -122,7 +123,7 @@ class TimetablesReplaceApiTest(
                       }
                     }
                     """.trimIndent(),
-                    true
+                    JsonCompareMode.STRICT
                 )
             )
 
@@ -171,7 +172,7 @@ class TimetablesReplaceApiTest(
                       }
                     }
                     """.trimIndent(),
-                    true
+                    JsonCompareMode.STRICT
                 )
             )
 
@@ -219,7 +220,7 @@ class TimetablesReplaceApiTest(
                       }
                     }
                     """.trimIndent(),
-                    true
+                    JsonCompareMode.STRICT
                 )
             )
 
@@ -257,7 +258,7 @@ class TimetablesReplaceApiTest(
                       }
                     }
                     """.trimIndent(),
-                    true
+                    JsonCompareMode.STRICT
                 )
             )
 

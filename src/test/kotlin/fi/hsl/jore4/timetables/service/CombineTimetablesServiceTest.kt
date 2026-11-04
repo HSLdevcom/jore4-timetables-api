@@ -312,7 +312,7 @@ class CombineTimetablesServiceTest
                             TimetablesPriority.STANDARD
                         )
                     }
-                assertEquals(exception.stagingVehicleScheduleFrameId, stagingFrameId)
+                assertEquals(stagingFrameId, exception.stagingVehicleScheduleFrameId)
                 assertEquals(setOf(target1FrameId, target2FrameId), exception.targetVehicleScheduleFrameIds.toSet())
                 assertEquals(initialStagingFrame, fetchSingleFrameById(stagingFrameId))
             }
@@ -379,8 +379,8 @@ class CombineTimetablesServiceTest
                     )
                 }.also { exception ->
                     // Check that the error messages are somewhat in the format we expect. TransactionSystemExtensions depends on these.
-                    assertEquals(exception.message, "JDBC commit failed")
-                    val causeMessage = exception?.cause?.message
+                    assertEquals("JDBC commit failed", exception.message)
+                    val causeMessage = exception.cause?.message
                     assertNotNull(causeMessage)
                     assertContains(causeMessage, "ERROR: conflicting schedules detected: vehicle schedule frame")
                     assertContains(causeMessage, "Where: PL/pgSQL function vehicle_schedule.validate_queued_schedules_uniqueness()")

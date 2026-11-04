@@ -11,6 +11,6 @@ enum class TimetablesPriority(
     STAGING(40);
 
     companion object {
-        fun fromInt(value: Int): TimetablesPriority? = values().firstOrNull { it.value == value }
+        fun fromInt(value: Int): TimetablesPriority? = entries.firstOrNull { it.value == value }
     }
 }
