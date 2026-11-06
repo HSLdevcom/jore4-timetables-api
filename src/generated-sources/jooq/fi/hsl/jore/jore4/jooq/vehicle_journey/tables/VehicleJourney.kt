@@ -130,9 +130,9 @@ open class VehicleJourney(
 
     /**
      * The column <code>vehicle_journey.vehicle_journey.journey_type</code>.
-     * STANDARD | DRY_RUN | SERVICE_JOURNEY
+     * STANDARD | DEAD_RUN | SERVICE_JOURNEY
      */
-    val JOURNEY_TYPE: TableField<VehicleJourneyRecord, String?> = createField(DSL.name("journey_type"), SQLDataType.CLOB.nullable(false).defaultValue(DSL.field(DSL.raw("'STANDARD'::text"), SQLDataType.CLOB)), this, "STANDARD | DRY_RUN | SERVICE_JOURNEY")
+    val JOURNEY_TYPE: TableField<VehicleJourneyRecord, String?> = createField(DSL.name("journey_type"), SQLDataType.CLOB.nullable(false).defaultValue(DSL.field(DSL.raw("'STANDARD'::text"), SQLDataType.CLOB)), this, "STANDARD | DEAD_RUN | SERVICE_JOURNEY")
 
     /**
      * The column <code>vehicle_journey.vehicle_journey.displayed_name</code>.
