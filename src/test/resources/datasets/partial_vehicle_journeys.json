@@ -80,21 +80,21 @@
       {
         "_scheduled_stop_point_label": "H2204",
         "arrival_time": null,
-        "departure_time": "PT9H20M"
+        "departure_time": "PT9H30M"
       },
       {
         "_scheduled_stop_point_label": "H2203",
-        "arrival_time": "PT9H25M",
-        "departure_time": "PT9H25M"
+        "arrival_time": "PT9H35M",
+        "departure_time": "PT9H35M"
       },
       {
         "_scheduled_stop_point_label": "H2202",
-        "arrival_time": "PT9H29M",
-        "departure_time": "PT9H29M"
+        "arrival_time": "PT9H39M",
+        "departure_time": "PT9H39M"
       },
       {
         "_scheduled_stop_point_label": "H2201",
-        "arrival_time": "PT9H35M",
+        "arrival_time": "PT9H45M",
         "departure_time": null
       }
     ]
@@ -165,16 +165,16 @@
       {
         "_scheduled_stop_point_label": "K2203",
         "arrival_time": null,
-        "departure_time": "PT14H8M"
+        "departure_time": "PT14H30M"
       },
       {
         "_scheduled_stop_point_label": "K2202",
-        "arrival_time": "PT14H18M",
-        "departure_time": "PT14H18M"
+        "arrival_time": "PT14H40M",
+        "departure_time": "PT14H40M"
       },
       {
         "_scheduled_stop_point_label": "K2201",
-        "arrival_time": "PT14H28M",
+        "arrival_time": "PT14H50M",
         "departure_time": null
       }
     ]

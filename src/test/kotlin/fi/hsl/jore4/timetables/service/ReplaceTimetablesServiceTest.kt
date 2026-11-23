@@ -1,14 +1,16 @@
 package fi.hsl.jore4.timetables.service
 
 import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.pojos.VehicleScheduleFrame
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.JourneyPatternsInVehicleService.Companion.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE
+import fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService.Companion.VEHICLE_SERVICE_
 import fi.hsl.jore4.timetables.IntTest
 import fi.hsl.jore4.timetables.TimetablesDataset
 import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
 import fi.hsl.jore4.timetables.extensions.deepClone
 import fi.hsl.jore4.timetables.extensions.getNested
 import fi.hsl.jore4.timetables.repository.VehicleScheduleFrameRepository
+import org.jooq.DSLContext
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -20,24 +22,29 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 
-const val INVALID_DATA_BUG =
-    "The test tries to import in invalid data into the database. " +
-        "Previously the test code did not validate that the import was a success. " +
-        "Thus, it is not safe to expect that the tests are valid and functional. " +
-        "At least one of the disabled tests expects and empty list as a db fetch result. " +
-        "But no matter what, an empty DB cannot return any values no matter the where conditions."
-
 @IntTest
 class ReplaceTimetablesServiceTest
     @Autowired
     constructor(
         val replaceTimetablesService: ReplaceTimetablesService,
         var timetablesDataInserterRunner: TimetablesDataInserterRunner,
-        val vehicleScheduleFrameRepository: VehicleScheduleFrameRepository
+        val vehicleScheduleFrameRepository: VehicleScheduleFrameRepository,
+        val dsl: DSLContext
     ) {
         private fun fetchSingleFrameById(frameId: UUID): VehicleScheduleFrame =
             vehicleScheduleFrameRepository.fetchOneByVehicleScheduleFrameId(frameId)
                 ?: throw Exception("Vehicle schedule frame $frameId not found")
+
+        private fun fetchFrameJourneyPatternIds(frameId: UUID): Set<UUID> =
+            dsl
+                .select(JOURNEY_PATTERNS_IN_VEHICLE_SERVICE.JOURNEY_PATTERN_ID)
+                .from(VEHICLE_SERVICE_)
+                .join(JOURNEY_PATTERNS_IN_VEHICLE_SERVICE)
+                .on(VEHICLE_SERVICE_.VEHICLE_SERVICE_ID.eq(JOURNEY_PATTERNS_IN_VEHICLE_SERVICE.VEHICLE_SERVICE_ID))
+                .where(VEHICLE_SERVICE_.VEHICLE_SCHEDULE_FRAME_ID.eq(frameId))
+                .fetch(JOURNEY_PATTERNS_IN_VEHICLE_SERVICE.JOURNEY_PATTERN_ID)
+                .filterNotNull()
+                .toSet()
 
         @Nested
         @DisplayName("replaceTimetables")
@@ -364,18 +371,40 @@ class ReplaceTimetablesServiceTest
                     replacedFrameJourneys
             }
 
-            private fun insertDatasetAndFetchFrameIdsToReplace(
-                targetPriority: TimetablesPriority = TimetablesPriority.STANDARD
-            ): List<UUID> {
+            private fun insertDataset() {
                 timetablesDataInserterRunner.truncateAndInsertDataset(testData.toJSONString())
+            }
 
-                return replaceTimetablesService
+            private fun fetchFrameIdsToReplace(targetPriority: TimetablesPriority = TimetablesPriority.STANDARD): List<UUID> =
+                replaceTimetablesService
                     .fetchVehicleScheduleFramesToReplace(
                         stagingFrameId,
                         targetPriority
                     ).map {
                         it.vehicleScheduleFrameId!! // ID of an existing row, can never be null.
                     }
+
+            private fun insertDatasetAndFetchFrameIdsToReplace(
+                targetPriority: TimetablesPriority = TimetablesPriority.STANDARD
+            ): List<UUID> {
+                insertDataset()
+
+                return fetchFrameIdsToReplace(targetPriority)
+            }
+
+            private fun datasetJourneyPatternId(journeyPatternRefName: String): UUID =
+                UUID.fromString(
+                    testData.getNested("_journey_pattern_refs.$journeyPatternRefName")["journey_pattern_id"].toString()
+                )
+
+            private fun assertFrameJourneyPatterns(
+                frameId: UUID,
+                vararg journeyPatternRefNames: String
+            ) {
+                assertEquals(
+                    journeyPatternRefNames.map(::datasetJourneyPatternId).toSet(),
+                    fetchFrameJourneyPatternIds(frameId)
+                )
             }
 
             @BeforeEach
@@ -388,10 +417,10 @@ class ReplaceTimetablesServiceTest
             @DisplayName("finds a frame to replace")
             inner class FindsFrameToReplace {
                 @Nested
-                @DisplayName("with shared routes")
+                @DisplayName("with shared journey patterns")
                 inner class WithSharedRoutes {
                     @Test
-                    fun `when staging and replaced both have the same single route`() {
+                    fun `when staging and replaced both have the same single journey pattern`() {
                         val stagingFrameJourneys =
                             mutableMapOf("route133Outbound" to partialVehicleJourneys["route133Outbound1"])
                         val replacedFrameJourneys =
@@ -401,13 +430,16 @@ class ReplaceTimetablesServiceTest
                             replacedFrameJourneys = replacedFrameJourneys
                         )
 
-                        val result = insertDatasetAndFetchFrameIdsToReplace()
+                        insertDataset()
+                        assertFrameJourneyPatterns(stagingFrameId, "route133Outbound")
+                        assertFrameJourneyPatterns(replacedFrameId, "route133Outbound")
+
+                        val result = fetchFrameIdsToReplace()
                         assertEquals(listOf(replacedFrameId), result)
                     }
 
                     @Test
-                    @Disabled(INVALID_DATA_BUG)
-                    fun `when staging and replaced frame have all routes in common`() {
+                    fun `when staging and replaced frame have all journey patterns in common`() {
                         val stagingFrameJourneys =
                             mutableMapOf(
                                 "route133Outbound" to partialVehicleJourneys["route133Outbound1"],
@@ -425,13 +457,26 @@ class ReplaceTimetablesServiceTest
                             replacedFrameJourneys = replacedFrameJourneys
                         )
 
-                        val result = insertDatasetAndFetchFrameIdsToReplace()
+                        insertDataset()
+                        assertFrameJourneyPatterns(
+                            stagingFrameId,
+                            "route133Outbound",
+                            "route133Inbound",
+                            "route241Outbound"
+                        )
+                        assertFrameJourneyPatterns(
+                            replacedFrameId,
+                            "route133Outbound",
+                            "route133Inbound",
+                            "route241Outbound"
+                        )
+
+                        val result = fetchFrameIdsToReplace()
                         assertEquals(listOf(replacedFrameId), result)
                     }
 
                     @Test
-                    @Disabled(INVALID_DATA_BUG)
-                    fun `when staging and replaced frame have some routes in common, but staging has additional ones`() {
+                    fun `when staging and replaced frame have some journey patterns in common, but staging has additional ones`() {
                         val stagingFrameJourneys =
                             mutableMapOf(
                                 "route133Outbound" to partialVehicleJourneys["route133Outbound1"],
@@ -448,13 +493,25 @@ class ReplaceTimetablesServiceTest
                             replacedFrameJourneys = replacedFrameJourneys
                         )
 
-                        val result = insertDatasetAndFetchFrameIdsToReplace()
+                        insertDataset()
+                        assertFrameJourneyPatterns(
+                            stagingFrameId,
+                            "route133Outbound",
+                            "route133Inbound",
+                            "route241Outbound"
+                        )
+                        assertFrameJourneyPatterns(
+                            replacedFrameId,
+                            "route133Outbound",
+                            "route133Inbound"
+                        )
+
+                        val result = fetchFrameIdsToReplace()
                         assertEquals(listOf(replacedFrameId), result)
                     }
 
                     @Test
-                    @Disabled(INVALID_DATA_BUG)
-                    fun `when staging and replaced frame have some routes in common, but replaced has additional ones`() {
+                    fun `when staging and replaced frame have some journey patterns in common, but replaced has additional ones`() {
                         val stagingFrameJourneys =
                             mutableMapOf(
                                 "route241Outbound" to partialVehicleJourneys["route241Outbound1"]
@@ -470,7 +527,16 @@ class ReplaceTimetablesServiceTest
                             replacedFrameJourneys = replacedFrameJourneys
                         )
 
-                        val result = insertDatasetAndFetchFrameIdsToReplace()
+                        insertDataset()
+                        assertFrameJourneyPatterns(stagingFrameId, "route241Outbound")
+                        assertFrameJourneyPatterns(
+                            replacedFrameId,
+                            "route133Outbound",
+                            "route133Inbound",
+                            "route241Outbound"
+                        )
+
+                        val result = fetchFrameIdsToReplace()
                         assertEquals(listOf(replacedFrameId), result)
                     }
                 }
@@ -714,8 +780,7 @@ class ReplaceTimetablesServiceTest
             }
 
             @Test
-            @Disabled(INVALID_DATA_BUG)
-            fun `does not return a frame with no shared routes`() {
+            fun `does not return a frame with no shared journey patterns`() {
                 val stagingFrameJourneys =
                     mutableMapOf(
                         "route133Outbound" to partialVehicleJourneys["route133Outbound1"],
@@ -731,8 +796,29 @@ class ReplaceTimetablesServiceTest
                     replacedFrameJourneys = replacedFrameJourneys
                 )
 
-                val result = insertDatasetAndFetchFrameIdsToReplace()
+                insertDataset()
 
+                // Verify the fixture was inserted before asserting that no frame matches.
+                val stagingJourneyPatterns = fetchFrameJourneyPatternIds(stagingFrameId)
+                val replacedJourneyPatterns = fetchFrameJourneyPatternIds(replacedFrameId)
+                assertEquals(
+                    setOf(
+                        datasetJourneyPatternId("route133Outbound"),
+                        datasetJourneyPatternId("route133Inbound")
+                    ),
+                    stagingJourneyPatterns
+                )
+                assertEquals(
+                    setOf(
+                        datasetJourneyPatternId("route241Outbound"),
+                        datasetJourneyPatternId("route241VInbound")
+                    ),
+                    replacedJourneyPatterns
+                )
+                // This scenario requires genuinely disjoint journey pattern sets.
+                assertEquals(emptySet<UUID>(), stagingJourneyPatterns intersect replacedJourneyPatterns)
+
+                val result = fetchFrameIdsToReplace()
                 assertEquals(listOf(), result)
             }
         }
