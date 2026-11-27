@@ -1,10 +1,10 @@
 package fi.hsl.jore4.timetables.repository
 
-import fi.hsl.jore.jore4.jooq.vehicle_schedule.routines.references.getOverlappingSchedules
-import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.GetOverlappingSchedules
-import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.VehicleScheduleFrame.Companion.VEHICLE_SCHEDULE_FRAME
-import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.daos.VehicleScheduleFrameDao
-import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.pojos.VehicleScheduleFrame
+import fi.hsl.jore.jore4.jooq.timetables.routines.references.getOverlappingSchedules
+import fi.hsl.jore.jore4.jooq.timetables.tables.GetOverlappingSchedules
+import fi.hsl.jore.jore4.jooq.timetables.tables.VehicleScheduleFrame.Companion.VEHICLE_SCHEDULE_FRAME
+import fi.hsl.jore.jore4.jooq.timetables.tables.daos.VehicleScheduleFrameDao
+import fi.hsl.jore.jore4.jooq.timetables.tables.pojos.VehicleScheduleFrame
 import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
 import org.jooq.DSLContext
 import org.jooq.Name

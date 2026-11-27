@@ -1,7 +1,7 @@
 package fi.hsl.jore4.timetables.api
 
 import com.ninjasquad.springmockk.MockkBean
-import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.pojos.VehicleScheduleFrame
+import fi.hsl.jore.jore4.jooq.timetables.tables.pojos.VehicleScheduleFrame
 import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
 import fi.hsl.jore4.timetables.service.CombineTimetablesService
 import io.mockk.every
