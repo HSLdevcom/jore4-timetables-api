@@ -1,8 +1,8 @@
 package fi.hsl.jore4.timetables.service
 
-import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.pojos.VehicleScheduleFrame
-import fi.hsl.jore.jore4.jooq.vehicle_service.tables.JourneyPatternsInVehicleService.Companion.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE
-import fi.hsl.jore.jore4.jooq.vehicle_service.tables.VehicleService.Companion.VEHICLE_SERVICE_
+import fi.hsl.jore.jore4.jooq.timetables.tables.JourneyPatternsInVehicleService.Companion.JOURNEY_PATTERNS_IN_VEHICLE_SERVICE
+import fi.hsl.jore.jore4.jooq.timetables.tables.VehicleService.Companion.VEHICLE_SERVICE
+import fi.hsl.jore.jore4.jooq.timetables.tables.pojos.VehicleScheduleFrame
 import fi.hsl.jore4.timetables.IntTest
 import fi.hsl.jore4.timetables.TimetablesDataset
 import fi.hsl.jore4.timetables.enumerated.TimetablesPriority
@@ -38,10 +38,10 @@ class ReplaceTimetablesServiceTest
         private fun fetchFrameJourneyPatternIds(frameId: UUID): Set<UUID> =
             dsl
                 .select(JOURNEY_PATTERNS_IN_VEHICLE_SERVICE.JOURNEY_PATTERN_ID)
-                .from(VEHICLE_SERVICE_)
+                .from(VEHICLE_SERVICE)
                 .join(JOURNEY_PATTERNS_IN_VEHICLE_SERVICE)
-                .on(VEHICLE_SERVICE_.VEHICLE_SERVICE_ID.eq(JOURNEY_PATTERNS_IN_VEHICLE_SERVICE.VEHICLE_SERVICE_ID))
-                .where(VEHICLE_SERVICE_.VEHICLE_SCHEDULE_FRAME_ID.eq(frameId))
+                .on(VEHICLE_SERVICE.VEHICLE_SERVICE_ID.eq(JOURNEY_PATTERNS_IN_VEHICLE_SERVICE.VEHICLE_SERVICE_ID))
+                .where(VEHICLE_SERVICE.VEHICLE_SCHEDULE_FRAME_ID.eq(frameId))
                 .fetch(JOURNEY_PATTERNS_IN_VEHICLE_SERVICE.JOURNEY_PATTERN_ID)
                 .filterNotNull()
                 .toSet()

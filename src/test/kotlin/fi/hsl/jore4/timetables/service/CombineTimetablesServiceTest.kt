@@ -1,6 +1,6 @@
 package fi.hsl.jore4.timetables.service
 
-import fi.hsl.jore.jore4.jooq.vehicle_schedule.tables.pojos.VehicleScheduleFrame
+import fi.hsl.jore.jore4.jooq.timetables.tables.pojos.VehicleScheduleFrame
 import fi.hsl.jore4.timetables.IntTest
 import fi.hsl.jore4.timetables.TimetablesDataset
 import fi.hsl.jore4.timetables.enumerated.TimetablesPriority

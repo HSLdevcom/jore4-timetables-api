@@ -20,12 +20,13 @@ class TimetablesDataInserterRunner(
         val inserterWorkDirectory = Paths.get("jore4-hasura/test/hasura").toAbsolutePath().toString()
 
         // Note: this performs DB truncation internally.
-        val command = "yarn timetables-data-inserter:cli insert hsl ${buildDatabaseArguments()}"
+        // Use bash with nvm to ensure Node 26 is available (required for Temporal support)
+        val nvmCommand = "source ~/.nvm/nvm.sh && nvm use 26 && yarn timetables-data-inserter:cli insert hsl ${buildDatabaseArguments()}"
 
         val process =
-            ProcessBuilder(*command.split(" ").toTypedArray())
+            ProcessBuilder("bash", "-c", nvmCommand)
                 .directory(File(inserterWorkDirectory))
-                .redirectError(ProcessBuilder.Redirect.INHERIT)
+                .redirectError(ProcessBuilder.Redirect.PIPE)
                 .start()
 
         process.outputStream.use {
@@ -41,8 +42,11 @@ class TimetablesDataInserterRunner(
 
         val exitValue = process.exitValue()
         val output = process.inputStream.bufferedReader().use(Reader::readText)
+        val errorOutput = process.errorStream.bufferedReader().use(Reader::readText)
         if (exitValue != 0) {
-            throw RuntimeException("Running timetables-data-inserter failed with exit code $exitValue. Process output:\n$output")
+            throw RuntimeException(
+                "Running timetables-data-inserter failed with exit code $exitValue.\nStdout:\n$output\nStderr:\n$errorOutput"
+            )
         }
 
         return output

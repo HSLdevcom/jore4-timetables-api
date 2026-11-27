@@ -4,17 +4,8 @@
 package fi.hsl.jore.jore4.jooq
 
 
-import fi.hsl.jore.jore4.jooq.internal_service_calendar.InternalServiceCalendar
-import fi.hsl.jore.jore4.jooq.journey_pattern.JourneyPattern
-import fi.hsl.jore.jore4.jooq.passing_times.PassingTimes
-import fi.hsl.jore.jore4.jooq.return_value.ReturnValue
-import fi.hsl.jore.jore4.jooq.route.Route
-import fi.hsl.jore.jore4.jooq.service_calendar.ServiceCalendar
-import fi.hsl.jore.jore4.jooq.service_pattern.ServicePattern
-import fi.hsl.jore.jore4.jooq.vehicle_journey.VehicleJourney
-import fi.hsl.jore.jore4.jooq.vehicle_schedule.VehicleSchedule
-import fi.hsl.jore.jore4.jooq.vehicle_service.VehicleService
-import fi.hsl.jore.jore4.jooq.vehicle_type.VehicleType
+import fi.hsl.jore.jore4.jooq.reusable_components.ReusableComponents
+import fi.hsl.jore.jore4.jooq.timetables.Timetables
 
 import kotlin.collections.List
 
@@ -37,83 +28,20 @@ open class DefaultCatalog : CatalogImpl("") {
     }
 
     /**
-     * This schema is used for the internal SQL functions that are related to
-     * service_calendar schema. These internal functions are
-     * not exposed to GraphQL API, hence the prefix.
+     * The reusable components model adapted from Transmodel:
+     * https://www.transmodel-cen.eu/model/index.htm?goto=1:6:260
      */
-    val INTERNAL_SERVICE_CALENDAR: InternalServiceCalendar get(): InternalServiceCalendar = InternalServiceCalendar.INTERNAL_SERVICE_CALENDAR
+    val REUSABLE_COMPONENTS: ReusableComponents get(): ReusableComponents = ReusableComponents.REUSABLE_COMPONENTS
 
     /**
-     * The journey pattern model adapted from Transmodel:
-     * https://www.transmodel-cen.eu/model/index.htm?goto=2:3:1:683 
+     * Timetables module adapted from transmodel
+     * https://www.transmodel-cen.eu/model/index.htm
      */
-    val JOURNEY_PATTERN: JourneyPattern get(): JourneyPattern = JourneyPattern.JOURNEY_PATTERN
-
-    /**
-     * The passing times model adapted from Transmodel:
-     * https://www.transmodel-cen.eu/model/index.htm?goto=3:4:939 
-     */
-    val PASSING_TIMES: PassingTimes get(): PassingTimes = PassingTimes.PASSING_TIMES
-
-    /**
-     * This schema is used for all the SQL functions that need to have a table
-     * as return value. Nothing is stored in the tables in this schema.
-     */
-    val RETURN_VALUE: ReturnValue get(): ReturnValue = ReturnValue.RETURN_VALUE
-
-    /**
-     * The route model adapted from Transmodel:
-     * https://www.transmodel-cen.eu/model/index.htm?goto=2:1:3:416
-     */
-    val ROUTE: Route get(): Route = Route.ROUTE
-
-    /**
-     * The service calendar model adapted from Transmodel:
-     * https://www.transmodel-cen.eu/model/index.htm?goto=1:6:3:294 
-     */
-    val SERVICE_CALENDAR: ServiceCalendar get(): ServiceCalendar = ServiceCalendar.SERVICE_CALENDAR
-
-    /**
-     * The service pattern model adapted from Transmodel:
-     * https://www.transmodel-cen.eu/model/index.htm?goto=2:3:4:723 
-     */
-    val SERVICE_PATTERN: ServicePattern get(): ServicePattern = ServicePattern.SERVICE_PATTERN
-
-    /**
-     * The vehicle journey model adapted from Transmodel:
-     * https://www.transmodel-cen.eu/model/index.htm?goto=3:1:1:824 
-     */
-    val VEHICLE_JOURNEY: VehicleJourney get(): VehicleJourney = VehicleJourney.VEHICLE_JOURNEY
-
-    /**
-     * The vehicle schedule frame adapted from Transmodel:
-     * https://www.transmodel-cen.eu/model/index.htm?goto=3:7:2:993 
-     */
-    val VEHICLE_SCHEDULE: VehicleSchedule get(): VehicleSchedule = VehicleSchedule.VEHICLE_SCHEDULE
-
-    /**
-     * The vehicle service model adapted from Transmodel:
-     * https://www.transmodel-cen.eu/model/index.htm?goto=3:5:947 
-     */
-    val VEHICLE_SERVICE: VehicleService get(): VehicleService = VehicleService.VEHICLE_SERVICE
-
-    /**
-     * The schema <code>vehicle_type</code>.
-     */
-    val VEHICLE_TYPE: VehicleType get(): VehicleType = VehicleType.VEHICLE_TYPE
+    val TIMETABLES: Timetables get(): Timetables = Timetables.TIMETABLES
 
     override fun getSchemas(): List<Schema> = listOf(
-        InternalServiceCalendar.INTERNAL_SERVICE_CALENDAR,
-        JourneyPattern.JOURNEY_PATTERN,
-        PassingTimes.PASSING_TIMES,
-        ReturnValue.RETURN_VALUE,
-        Route.ROUTE,
-        ServiceCalendar.SERVICE_CALENDAR,
-        ServicePattern.SERVICE_PATTERN,
-        VehicleJourney.VEHICLE_JOURNEY,
-        VehicleSchedule.VEHICLE_SCHEDULE,
-        VehicleService.VEHICLE_SERVICE,
-        VehicleType.VEHICLE_TYPE
+        ReusableComponents.REUSABLE_COMPONENTS,
+        Timetables.TIMETABLES
     )
 
     /**

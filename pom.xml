@@ -24,7 +24,7 @@
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
 
-        <!-- 3.6.3 is the last version of maven 3 that has been released. Back in 2019 😬 -->
+        <!-- 3.6.3 is the last version of maven 3 that has been released. Back in 2019 -->
         <maven-enforcer.plugin.mvn-min-version>3.6.3</maven-enforcer.plugin.mvn-min-version>
 
         <!-- Maven build plugins and their dependencies -->
@@ -431,6 +431,12 @@
                                         | PUBLIC.*
                                         | pg_catalog.*
                                         | information_schema.*
+                                        | NETWORK.*
+                                        | INFRASTRUCTURE_NETWORK.*
+                                        | STOPREGISTRY.*
+                                        | DSSVIEW.*
+                                        | TOPOLOGY.*
+                                        | RETURN_VALUE.*
                                     </excludes>
                                     <excludeSql>
                                         <!-- Select all generated columns. They don't work nicely with jOOQ DAO UPDATE methods. -->

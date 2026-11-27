@@ -132,7 +132,7 @@ start_deps() {
   # Runs the following services:
   # jore4-hasura - Hasura. We have to start Hasura because it ensures that db migrations are run to the Jore 4 database.
   # jore4-testdb - Jore 4 database. This is the database used by the API.
-  $DOCKER_COMPOSE_CMD -f ./docker/docker-compose.test.yml up -d jore4-hasura jore4-testdb jore4-hasura-test jore4-testdb-test
+  $DOCKER_COMPOSE_CMD -f ./docker/docker-compose.test.yml up -d jore4-tiamat jore4-hasura jore4-testdb jore4-hasura-test jore4-testdb-test
 }
 
 stop() {

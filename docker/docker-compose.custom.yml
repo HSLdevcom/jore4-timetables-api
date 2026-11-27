@@ -24,8 +24,20 @@ services:
         target: /mnt/secrets-store/jore4-db-username
 
   jore4-hasura:
+    image: "crjore4prod001.azurecr.io/jore4-hsl-hasura:main-metadata-2026-11-24-13131c5215768bfcbc9638c89ac43646967b46ba"
     # Waiting for database to be ready to avoid startup delay due to hasura crashing at startup if db is offline
     # Note: this should only be done in development setups as Kubernetes does not allow waiting for services to be ready
     depends_on:
       jore4-testdb:
         condition: service_healthy
+      jore4-tiamat:
+        condition: service_healthy
+
+  jore4-tiamat:
+    # Pin tiamat to a compatible version.
+    # Note: also update jore4-tiamat-e2e in docker-compose.e2e when changing this.
+    image: "crjore4prod001.azurecr.io/jore4-tiamat:use-main-database-2026-11-24-30040d122ad24de4018e865289a358462dd654a2"
+    environment:
+      # Tiamat stores its data in the stopregistry schema of the jore4main database.
+      # The docker compose bundle only provides the legacy tiamat-db-database (stopdb) secret.
+      TIAMAT_DB_MAIN_DATABASE: jore4main
